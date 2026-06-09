@@ -141,7 +141,8 @@ function Section({ title, children }: any) {
     </section>
   );
 }
-function Field({ label, value, onChange, textarea }: any) {
+function Field({ label, value, onChange, textarea }: { label: string; value: any; onChange: (v: string) => void; textarea?: boolean }) {
+
   return (
     <div className="space-y-1.5">
       <Label>{label}</Label>
