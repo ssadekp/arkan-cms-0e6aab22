@@ -145,7 +145,7 @@ export const deleteResource = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const { error } = await sb.from(data.table).delete().eq("id", data.id);
+    const { error } = await (sb.from(data.table as any) as any).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
