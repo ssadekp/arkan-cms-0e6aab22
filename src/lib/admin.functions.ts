@@ -113,12 +113,13 @@ export const saveResource = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    const tbl = sb.from(data.table as any) as any;
     let recordId = data.id;
     if (recordId) {
-      const { error } = await sb.from(data.table).update(data.values).eq("id", recordId);
+      const { error } = await tbl.update(data.values).eq("id", recordId);
       if (error) throw new Error(error.message);
     } else {
-      const { data: ins, error } = await sb.from(data.table).insert(data.values).select("id").single();
+      const { data: ins, error } = await tbl.insert(data.values).select("id").single();
       if (error) throw new Error(error.message);
       recordId = ins.id as string;
     }
@@ -126,9 +127,10 @@ export const saveResource = createServerFn({ method: "POST" })
     if (map && data.i18n) {
       for (const row of data.i18n) {
         const payload = { ...row, [map.fk]: recordId };
-        await sb.from(map.table).upsert(payload);
+        await (sb.from(map.table as any) as any).upsert(payload);
       }
     }
+
     return { id: recordId };
   });
 
