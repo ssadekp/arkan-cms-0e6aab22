@@ -17,6 +17,7 @@ function Inner({ children }: { children: ReactNode }) {
   const settingsI18n = pickI18n(data?.settingsI18n, lang);
   const siteName = settingsI18n?.site_name ?? "Lam7et Khair";
   const footerText = settingsI18n?.footer_text ?? "";
+  const address = (settingsI18n as any)?.address ?? "";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -31,7 +32,7 @@ function Inner({ children }: { children: ReactNode }) {
         siteName={siteName}
         footerText={footerText}
         social={(settings?.social_links as Record<string, string>) ?? {}}
-        contact={{ email: settings?.contact_email, phone: settings?.contact_phone, address: settings?.contact_address }}
+        contact={{ email: settings?.contact_email, phone: settings?.contact_phone, address }}
       />
     </div>
   );
