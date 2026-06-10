@@ -62,7 +62,6 @@ const settingsSchema = z.object({
   default_language: z.enum(["ar", "en"]),
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
-  contact_address: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
   i18n: z.array(z.object({
@@ -73,6 +72,7 @@ const settingsSchema = z.object({
     footer_text: z.string(),
     seo_title: z.string(),
     seo_description: z.string(),
+    address: z.string(),
   })),
 });
 
