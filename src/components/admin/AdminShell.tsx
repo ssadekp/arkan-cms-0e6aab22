@@ -4,7 +4,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, BarChart3, LogOut, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, BarChart3, LogOut, ArrowLeft, Tag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
@@ -14,6 +14,7 @@ const items = [
   { to: "/admin/pages", label: "Pages", icon: FileText },
   { to: "/admin/focus-areas", label: "Focus Areas", icon: Target },
   { to: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { to: "/admin/tags", label: "Tags", icon: Tag },
   { to: "/admin/partners", label: "Partners", icon: Users },
   { to: "/admin/news", label: "News", icon: Newspaper },
   { to: "/admin/stats", label: "Homepage Stats", icon: BarChart3 },

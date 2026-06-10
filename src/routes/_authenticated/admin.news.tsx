@@ -17,9 +17,9 @@ export const Route = createFileRoute("/_authenticated/admin/news")({
         i18nFields={[
           { key: "title", label: "Title" },
           { key: "description", label: "Short description", type: "textarea" },
-          { key: "body", label: "Body", type: "textarea" },
+          { key: "body", label: "Body", type: "rich" },
         ]}
-        listLabel={(row, i18n) => i18n.find((x) => x.news_id === row.id && x.lang === "ar")?.title ?? row.slug}
+        listLabel={(row, i18n) => i18n.find((x: any) => x.news_id === row.id && x.lang === "ar")?.title ?? row.slug}
       />
     </AdminShell>
   ),

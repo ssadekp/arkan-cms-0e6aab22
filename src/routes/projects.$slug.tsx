@@ -9,6 +9,12 @@ export const Route = createFileRoute("/projects/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
 });
 
+const STATUS_LABELS: Record<string, { ar: string; en: string }> = {
+  planned:   { ar: "مخطط",  en: "Planned" },
+  ongoing:   { ar: "جارٍ",   en: "Ongoing" },
+  completed: { ar: "مكتمل", en: "Completed" },
+};
+
 function Body() {
   const { slug } = Route.useParams();
   const { lang } = useI18n();
@@ -17,6 +23,11 @@ function Body() {
   if (!data) return <div className="container-narrow py-16">—</div>;
   const i18n = pickI18n(data.i18n, lang);
   const gallery = (data.project.gallery as string[]) ?? [];
+  const status = STATUS_LABELS[(data.project as any).status]?.[lang];
+  const tagName = (id: string) =>
+    (data.tagsI18n as any[]).find((x) => x.tag_id === id && x.lang === lang)?.name
+    ?? (data.tagsI18n as any[]).find((x) => x.tag_id === id)?.name
+    ?? "";
 
   return (
     <article>
@@ -24,8 +35,23 @@ function Body() {
         {data.project.hero_image && <img src={data.project.hero_image} alt="" className="h-full w-full object-cover" />}
       </div>
       <div className="container-narrow py-12">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          {status && (
+            <span className="inline-block rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
+              {status}
+            </span>
+          )}
+          {(data.tags ?? []).map((t: any) => (
+            <span key={t.id} className="inline-block rounded-full bg-muted px-3 py-1 text-xs">
+              {tagName(t.id)}
+            </span>
+          ))}
+        </div>
         <h1 className="text-4xl font-bold">{i18n?.title}</h1>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed whitespace-pre-line">{i18n?.description}</p>
+        <div
+          className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: (i18n as any)?.description ?? "" }}
+        />
 
         {gallery.length > 0 && (
           <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3">

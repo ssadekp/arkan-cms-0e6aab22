@@ -17,11 +17,11 @@ export const Route = createFileRoute("/_authenticated/admin/pages")({
         ]}
         i18nFields={[
           { key: "title", label: "Title" },
-          { key: "body", label: "Body", type: "textarea" },
+          { key: "body", label: "Body", type: "rich" },
           { key: "seo_title", label: "SEO title" },
           { key: "seo_description", label: "SEO description", type: "textarea" },
         ]}
-        listLabel={(row, i18n) => i18n.find((x) => x.page_id === row.id && x.lang === "ar")?.title ?? row.slug}
+        listLabel={(row, i18n) => i18n.find((x: any) => x.page_id === row.id && x.lang === "ar")?.title ?? row.slug}
       />
     </AdminShell>
   ),

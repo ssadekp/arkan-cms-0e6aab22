@@ -27,7 +27,7 @@ export const adminListAll = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, settings, settingsI18n, stats, statsI18n] = await Promise.all([
+    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags] = await Promise.all([
       sb.from("pages").select("*").order("nav_order"),
       sb.from("pages_i18n").select("*"),
       sb.from("focus_areas").select("*").order("sort_order"),
@@ -41,6 +41,9 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("site_settings_i18n").select("*").eq("setting_id", 1),
       sb.from("homepage_stats").select("*").order("sort_order"),
       sb.from("homepage_stats_i18n").select("*"),
+      sb.from("tags").select("*"),
+      sb.from("tags_i18n").select("*"),
+      sb.from("project_tags").select("*"),
     ]);
     return {
       pages: pages.data ?? [], pagesI18n: pagesI18n.data ?? [],
@@ -50,6 +53,8 @@ export const adminListAll = createServerFn({ method: "GET" })
       partners: partners.data ?? [],
       settings: settings.data, settingsI18n: settingsI18n.data ?? [],
       stats: stats.data ?? [], statsI18n: statsI18n.data ?? [],
+      tags: tags.data ?? [], tagsI18n: tagsI18n.data ?? [],
+      projectTags: projectTags.data ?? [],
     };
   });
 
@@ -62,7 +67,6 @@ const settingsSchema = z.object({
   default_language: z.enum(["ar", "en"]),
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
-  contact_address: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
   i18n: z.array(z.object({
@@ -73,6 +77,7 @@ const settingsSchema = z.object({
     footer_text: z.string(),
     seo_title: z.string(),
     seo_description: z.string(),
+    address: z.string(),
   })),
 });
 
@@ -147,5 +152,61 @@ export const deleteResource = createServerFn({ method: "POST" })
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
     const { error } = await (sb.from(data.table as any) as any).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/* ---------- TAGS ---------- */
+
+export const saveTag = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    id: z.string().uuid().nullable(),
+    slug: z.string().min(1),
+    name_ar: z.string(),
+    name_en: z.string(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    let id = data.id;
+    if (id) {
+      const { error } = await sb.from("tags").update({ slug: data.slug }).eq("id", id);
+      if (error) throw new Error(error.message);
+    } else {
+      const { data: ins, error } = await sb.from("tags").insert({ slug: data.slug }).select("id").single();
+      if (error) throw new Error(error.message);
+      id = ins.id as string;
+    }
+    await sb.from("tags_i18n").upsert({ tag_id: id, lang: "ar", name: data.name_ar });
+    await sb.from("tags_i18n").upsert({ tag_id: id, lang: "en", name: data.name_en });
+    return { id };
+  });
+
+export const deleteTag = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    const { error } = await sb.from("tags").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const setProjectTags = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    project_id: z.string().uuid(),
+    tag_ids: z.array(z.string().uuid()),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    await sb.from("project_tags").delete().eq("project_id", data.project_id);
+    if (data.tag_ids.length > 0) {
+      const rows = data.tag_ids.map((tag_id) => ({ project_id: data.project_id, tag_id }));
+      const { error } = await sb.from("project_tags").insert(rows);
+      if (error) throw new Error(error.message);
+    }
     return { ok: true };
   });

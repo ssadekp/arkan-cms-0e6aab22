@@ -393,6 +393,7 @@ export type Database = {
           published_at: string | null
           slug: string
           sort_order: number
+          status: Database["public"]["Enums"]["project_status"]
           updated_at: string
         }
         Insert: {
@@ -405,6 +406,7 @@ export type Database = {
           published_at?: string | null
           slug: string
           sort_order?: number
+          status?: Database["public"]["Enums"]["project_status"]
           updated_at?: string
         }
         Update: {
@@ -417,6 +419,7 @@ export type Database = {
           published_at?: string | null
           slug?: string
           sort_order?: number
+          status?: Database["public"]["Enums"]["project_status"]
           updated_at?: string
         }
         Relationships: [
@@ -461,7 +464,6 @@ export type Database = {
       site_settings: {
         Row: {
           accent_color: string
-          contact_address: string | null
           contact_email: string | null
           contact_phone: string | null
           default_language: Database["public"]["Enums"]["app_language"]
@@ -474,7 +476,6 @@ export type Database = {
         }
         Insert: {
           accent_color?: string
-          contact_address?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
@@ -487,7 +488,6 @@ export type Database = {
         }
         Update: {
           accent_color?: string
-          contact_address?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
@@ -503,6 +503,7 @@ export type Database = {
       site_settings_i18n: {
         Row: {
           about_short: string
+          address: string
           footer_text: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description: string
@@ -513,6 +514,7 @@ export type Database = {
         }
         Insert: {
           about_short?: string
+          address?: string
           footer_text?: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description?: string
@@ -523,6 +525,7 @@ export type Database = {
         }
         Update: {
           about_short?: string
+          address?: string
           footer_text?: string
           lang?: Database["public"]["Enums"]["app_language"]
           seo_description?: string
@@ -623,6 +626,7 @@ export type Database = {
     Enums: {
       app_language: "ar" | "en"
       app_role: "admin" | "editor"
+      project_status: "planned" | "ongoing" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -752,6 +756,7 @@ export const Constants = {
     Enums: {
       app_language: ["ar", "en"],
       app_role: ["admin", "editor"],
+      project_status: ["planned", "ongoing", "completed"],
     },
   },
 } as const

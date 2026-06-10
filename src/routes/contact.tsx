@@ -15,8 +15,9 @@ function Body() {
   const { lang, t } = useI18n();
   const fn = useServerFn(getSiteData);
   const { data } = useQuery({ queryKey: ["site-data"], queryFn: () => fn(), staleTime: 60_000 });
-  const i = pickI18n(data?.settingsI18n, lang);
+  const i = pickI18n(data?.settingsI18n, lang) as any;
   const s = data?.settings;
+  const address = i?.address ?? "";
   return (
     <div className="container-narrow py-16 max-w-3xl">
       <h1 className="text-3xl font-bold mb-2">{t("nav.contact")}</h1>
@@ -24,7 +25,7 @@ function Body() {
       <div className="grid sm:grid-cols-3 gap-4">
         {s?.contact_email && <Card icon={Mail} label="Email" value={s.contact_email} href={`mailto:${s.contact_email}`} />}
         {s?.contact_phone && <Card icon={Phone} label="Phone" value={s.contact_phone} href={`tel:${s.contact_phone}`} />}
-        {s?.contact_address && <Card icon={MapPin} label="Address" value={s.contact_address} />}
+        {address && <Card icon={MapPin} label="Address" value={address} />}
       </div>
     </div>
   );
