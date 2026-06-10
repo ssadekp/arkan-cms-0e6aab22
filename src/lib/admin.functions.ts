@@ -154,3 +154,59 @@ export const deleteResource = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+/* ---------- TAGS ---------- */
+
+export const saveTag = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    id: z.string().uuid().nullable(),
+    slug: z.string().min(1),
+    name_ar: z.string(),
+    name_en: z.string(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    let id = data.id;
+    if (id) {
+      const { error } = await sb.from("tags").update({ slug: data.slug }).eq("id", id);
+      if (error) throw new Error(error.message);
+    } else {
+      const { data: ins, error } = await sb.from("tags").insert({ slug: data.slug }).select("id").single();
+      if (error) throw new Error(error.message);
+      id = ins.id as string;
+    }
+    await sb.from("tags_i18n").upsert({ tag_id: id, lang: "ar", name: data.name_ar });
+    await sb.from("tags_i18n").upsert({ tag_id: id, lang: "en", name: data.name_en });
+    return { id };
+  });
+
+export const deleteTag = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    const { error } = await sb.from("tags").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const setProjectTags = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    project_id: z.string().uuid(),
+    tag_ids: z.array(z.string().uuid()),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    await sb.from("project_tags").delete().eq("project_id", data.project_id);
+    if (data.tag_ids.length > 0) {
+      const rows = data.tag_ids.map((tag_id) => ({ project_id: data.project_id, tag_id }));
+      const { error } = await sb.from("project_tags").insert(rows);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
