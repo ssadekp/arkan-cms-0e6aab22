@@ -26,7 +26,12 @@ function Body() {
         <div className="text-sm text-muted-foreground">{new Date(data.article.published_at).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</div>
         <h1 className="mt-2 text-4xl font-bold">{i18n?.title}</h1>
         <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{i18n?.description}</p>
-        {i18n?.body && <div className="mt-6 whitespace-pre-line leading-relaxed">{i18n.body}</div>}
+        {i18n?.body && (
+          <div
+            className="prose prose-sm sm:prose-base max-w-none mt-6 dark:prose-invert"
+            dangerouslySetInnerHTML={{ __html: i18n.body }}
+          />
+        )}
         {gallery.length > 0 && (
           <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3">
             {gallery.map((g, i) => <img key={i} src={g} alt="" className="rounded-lg aspect-square object-cover" />)}

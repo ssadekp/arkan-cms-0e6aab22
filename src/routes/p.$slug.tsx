@@ -25,7 +25,10 @@ function Body() {
       )}
       <div className="container-narrow py-12 max-w-3xl">
         <h1 className="text-4xl font-bold">{i?.title}</h1>
-        <div className="mt-6 whitespace-pre-line leading-relaxed text-muted-foreground">{i?.body}</div>
+        <div
+          className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
+          dangerouslySetInnerHTML={{ __html: i?.body ?? "" }}
+        />
       </div>
     </article>
   );
