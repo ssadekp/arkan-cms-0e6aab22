@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RichEditor } from "@/components/admin/RichEditor";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
@@ -23,7 +24,7 @@ function SettingsPage() {
 
   const [root, setRoot] = useState<any>({});
   const [social, setSocial] = useState("{}");
-  const [i18n, setI18n] = useState<any>({ ar: {}, en: {} });
+  const [i18n, setI18n] = useState<any>({ ar: blank(), en: blank() });
 
   useEffect(() => {
     if (!data) return;
@@ -36,14 +37,13 @@ function SettingsPage() {
         default_language: s.default_language,
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
-        contact_address: s.contact_address ?? "",
         seo_og_image: s.seo_og_image ?? "",
       });
       setSocial(JSON.stringify(s.social_links ?? {}, null, 2));
     }
-    const ar = data.settingsI18n.find((x) => x.lang === "ar");
-    const en = data.settingsI18n.find((x) => x.lang === "en");
-    setI18n({ ar: ar ?? blank(), en: en ?? blank() });
+    const ar = (data.settingsI18n as any[]).find((x) => x.lang === "ar");
+    const en = (data.settingsI18n as any[]).find((x) => x.lang === "en");
+    setI18n({ ar: { ...blank(), ...(ar ?? {}) }, en: { ...blank(), ...(en ?? {}) } });
   }, [data]);
 
   const mut = useMutation({
@@ -55,7 +55,6 @@ function SettingsPage() {
         logo_url: root.logo_url || null,
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
-        contact_address: root.contact_address || null,
         seo_og_image: root.seo_og_image || null,
         social_links: sl,
         i18n: [
@@ -94,7 +93,7 @@ function SettingsPage() {
         <Section title="Contact">
           <Field label="Email" value={root.contact_email} onChange={(v) => setRoot({ ...root, contact_email: v })} />
           <Field label="Phone" value={root.contact_phone} onChange={(v) => setRoot({ ...root, contact_phone: v })} />
-          <Field label="Address" value={root.contact_address} onChange={(v) => setRoot({ ...root, contact_address: v })} />
+          <p className="text-xs text-muted-foreground">Address is translatable — edit it under Content (AR / EN) below.</p>
         </Section>
 
         <Section title="Social links (JSON)">
@@ -116,7 +115,8 @@ function SettingsPage() {
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
                 <Field label="Site name" value={i18n[l].site_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: v } })} />
                 <Field label="Tagline" value={i18n[l].tagline} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], tagline: v } })} />
-                <Field label="About (short)" textarea value={i18n[l].about_short} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], about_short: v } })} />
+                <RichField label="About (short)" value={i18n[l].about_short} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], about_short: v } })} />
+                <Field label="Address" textarea value={i18n[l].address} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], address: v } })} />
                 <Field label="Footer text" textarea value={i18n[l].footer_text} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], footer_text: v } })} />
                 <Field label="SEO title" value={i18n[l].seo_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_title: v } })} />
                 <Field label="SEO description" textarea value={i18n[l].seo_description} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_description: v } })} />
@@ -142,7 +142,6 @@ function Section({ title, children }: any) {
   );
 }
 function Field({ label, value, onChange, textarea }: { label: string; value: any; onChange: (v: string) => void; textarea?: boolean }) {
-
   return (
     <div className="space-y-1.5">
       <Label>{label}</Label>
@@ -152,10 +151,21 @@ function Field({ label, value, onChange, textarea }: { label: string; value: any
     </div>
   );
 }
-function blank() { return { site_name: "", tagline: "", about_short: "", footer_text: "", seo_title: "", seo_description: "" }; }
+function RichField({ label, value, onChange }: { label: string; value: any; onChange: (v: string) => void }) {
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      <RichEditor value={value ?? ""} onChange={onChange} />
+    </div>
+  );
+}
+function blank() {
+  return { site_name: "", tagline: "", about_short: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
+}
 function stripI18n(r: any) {
   return {
     site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "",
     footer_text: r.footer_text ?? "", seo_title: r.seo_title ?? "", seo_description: r.seo_description ?? "",
+    address: r.address ?? "",
   };
 }
