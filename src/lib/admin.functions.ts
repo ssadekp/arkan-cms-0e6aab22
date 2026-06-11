@@ -74,7 +74,9 @@ const settingsSchema = z.object({
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
+  map_embed_url: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
+
   i18n: z.array(z.object({
     lang: z.enum(["ar", "en"]),
     site_name: z.string(),
