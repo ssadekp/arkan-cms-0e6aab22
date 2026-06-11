@@ -116,7 +116,9 @@ const i18nKeyMap: Record<string, { table: string; fk: string }> = {
   projects: { table: "projects_i18n", fk: "project_id" },
   news: { table: "news_i18n", fk: "news_id" },
   homepage_stats: { table: "homepage_stats_i18n", fk: "stat_id" },
+  partners: { table: "partners_i18n", fk: "partner_id" },
 };
+
 
 export const saveResource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
