@@ -173,13 +173,19 @@ function HomeBody() {
         <section className="container-narrow py-16">
           <h2 className="text-2xl font-semibold text-center mb-8">{t("home.partners")}</h2>
           <div className="flex flex-wrap items-center justify-center gap-8">
-            {home!.partners.map((p) => (
-              <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
-                 className="flex items-center gap-2 px-4 py-3 rounded-lg border border-border/60 bg-card hover:border-primary/60 transition">
-                {p.logo_url && <img src={p.logo_url} alt={p.name} className="h-8 w-8 object-contain" />}
-                <span className="text-sm font-medium">{p.name}</span>
-              </a>
-            ))}
+            {home!.partners.map((p) => {
+              const name = (home as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === lang)?.name
+                || (home as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === "ar")?.name
+                || p.name;
+              return (
+                <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
+                   className="flex items-center gap-2 px-4 py-3 rounded-lg border border-border/60 bg-card hover:border-primary/60 transition">
+                  {p.logo_url && <img src={p.logo_url} alt={name} className="h-8 w-8 object-contain" />}
+                  <span className="text-sm font-medium">{name}</span>
+                </a>
+              );
+            })}
+
           </div>
         </section>
       )}
