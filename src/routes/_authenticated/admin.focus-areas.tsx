@@ -14,6 +14,8 @@ export const Route = createFileRoute("/_authenticated/admin/focus-areas")({
           { key: "gallery", label: "Gallery", type: "gallery" },
           { key: "sort_order", label: "Sort order", type: "number" },
           { key: "published", label: "Published", type: "boolean" },
+          { key: "partners", label: "Partners", type: "partners" },
+
         ]}
         i18nFields={[
           { key: "title", label: "Title" },

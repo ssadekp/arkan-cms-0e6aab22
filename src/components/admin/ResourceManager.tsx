@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { adminListAll, saveResource, deleteResource, setProjectTags } from "@/lib/admin.functions";
+import { adminListAll, saveResource, deleteResource, setProjectTags, setProjectPartners, setFocusAreaPartners } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,12 +13,13 @@ import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
 
+
 type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats";
 
 export interface FieldSpec {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "select" | "enum" | "tags";
+  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "select" | "enum" | "tags" | "partners";
   options?: { value: string; label: string }[];
   i18n?: boolean;
 }
@@ -37,6 +38,8 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
   const save = useServerFn(saveResource);
   const del = useServerFn(deleteResource);
   const saveTagsFn = useServerFn(setProjectTags);
+  const saveProjectPartnersFn = useServerFn(setProjectPartners);
+  const saveFocusPartnersFn = useServerFn(setFocusAreaPartners);
   const qc = useQueryClient();
   const { data, isLoading } = useQuery({ queryKey: ["admin-all"], queryFn: () => fn(), staleTime: 5_000 });
 
@@ -44,23 +47,34 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
   const [form, setForm] = useState<any>({});
   const [i18n, setI18n] = useState<{ ar: any; en: any }>({ ar: {}, en: {} });
   const [tagIds, setTagIds] = useState<string[]>([]);
+  const [partnerIds, setPartnerIds] = useState<string[]>([]);
 
   const rows: any[] = (data as any)?.[tableKey(table)] ?? [];
-  const i18nRows: any[] =
-    table === "partners" ? [] : (data as any)?.[`${tableKey(table)}I18n` as any] ?? [];
+  const i18nRows: any[] = (data as any)?.[i18nKey(table) as any] ?? [];
   const allTags: any[] = (data as any)?.tags ?? [];
   const allTagsI18n: any[] = (data as any)?.tagsI18n ?? [];
   const allProjectTags: any[] = (data as any)?.projectTags ?? [];
+  const allPartners: any[] = (data as any)?.partners ?? [];
+  const allPartnersI18n: any[] = (data as any)?.partnersI18n ?? [];
+  const allProjectPartners: any[] = (data as any)?.projectPartners ?? [];
+  const allFocusAreaPartners: any[] = (data as any)?.focusAreaPartners ?? [];
+
+  function defaultFor(f: FieldSpec) {
+    if (f.type === "boolean") return true;
+    if (f.type === "number") return 0;
+    if (f.type === "gallery") return "[]";
+    if (f.type === "enum") return f.options?.[0]?.value ?? "";
+    return "";
+  }
 
   function openNew() {
     setEditing({ __new: true });
     const initial: any = {};
-    rootFields.forEach((f) => {
-      initial[f.key] = f.type === "boolean" ? true : f.type === "number" ? 0 : f.type === "gallery" ? "[]" : "";
-    });
+    rootFields.forEach((f) => { initial[f.key] = defaultFor(f); });
     setForm(initial);
     setI18n({ ar: emptyI18n(i18nFields), en: emptyI18n(i18nFields) });
     setTagIds([]);
+    setPartnerIds([]);
   }
 
   function openEdit(row: any) {
@@ -76,21 +90,28 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
       }
     });
     setForm(f);
-    const arRow = i18nRows.find((x: any) => x[fkOf(table)] === row.id && x.lang === "ar") ?? emptyI18n(i18nFields);
-    const enRow = i18nRows.find((x: any) => x[fkOf(table)] === row.id && x.lang === "en") ?? emptyI18n(i18nFields);
+    const fk = fkOf(table);
+    const arRow = fk ? (i18nRows.find((x: any) => x[fk] === row.id && x.lang === "ar") ?? emptyI18n(i18nFields)) : emptyI18n(i18nFields);
+    const enRow = fk ? (i18nRows.find((x: any) => x[fk] === row.id && x.lang === "en") ?? emptyI18n(i18nFields)) : emptyI18n(i18nFields);
     setI18n({ ar: arRow, en: enRow });
     if (table === "projects") {
       setTagIds(allProjectTags.filter((pt) => pt.project_id === row.id).map((pt) => pt.tag_id));
+      setPartnerIds(allProjectPartners.filter((pp) => pp.project_id === row.id).map((pp) => pp.partner_id));
+    } else if (table === "focus_areas") {
+      setPartnerIds(allFocusAreaPartners.filter((pp) => pp.focus_area_id === row.id).map((pp) => pp.partner_id));
+      setTagIds([]);
     } else {
       setTagIds([]);
+      setPartnerIds([]);
     }
   }
+
 
   const saveMut = useMutation({
     mutationFn: async () => {
       const values: any = {};
       rootFields.forEach((f) => {
-        if (f.type === "tags") return;
+        if (f.type === "tags" || f.type === "partners") return;
         let v = form[f.key];
         if (f.type === "number") v = Number(v) || 0;
         if (f.type === "boolean") v = !!v;
@@ -105,8 +126,13 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
       const result = await save({ data: { table, id: editing?.__new ? null : editing.id, values, i18n: i18nArr } });
       if (table === "projects" && result?.id) {
         await saveTagsFn({ data: { project_id: result.id, tag_ids: tagIds } });
+        await saveProjectPartnersFn({ data: { project_id: result.id, partner_ids: partnerIds } });
+      }
+      if (table === "focus_areas" && result?.id) {
+        await saveFocusPartnersFn({ data: { focus_area_id: result.id, partner_ids: partnerIds } });
       }
       return result;
+
     },
     onSuccess: () => {
       toast.success("Saved");
@@ -176,10 +202,23 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
                   />
                 );
               }
+              if (f.type === "partners") {
+                return (
+                  <PartnersPicker
+                    key={f.key}
+                    label={f.label}
+                    selected={partnerIds}
+                    onChange={setPartnerIds}
+                    allPartners={allPartners}
+                    allPartnersI18n={allPartnersI18n}
+                  />
+                );
+              }
               return (
                 <FieldInput key={f.key} field={f} value={form[f.key]} onChange={(v) => setForm({ ...form, [f.key]: v })} />
               );
             })}
+
 
             {hasI18n && (
               <Tabs defaultValue="ar">
@@ -334,7 +373,53 @@ function TagsPicker({
 function tableKey(t: Table) {
   return t === "focus_areas" ? "focus" : t === "homepage_stats" ? "stats" : t;
 }
-function fkOf(t: Table) {
-  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "" } as const)[t];
+function i18nKey(t: Table) {
+  return t === "focus_areas" ? "focusI18n"
+    : t === "homepage_stats" ? "statsI18n"
+    : t === "partners" ? "partnersI18n"
+    : `${t}I18n`;
+}
+function fkOf(t: Table): string {
+  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id" } as const)[t];
 }
 function emptyI18n(fields: FieldSpec[]) { const o: any = {}; fields.forEach((f) => (o[f.key] = "")); return o; }
+
+function PartnersPicker({
+  label, selected, onChange, allPartners, allPartnersI18n,
+}: { label: string; selected: string[]; onChange: (ids: string[]) => void; allPartners: any[]; allPartnersI18n: any[] }) {
+  const nameOf = (id: string) => {
+    const ar = allPartnersI18n.find((x) => x.partner_id === id && x.lang === "ar")?.name;
+    const en = allPartnersI18n.find((x) => x.partner_id === id && x.lang === "en")?.name;
+    return ar || en || allPartners.find((p) => p.id === id)?.name || id;
+  };
+  const toggle = (id: string) =>
+    onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {allPartners.length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          No partners yet. Create them under <a href="/admin/partners" className="underline">Partners</a>.
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {allPartners.map((p) => {
+          const active = selected.includes(p.id);
+          return (
+            <button
+              type="button"
+              key={p.id}
+              onClick={() => toggle(p.id)}
+              className={`rounded-full px-3 py-1 text-xs border transition ${
+                active ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border/60 hover:border-primary/60"
+              }`}
+            >
+              {nameOf(p.id)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+

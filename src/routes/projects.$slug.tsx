@@ -63,16 +63,22 @@ function Body() {
           <div className="mt-12">
             <h3 className="text-sm font-semibold uppercase text-muted-foreground mb-3">Partners</h3>
             <div className="flex flex-wrap gap-3">
-              {data.partners.map((p) => (
-                <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
-                   className="flex items-center gap-2 px-3 py-2 rounded-md border border-border/60 hover:border-primary/60">
-                  {p.logo_url && <img src={p.logo_url} alt="" className="h-6 w-6 object-contain" />}
-                  <span className="text-sm">{p.name}</span>
-                </a>
-              ))}
+              {data.partners.map((p: any) => {
+                const name = (data as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === lang)?.name
+                  || (data as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === "ar")?.name
+                  || p.name;
+                return (
+                  <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
+                     className="flex items-center gap-2 px-3 py-2 rounded-md border border-border/60 hover:border-primary/60">
+                    {p.logo_url && <img src={p.logo_url} alt="" className="h-6 w-6 object-contain" />}
+                    <span className="text-sm">{name}</span>
+                  </a>
+                );
+              })}
             </div>
           </div>
         )}
+
       </div>
     </article>
   );

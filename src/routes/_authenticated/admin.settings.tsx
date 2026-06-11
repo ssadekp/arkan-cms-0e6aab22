@@ -38,9 +38,11 @@ function SettingsPage() {
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
         seo_og_image: s.seo_og_image ?? "",
+        map_embed_url: (s as any).map_embed_url ?? "",
       });
       setSocial(JSON.stringify(s.social_links ?? {}, null, 2));
     }
+
     const ar = (data.settingsI18n as any[]).find((x) => x.lang === "ar");
     const en = (data.settingsI18n as any[]).find((x) => x.lang === "en");
     setI18n({ ar: { ...blank(), ...(ar ?? {}) }, en: { ...blank(), ...(en ?? {}) } });
@@ -56,6 +58,7 @@ function SettingsPage() {
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
         seo_og_image: root.seo_og_image || null,
+        map_embed_url: root.map_embed_url || null,
         social_links: sl,
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
@@ -63,6 +66,7 @@ function SettingsPage() {
         ],
       } });
     },
+
     onSuccess: () => {
       toast.success("Settings saved");
       qc.invalidateQueries({ queryKey: ["admin-all"] });
@@ -93,8 +97,11 @@ function SettingsPage() {
         <Section title="Contact">
           <Field label="Email" value={root.contact_email} onChange={(v) => setRoot({ ...root, contact_email: v })} />
           <Field label="Phone" value={root.contact_phone} onChange={(v) => setRoot({ ...root, contact_phone: v })} />
+          <Field label="Map embed URL (Google Maps embed src)" value={root.map_embed_url}
+            onChange={(v) => setRoot({ ...root, map_embed_url: v })} />
           <p className="text-xs text-muted-foreground">Address is translatable — edit it under Content (AR / EN) below.</p>
         </Section>
+
 
         <Section title="Social links (JSON)">
           <Textarea rows={6} value={social} onChange={(e) => setSocial(e.target.value)}

@@ -27,7 +27,7 @@ export const adminListAll = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags] = await Promise.all([
+    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners] = await Promise.all([
       sb.from("pages").select("*").order("nav_order"),
       sb.from("pages_i18n").select("*"),
       sb.from("focus_areas").select("*").order("sort_order"),
@@ -37,6 +37,7 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("news").select("*").order("published_at", { ascending: false }),
       sb.from("news_i18n").select("*"),
       sb.from("partners").select("*").order("sort_order"),
+      sb.from("partners_i18n" as any).select("*"),
       sb.from("site_settings").select("*").eq("id", 1).maybeSingle(),
       sb.from("site_settings_i18n").select("*").eq("setting_id", 1),
       sb.from("homepage_stats").select("*").order("sort_order"),
@@ -44,19 +45,24 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("tags").select("*"),
       sb.from("tags_i18n").select("*"),
       sb.from("project_tags").select("*"),
+      sb.from("project_partners").select("*"),
+      sb.from("focus_area_partners" as any).select("*"),
     ]);
     return {
       pages: pages.data ?? [], pagesI18n: pagesI18n.data ?? [],
       focus: focus.data ?? [], focusI18n: focusI18n.data ?? [],
       projects: projects.data ?? [], projectsI18n: projectsI18n.data ?? [],
       news: news.data ?? [], newsI18n: newsI18n.data ?? [],
-      partners: partners.data ?? [],
+      partners: partners.data ?? [], partnersI18n: (partnersI18n.data as any[]) ?? [],
       settings: settings.data, settingsI18n: settingsI18n.data ?? [],
       stats: stats.data ?? [], statsI18n: statsI18n.data ?? [],
       tags: tags.data ?? [], tagsI18n: tagsI18n.data ?? [],
       projectTags: projectTags.data ?? [],
+      projectPartners: (projectPartners.data as any[]) ?? [],
+      focusAreaPartners: (focusAreaPartners.data as any[]) ?? [],
     };
   });
+
 
 /* ---------- SETTINGS ---------- */
 
@@ -68,7 +74,9 @@ const settingsSchema = z.object({
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
+  map_embed_url: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
+
   i18n: z.array(z.object({
     lang: z.enum(["ar", "en"]),
     site_name: z.string(),
@@ -110,7 +118,9 @@ const i18nKeyMap: Record<string, { table: string; fk: string }> = {
   projects: { table: "projects_i18n", fk: "project_id" },
   news: { table: "news_i18n", fk: "news_id" },
   homepage_stats: { table: "homepage_stats_i18n", fk: "stat_id" },
+  partners: { table: "partners_i18n", fk: "partner_id" },
 };
+
 
 export const saveResource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -206,6 +216,44 @@ export const setProjectTags = createServerFn({ method: "POST" })
     if (data.tag_ids.length > 0) {
       const rows = data.tag_ids.map((tag_id) => ({ project_id: data.project_id, tag_id }));
       const { error } = await sb.from("project_tags").insert(rows);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+/* ---------- PARTNER LINKS ---------- */
+
+export const setProjectPartners = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    project_id: z.string().uuid(),
+    partner_ids: z.array(z.string().uuid()),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    await sb.from("project_partners").delete().eq("project_id", data.project_id);
+    if (data.partner_ids.length > 0) {
+      const rows = data.partner_ids.map((partner_id) => ({ project_id: data.project_id, partner_id }));
+      const { error } = await sb.from("project_partners").insert(rows);
+      if (error) throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+export const setFocusAreaPartners = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    focus_area_id: z.string().uuid(),
+    partner_ids: z.array(z.string().uuid()),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertStaff(context.userId);
+    const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
+    await (sb.from("focus_area_partners" as any) as any).delete().eq("focus_area_id", data.focus_area_id);
+    if (data.partner_ids.length > 0) {
+      const rows = data.partner_ids.map((partner_id) => ({ focus_area_id: data.focus_area_id, partner_id }));
+      const { error } = await (sb.from("focus_area_partners" as any) as any).insert(rows);
       if (error) throw new Error(error.message);
     }
     return { ok: true };

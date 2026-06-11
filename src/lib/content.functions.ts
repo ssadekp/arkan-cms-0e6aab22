@@ -28,7 +28,7 @@ export const getSiteData = createServerFn({ method: "GET" }).handler(async () =>
 
 export const getHomeData = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
-  const [focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, stats, statsI18n] = await Promise.all([
+  const [focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, stats, statsI18n] = await Promise.all([
     sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
     sb.from("focus_areas_i18n").select("*"),
     sb.from("projects").select("*").eq("published", true).order("published_at", { ascending: false, nullsFirst: false }).limit(6),
@@ -36,6 +36,7 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     sb.from("news").select("*").eq("published", true).order("published_at", { ascending: false }).limit(3),
     sb.from("news_i18n").select("*"),
     sb.from("partners").select("*").eq("show_on_home", true).order("sort_order"),
+    (sb.from("partners_i18n" as any) as any).select("*"),
     sb.from("homepage_stats").select("*").eq("active", true).order("sort_order"),
     sb.from("homepage_stats_i18n").select("*"),
   ]);
@@ -47,10 +48,12 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     news: news.data ?? [],
     newsI18n: newsI18n.data ?? [],
     partners: partners.data ?? [],
+    partnersI18n: (partnersI18n.data as any[]) ?? [],
     stats: stats.data ?? [],
     statsI18n: statsI18n.data ?? [],
   };
 });
+
 
 
 export const getFocusArea = createServerFn({ method: "GET" })
@@ -59,16 +62,22 @@ export const getFocusArea = createServerFn({ method: "GET" })
     const sb = await admin();
     const focus = await sb.from("focus_areas").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!focus.data) return null;
-    const [i18n, projects, projectsI18n] = await Promise.all([
+    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n] = await Promise.all([
       sb.from("focus_areas_i18n").select("*").eq("focus_area_id", focus.data.id),
       sb.from("projects").select("*").eq("focus_area_id", focus.data.id).eq("published", true).order("published_at", { ascending: false }),
       sb.from("projects_i18n").select("*"),
+      (sb.from("focus_area_partners" as any) as any).select("partner_id").eq("focus_area_id", focus.data.id),
+      sb.from("partners").select("*"),
+      (sb.from("partners_i18n" as any) as any).select("*"),
     ]);
+    const partnerIds = new Set(((partnerLinks.data ?? []) as any[]).map((p: any) => p.partner_id));
     return {
       focus: focus.data,
       i18n: i18n.data ?? [],
       projects: projects.data ?? [],
       projectsI18n: projectsI18n.data ?? [],
+      partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
+      partnersI18n: (partnersI18n.data as any[]) ?? [],
     };
   });
 
@@ -78,10 +87,11 @@ export const getProject = createServerFn({ method: "GET" })
     const sb = await admin();
     const project = await sb.from("projects").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!project.data) return null;
-    const [i18n, partnerLinks, partners, tagLinks, tags, tagsI18n] = await Promise.all([
+    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n] = await Promise.all([
       sb.from("projects_i18n").select("*").eq("project_id", project.data.id),
       sb.from("project_partners").select("partner_id").eq("project_id", project.data.id),
       sb.from("partners").select("*"),
+      (sb.from("partners_i18n" as any) as any).select("*"),
       sb.from("project_tags").select("tag_id").eq("project_id", project.data.id),
       sb.from("tags").select("*"),
       sb.from("tags_i18n").select("*"),
@@ -92,10 +102,12 @@ export const getProject = createServerFn({ method: "GET" })
       project: project.data,
       i18n: i18n.data ?? [],
       partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
+      partnersI18n: (partnersI18n.data as any[]) ?? [],
       tags: (tags.data ?? []).filter((t) => tagIds.has(t.id)),
       tagsI18n: tagsI18n.data ?? [],
     };
   });
+
 
 export const getNewsList = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
@@ -118,9 +130,13 @@ export const getNewsArticle = createServerFn({ method: "GET" })
 
 export const getPartners = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
-  const r = await sb.from("partners").select("*").order("sort_order");
-  return r.data ?? [];
+  const [r, i] = await Promise.all([
+    sb.from("partners").select("*").order("sort_order"),
+    (sb.from("partners_i18n" as any) as any).select("*"),
+  ]);
+  return { partners: r.data ?? [], partnersI18n: (i.data as any[]) ?? [] };
 });
+
 
 export const getPage = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
@@ -130,4 +146,21 @@ export const getPage = createServerFn({ method: "GET" })
     if (!page.data) return null;
     const i18n = await sb.from("pages_i18n").select("*").eq("page_id", page.data.id);
     return { page: page.data, i18n: i18n.data ?? [] };
+  });
+
+export const submitContactMessage = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({
+    name: z.string().trim().min(1).max(100),
+    email: z.string().trim().email().max(255),
+    subject: z.string().trim().max(200).optional().nullable(),
+    message: z.string().trim().min(1).max(2000),
+  }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb.from("contact_messages").insert({
+      name: data.name, email: data.email,
+      subject: data.subject ?? null, message: data.message,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
