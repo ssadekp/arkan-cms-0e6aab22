@@ -58,6 +58,7 @@ function SettingsPage() {
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
         seo_og_image: root.seo_og_image || null,
+        map_embed_url: root.map_embed_url || null,
         social_links: sl,
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
@@ -65,6 +66,7 @@ function SettingsPage() {
         ],
       } });
     },
+
     onSuccess: () => {
       toast.success("Settings saved");
       qc.invalidateQueries({ queryKey: ["admin-all"] });
