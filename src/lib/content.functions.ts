@@ -28,7 +28,7 @@ export const getSiteData = createServerFn({ method: "GET" }).handler(async () =>
 
 export const getHomeData = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
-  const [focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, stats, statsI18n] = await Promise.all([
+  const [focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, stats, statsI18n] = await Promise.all([
     sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
     sb.from("focus_areas_i18n").select("*"),
     sb.from("projects").select("*").eq("published", true).order("published_at", { ascending: false, nullsFirst: false }).limit(6),
@@ -36,6 +36,7 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     sb.from("news").select("*").eq("published", true).order("published_at", { ascending: false }).limit(3),
     sb.from("news_i18n").select("*"),
     sb.from("partners").select("*").eq("show_on_home", true).order("sort_order"),
+    (sb.from("partners_i18n" as any) as any).select("*"),
     sb.from("homepage_stats").select("*").eq("active", true).order("sort_order"),
     sb.from("homepage_stats_i18n").select("*"),
   ]);
@@ -47,10 +48,12 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     news: news.data ?? [],
     newsI18n: newsI18n.data ?? [],
     partners: partners.data ?? [],
+    partnersI18n: (partnersI18n.data as any[]) ?? [],
     stats: stats.data ?? [],
     statsI18n: statsI18n.data ?? [],
   };
 });
+
 
 
 export const getFocusArea = createServerFn({ method: "GET" })
