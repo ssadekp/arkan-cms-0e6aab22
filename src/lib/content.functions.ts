@@ -59,16 +59,22 @@ export const getFocusArea = createServerFn({ method: "GET" })
     const sb = await admin();
     const focus = await sb.from("focus_areas").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!focus.data) return null;
-    const [i18n, projects, projectsI18n] = await Promise.all([
+    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n] = await Promise.all([
       sb.from("focus_areas_i18n").select("*").eq("focus_area_id", focus.data.id),
       sb.from("projects").select("*").eq("focus_area_id", focus.data.id).eq("published", true).order("published_at", { ascending: false }),
       sb.from("projects_i18n").select("*"),
+      (sb.from("focus_area_partners" as any) as any).select("partner_id").eq("focus_area_id", focus.data.id),
+      sb.from("partners").select("*"),
+      (sb.from("partners_i18n" as any) as any).select("*"),
     ]);
+    const partnerIds = new Set(((partnerLinks.data ?? []) as any[]).map((p: any) => p.partner_id));
     return {
       focus: focus.data,
       i18n: i18n.data ?? [],
       projects: projects.data ?? [],
       projectsI18n: projectsI18n.data ?? [],
+      partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
+      partnersI18n: (partnersI18n.data as any[]) ?? [],
     };
   });
 
@@ -78,10 +84,11 @@ export const getProject = createServerFn({ method: "GET" })
     const sb = await admin();
     const project = await sb.from("projects").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!project.data) return null;
-    const [i18n, partnerLinks, partners, tagLinks, tags, tagsI18n] = await Promise.all([
+    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n] = await Promise.all([
       sb.from("projects_i18n").select("*").eq("project_id", project.data.id),
       sb.from("project_partners").select("partner_id").eq("project_id", project.data.id),
       sb.from("partners").select("*"),
+      (sb.from("partners_i18n" as any) as any).select("*"),
       sb.from("project_tags").select("tag_id").eq("project_id", project.data.id),
       sb.from("tags").select("*"),
       sb.from("tags_i18n").select("*"),
@@ -92,10 +99,12 @@ export const getProject = createServerFn({ method: "GET" })
       project: project.data,
       i18n: i18n.data ?? [],
       partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
+      partnersI18n: (partnersI18n.data as any[]) ?? [],
       tags: (tags.data ?? []).filter((t) => tagIds.has(t.id)),
       tagsI18n: tagsI18n.data ?? [],
     };
   });
+
 
 export const getNewsList = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
