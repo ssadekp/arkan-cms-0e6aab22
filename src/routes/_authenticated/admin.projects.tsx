@@ -42,6 +42,8 @@ function Projects() {
           { key: "focus_area_id", label: "Focus area", type: "select", options: focusOptions },
           { key: "status", label: "Status", type: "enum", options: statusOptions },
           { key: "tags", label: "Tags", type: "tags" },
+          { key: "partners", label: "Partners", type: "partners" },
+
           { key: "sort_order", label: "Sort order", type: "number" },
           { key: "published", label: "Published", type: "boolean" },
         ]}
