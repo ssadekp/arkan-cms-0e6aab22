@@ -111,7 +111,7 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
     mutationFn: async () => {
       const values: any = {};
       rootFields.forEach((f) => {
-        if (f.type === "tags") return;
+        if (f.type === "tags" || f.type === "partners") return;
         let v = form[f.key];
         if (f.type === "number") v = Number(v) || 0;
         if (f.type === "boolean") v = !!v;
@@ -126,8 +126,13 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
       const result = await save({ data: { table, id: editing?.__new ? null : editing.id, values, i18n: i18nArr } });
       if (table === "projects" && result?.id) {
         await saveTagsFn({ data: { project_id: result.id, tag_ids: tagIds } });
+        await saveProjectPartnersFn({ data: { project_id: result.id, partner_ids: partnerIds } });
+      }
+      if (table === "focus_areas" && result?.id) {
+        await saveFocusPartnersFn({ data: { focus_area_id: result.id, partner_ids: partnerIds } });
       }
       return result;
+
     },
     onSuccess: () => {
       toast.success("Saved");
