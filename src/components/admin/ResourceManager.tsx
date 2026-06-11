@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { adminListAll, saveResource, deleteResource, setProjectTags } from "@/lib/admin.functions";
+import { adminListAll, saveResource, deleteResource, setProjectTags, setProjectPartners, setFocusAreaPartners } from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
+
 
 type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats";
 
