@@ -202,10 +202,23 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
                   />
                 );
               }
+              if (f.type === "partners") {
+                return (
+                  <PartnersPicker
+                    key={f.key}
+                    label={f.label}
+                    selected={partnerIds}
+                    onChange={setPartnerIds}
+                    allPartners={allPartners}
+                    allPartnersI18n={allPartnersI18n}
+                  />
+                );
+              }
               return (
                 <FieldInput key={f.key} field={f} value={form[f.key]} onChange={(v) => setForm({ ...form, [f.key]: v })} />
               );
             })}
+
 
             {hasI18n && (
               <Tabs defaultValue="ar">
