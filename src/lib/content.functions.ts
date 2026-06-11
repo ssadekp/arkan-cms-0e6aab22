@@ -131,3 +131,20 @@ export const getPage = createServerFn({ method: "GET" })
     const i18n = await sb.from("pages_i18n").select("*").eq("page_id", page.data.id);
     return { page: page.data, i18n: i18n.data ?? [] };
   });
+
+export const submitContactMessage = createServerFn({ method: "POST" })
+  .inputValidator((d) => z.object({
+    name: z.string().trim().min(1).max(100),
+    email: z.string().trim().email().max(255),
+    subject: z.string().trim().max(200).optional().nullable(),
+    message: z.string().trim().min(1).max(2000),
+  }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const { error } = await sb.from("contact_messages").insert({
+      name: data.name, email: data.email,
+      subject: data.subject ?? null, message: data.message,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
