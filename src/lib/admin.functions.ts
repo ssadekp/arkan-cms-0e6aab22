@@ -27,7 +27,7 @@ export const adminListAll = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags] = await Promise.all([
+    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners] = await Promise.all([
       sb.from("pages").select("*").order("nav_order"),
       sb.from("pages_i18n").select("*"),
       sb.from("focus_areas").select("*").order("sort_order"),
@@ -37,6 +37,7 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("news").select("*").order("published_at", { ascending: false }),
       sb.from("news_i18n").select("*"),
       sb.from("partners").select("*").order("sort_order"),
+      sb.from("partners_i18n" as any).select("*"),
       sb.from("site_settings").select("*").eq("id", 1).maybeSingle(),
       sb.from("site_settings_i18n").select("*").eq("setting_id", 1),
       sb.from("homepage_stats").select("*").order("sort_order"),
@@ -44,19 +45,24 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("tags").select("*"),
       sb.from("tags_i18n").select("*"),
       sb.from("project_tags").select("*"),
+      sb.from("project_partners").select("*"),
+      sb.from("focus_area_partners" as any).select("*"),
     ]);
     return {
       pages: pages.data ?? [], pagesI18n: pagesI18n.data ?? [],
       focus: focus.data ?? [], focusI18n: focusI18n.data ?? [],
       projects: projects.data ?? [], projectsI18n: projectsI18n.data ?? [],
       news: news.data ?? [], newsI18n: newsI18n.data ?? [],
-      partners: partners.data ?? [],
+      partners: partners.data ?? [], partnersI18n: (partnersI18n.data as any[]) ?? [],
       settings: settings.data, settingsI18n: settingsI18n.data ?? [],
       stats: stats.data ?? [], statsI18n: statsI18n.data ?? [],
       tags: tags.data ?? [], tagsI18n: tagsI18n.data ?? [],
       projectTags: projectTags.data ?? [],
+      projectPartners: (projectPartners.data as any[]) ?? [],
+      focusAreaPartners: (focusAreaPartners.data as any[]) ?? [],
     };
   });
+
 
 /* ---------- SETTINGS ---------- */
 
