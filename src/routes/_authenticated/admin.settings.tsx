@@ -97,8 +97,11 @@ function SettingsPage() {
         <Section title="Contact">
           <Field label="Email" value={root.contact_email} onChange={(v) => setRoot({ ...root, contact_email: v })} />
           <Field label="Phone" value={root.contact_phone} onChange={(v) => setRoot({ ...root, contact_phone: v })} />
+          <Field label="Map embed URL (Google Maps embed src)" value={root.map_embed_url}
+            onChange={(v) => setRoot({ ...root, map_embed_url: v })} />
           <p className="text-xs text-muted-foreground">Address is translatable — edit it under Content (AR / EN) below.</p>
         </Section>
+
 
         <Section title="Social links (JSON)">
           <Textarea rows={6} value={social} onChange={(e) => setSocial(e.target.value)}
