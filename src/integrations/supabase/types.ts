@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      focus_area_partners: {
+        Row: {
+          focus_area_id: string
+          partner_id: string
+        }
+        Insert: {
+          focus_area_id: string
+          partner_id: string
+        }
+        Update: {
+          focus_area_id?: string
+          partner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_area_partners_focus_area_id_fkey"
+            columns: ["focus_area_id"]
+            isOneToOne: false
+            referencedRelation: "focus_areas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "focus_area_partners_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       focus_areas: {
         Row: {
           created_at: string
@@ -298,6 +355,35 @@ export type Database = {
         }
         Relationships: []
       }
+      partners_i18n: {
+        Row: {
+          id: string
+          lang: string
+          name: string
+          partner_id: string
+        }
+        Insert: {
+          id?: string
+          lang: string
+          name?: string
+          partner_id: string
+        }
+        Update: {
+          id?: string
+          lang?: string
+          name?: string
+          partner_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "partners_i18n_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -469,6 +555,7 @@ export type Database = {
           default_language: Database["public"]["Enums"]["app_language"]
           id: number
           logo_url: string | null
+          map_embed_url: string | null
           primary_color: string
           seo_og_image: string | null
           social_links: Json
@@ -481,6 +568,7 @@ export type Database = {
           default_language?: Database["public"]["Enums"]["app_language"]
           id?: number
           logo_url?: string | null
+          map_embed_url?: string | null
           primary_color?: string
           seo_og_image?: string | null
           social_links?: Json
@@ -493,6 +581,7 @@ export type Database = {
           default_language?: Database["public"]["Enums"]["app_language"]
           id?: number
           logo_url?: string | null
+          map_embed_url?: string | null
           primary_color?: string
           seo_og_image?: string | null
           social_links?: Json
