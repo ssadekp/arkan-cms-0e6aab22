@@ -373,7 +373,53 @@ function TagsPicker({
 function tableKey(t: Table) {
   return t === "focus_areas" ? "focus" : t === "homepage_stats" ? "stats" : t;
 }
-function fkOf(t: Table) {
-  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "" } as const)[t];
+function i18nKey(t: Table) {
+  return t === "focus_areas" ? "focusI18n"
+    : t === "homepage_stats" ? "statsI18n"
+    : t === "partners" ? "partnersI18n"
+    : `${t}I18n`;
+}
+function fkOf(t: Table): string {
+  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id" } as const)[t];
 }
 function emptyI18n(fields: FieldSpec[]) { const o: any = {}; fields.forEach((f) => (o[f.key] = "")); return o; }
+
+function PartnersPicker({
+  label, selected, onChange, allPartners, allPartnersI18n,
+}: { label: string; selected: string[]; onChange: (ids: string[]) => void; allPartners: any[]; allPartnersI18n: any[] }) {
+  const nameOf = (id: string) => {
+    const ar = allPartnersI18n.find((x) => x.partner_id === id && x.lang === "ar")?.name;
+    const en = allPartnersI18n.find((x) => x.partner_id === id && x.lang === "en")?.name;
+    return ar || en || allPartners.find((p) => p.id === id)?.name || id;
+  };
+  const toggle = (id: string) =>
+    onChange(selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id]);
+  return (
+    <div className="space-y-1.5">
+      <Label>{label}</Label>
+      {allPartners.length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          No partners yet. Create them under <a href="/admin/partners" className="underline">Partners</a>.
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {allPartners.map((p) => {
+          const active = selected.includes(p.id);
+          return (
+            <button
+              type="button"
+              key={p.id}
+              onClick={() => toggle(p.id)}
+              className={`rounded-full px-3 py-1 text-xs border transition ${
+                active ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border/60 hover:border-primary/60"
+              }`}
+            >
+              {nameOf(p.id)}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
