@@ -57,6 +57,27 @@ function Body() {
             </div>
           </div>
         )}
+
+        {(data as any).partners?.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-semibold mb-6">Partners</h2>
+            <div className="flex flex-wrap gap-3">
+              {(data as any).partners.map((p: any) => {
+                const name = (data as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === lang)?.name
+                  || (data as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === "ar")?.name
+                  || p.name;
+                return (
+                  <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
+                     className="flex items-center gap-2 px-3 py-2 rounded-md border border-border/60 hover:border-primary/60">
+                    {p.logo_url && <img src={p.logo_url} alt="" className="h-6 w-6 object-contain" />}
+                    <span className="text-sm">{name}</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
       </div>
     </article>
   );
