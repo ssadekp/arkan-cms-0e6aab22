@@ -38,9 +38,11 @@ function SettingsPage() {
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
         seo_og_image: s.seo_og_image ?? "",
+        map_embed_url: (s as any).map_embed_url ?? "",
       });
       setSocial(JSON.stringify(s.social_links ?? {}, null, 2));
     }
+
     const ar = (data.settingsI18n as any[]).find((x) => x.lang === "ar");
     const en = (data.settingsI18n as any[]).find((x) => x.lang === "en");
     setI18n({ ar: { ...blank(), ...(ar ?? {}) }, en: { ...blank(), ...(en ?? {}) } });
