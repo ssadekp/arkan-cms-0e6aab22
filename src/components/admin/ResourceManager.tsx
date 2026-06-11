@@ -19,7 +19,7 @@ type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homep
 export interface FieldSpec {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "select" | "enum" | "tags";
+  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "select" | "enum" | "tags" | "partners";
   options?: { value: string; label: string }[];
   i18n?: boolean;
 }
