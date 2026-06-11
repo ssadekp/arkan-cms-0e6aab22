@@ -127,9 +127,13 @@ export const getNewsArticle = createServerFn({ method: "GET" })
 
 export const getPartners = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
-  const r = await sb.from("partners").select("*").order("sort_order");
-  return r.data ?? [];
+  const [r, i] = await Promise.all([
+    sb.from("partners").select("*").order("sort_order"),
+    (sb.from("partners_i18n" as any) as any).select("*"),
+  ]);
+  return { partners: r.data ?? [], partnersI18n: (i.data as any[]) ?? [] };
 });
+
 
 export const getPage = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
