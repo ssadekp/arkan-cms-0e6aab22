@@ -31,6 +31,7 @@ import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
+import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
@@ -145,6 +146,12 @@ const AuthenticatedAdminFocusAreasRoute =
     path: '/admin/focus-areas',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminContactRoute =
+  AuthenticatedAdminContactRouteImport.update({
+    id: '/admin/contact',
+    path: '/admin/contact',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -159,6 +166,7 @@ export interface FileRoutesByFullPath {
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -182,6 +190,7 @@ export interface FileRoutesByTo {
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -207,6 +216,7 @@ export interface FileRoutesById {
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/admin/contact'
     | '/admin/focus-areas'
     | '/admin/news'
     | '/admin/pages'
@@ -255,6 +266,7 @@ export interface FileRouteTypes {
     | '/focus-areas'
     | '/news'
     | '/projects'
+    | '/admin/contact'
     | '/admin/focus-areas'
     | '/admin/news'
     | '/admin/pages'
@@ -279,6 +291,7 @@ export interface FileRouteTypes {
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/_authenticated/admin/contact'
     | '/_authenticated/admin/focus-areas'
     | '/_authenticated/admin/news'
     | '/_authenticated/admin/pages'
@@ -462,10 +475,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFocusAreasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/contact': {
+      id: '/_authenticated/admin/contact'
+      path: '/admin/contact'
+      fullPath: '/admin/contact'
+      preLoaderRoute: typeof AuthenticatedAdminContactRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
@@ -478,6 +499,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
@@ -511,3 +533,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
