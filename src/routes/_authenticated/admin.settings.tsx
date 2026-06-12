@@ -169,11 +169,3 @@ function stripI18n(r: any) {
     address: r.address ?? "",
   };
 }
-
-function stripI18n(r: any) {
-  return {
-    site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "",
-    footer_text: r.footer_text ?? "", seo_title: r.seo_title ?? "", seo_description: r.seo_description ?? "",
-    address: r.address ?? "",
-  };
-}
