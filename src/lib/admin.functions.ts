@@ -82,11 +82,13 @@ const settingsSchema = z.object({
     site_name: z.string(),
     tagline: z.string(),
     about_short: z.string(),
+    about_body: z.string().optional().default(""),
     footer_text: z.string(),
     seo_title: z.string(),
     seo_description: z.string(),
     address: z.string(),
   })),
+
 });
 
 export const saveSiteSettings = createServerFn({ method: "POST" })
