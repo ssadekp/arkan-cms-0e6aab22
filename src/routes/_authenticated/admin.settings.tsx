@@ -41,6 +41,7 @@ function SettingsPage() {
         map_embed_url: (s as any).map_embed_url ?? "",
       });
       setSocial(JSON.stringify(s.social_links ?? {}, null, 2));
+
     }
 
     const ar = (data.settingsI18n as any[]).find((x) => x.lang === "ar");
