@@ -71,9 +71,8 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n }: Props) {
             <Globe className="h-4 w-4" />
             {t("lang.toggle")}
           </Button>
-          <Link to="/auth" className="hidden md:block">
-            <Button variant="outline" size="sm">{t("nav.signin")}</Button>
-          </Link>
+
+
           <button
             className="lg:hidden p-2 rounded-md hover:bg-muted"
             onClick={() => setOpen(!open)}
@@ -97,9 +96,6 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n }: Props) {
                 {l.label}
               </Link>
             ))}
-            <Link to="/auth" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm hover:bg-muted/40">
-              {t("nav.signin")}
-            </Link>
           </div>
         </div>
       )}

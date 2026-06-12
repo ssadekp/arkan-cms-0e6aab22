@@ -1,0 +1,1 @@
+ALTER TABLE public.site_settings_i18n ADD COLUMN IF NOT EXISTS about_body TEXT;

@@ -41,6 +41,7 @@ function SettingsPage() {
         map_embed_url: (s as any).map_embed_url ?? "",
       });
       setSocial(JSON.stringify(s.social_links ?? {}, null, 2));
+
     }
 
     const ar = (data.settingsI18n as any[]).find((x) => x.lang === "ar");
@@ -94,15 +95,6 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Contact">
-          <Field label="Email" value={root.contact_email} onChange={(v) => setRoot({ ...root, contact_email: v })} />
-          <Field label="Phone" value={root.contact_phone} onChange={(v) => setRoot({ ...root, contact_phone: v })} />
-          <Field label="Map embed URL (Google Maps embed src)" value={root.map_embed_url}
-            onChange={(v) => setRoot({ ...root, map_embed_url: v })} />
-          <p className="text-xs text-muted-foreground">Address is translatable — edit it under Content (AR / EN) below.</p>
-        </Section>
-
-
         <Section title="Social links (JSON)">
           <Textarea rows={6} value={social} onChange={(e) => setSocial(e.target.value)}
             placeholder='{"facebook":"https://...","instagram":"https://..."}' />
@@ -112,7 +104,10 @@ function SettingsPage() {
           <Field label="OG image URL" value={root.seo_og_image} onChange={(v) => setRoot({ ...root, seo_og_image: v })} />
         </Section>
 
-        <Section title="Content (AR / EN)">
+        <Section title="Footer & SEO content (AR / EN)">
+          <p className="text-xs text-muted-foreground">
+            Contact details are managed under <span className="font-medium">Contact Us</span>. About content and statistics are managed under <span className="font-medium">About Us</span>.
+          </p>
           <Tabs defaultValue="ar">
             <TabsList>
               <TabsTrigger value="ar">العربية</TabsTrigger>
@@ -120,10 +115,6 @@ function SettingsPage() {
             </TabsList>
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
-                <Field label="Site name" value={i18n[l].site_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: v } })} />
-                <Field label="Tagline" value={i18n[l].tagline} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], tagline: v } })} />
-                <RichField label="About (short)" value={i18n[l].about_short} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], about_short: v } })} />
-                <Field label="Address" textarea value={i18n[l].address} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], address: v } })} />
                 <Field label="Footer text" textarea value={i18n[l].footer_text} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], footer_text: v } })} />
                 <Field label="SEO title" value={i18n[l].seo_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_title: v } })} />
                 <Field label="SEO description" textarea value={i18n[l].seo_description} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_description: v } })} />
@@ -131,6 +122,7 @@ function SettingsPage() {
             ))}
           </Tabs>
         </Section>
+
 
         <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg">
           {mut.isPending ? "Saving..." : "Save settings"}
@@ -167,11 +159,12 @@ function RichField({ label, value, onChange }: { label: string; value: any; onCh
   );
 }
 function blank() {
-  return { site_name: "", tagline: "", about_short: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
+  return { site_name: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
 }
 function stripI18n(r: any) {
   return {
     site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "",
+    about_body: r.about_body ?? "",
     footer_text: r.footer_text ?? "", seo_title: r.seo_title ?? "", seo_description: r.seo_description ?? "",
     address: r.address ?? "",
   };
