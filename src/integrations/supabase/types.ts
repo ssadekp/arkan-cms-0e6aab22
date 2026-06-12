@@ -591,6 +591,7 @@ export type Database = {
       }
       site_settings_i18n: {
         Row: {
+          about_body: string | null
           about_short: string
           address: string
           footer_text: string
@@ -602,6 +603,7 @@ export type Database = {
           tagline: string
         }
         Insert: {
+          about_body?: string | null
           about_short?: string
           address?: string
           footer_text?: string
@@ -613,6 +615,7 @@ export type Database = {
           tagline?: string
         }
         Update: {
+          about_body?: string | null
           about_short?: string
           address?: string
           footer_text?: string
