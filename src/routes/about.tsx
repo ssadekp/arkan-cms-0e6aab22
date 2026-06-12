@@ -16,12 +16,17 @@ function AboutBody() {
   const homeFn = useServerFn(getHomeData);
   const { data: site } = useQuery({ queryKey: ["site-data"], queryFn: () => siteFn(), staleTime: 60_000 });
   const { data: home } = useQuery({ queryKey: ["home-data"], queryFn: () => homeFn(), staleTime: 60_000 });
-  const i18n = pickI18n(site?.settingsI18n, lang);
+  const i18n = pickI18n(site?.settingsI18n, lang) as any;
   return (
     <div className="container-narrow py-16">
       <h1 className="text-4xl font-bold">{i18n?.site_name}</h1>
       <p className="mt-2 text-lg text-primary">{i18n?.tagline}</p>
-      <p className="mt-8 text-lg leading-relaxed text-muted-foreground max-w-3xl">{i18n?.about_short}</p>
+      {i18n?.about_short && (
+        <div className="mt-8 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: i18n.about_short }} />
+      )}
+      {i18n?.about_body && (
+        <div className="mt-6 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: i18n.about_body }} />
+      )}
 
       {(home?.stats?.length ?? 0) > 0 && (
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -36,6 +41,7 @@ function AboutBody() {
           })}
         </div>
       )}
+
     </div>
   );
 }
