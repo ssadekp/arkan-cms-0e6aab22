@@ -172,27 +172,39 @@ function Body() {
 }
 
 function FilterGroup({
-  title, items, selected, onToggle,
+  title, items, selected, onToggle, single,
 }: {
   title: string;
   items: { id: string; label: string }[];
   selected: string[];
   onToggle: (id: string) => void;
+  single?: boolean;
 }) {
   if (!items.length) return null;
   return (
     <div>
       <h3 className="text-sm font-semibold mb-2">{title}</h3>
       <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-        {items.map((it) => (
-          <label key={it.id} className="flex items-center gap-2 text-sm cursor-pointer">
-            <Checkbox
-              checked={selected.includes(it.id)}
-              onCheckedChange={() => onToggle(it.id)}
-            />
-            <span className="flex-1">{it.label}</span>
-          </label>
-        ))}
+        {items.map((it) => {
+          const checked = selected.includes(it.id);
+          return (
+            <label key={it.id} className="flex items-center gap-2 text-sm cursor-pointer">
+              {single ? (
+                <span
+                  role="radio"
+                  aria-checked={checked}
+                  onClick={() => onToggle(it.id)}
+                  className={`grid place-content-center h-4 w-4 shrink-0 rounded-full border border-primary ${checked ? "bg-primary" : ""}`}
+                >
+                  {checked && <span className="h-1.5 w-1.5 rounded-full bg-primary-foreground" />}
+                </span>
+              ) : (
+                <Checkbox checked={checked} onCheckedChange={() => onToggle(it.id)} />
+              )}
+              <span className="flex-1">{it.label}</span>
+            </label>
+          );
+        })}
       </div>
     </div>
   );
