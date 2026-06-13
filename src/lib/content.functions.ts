@@ -108,6 +108,36 @@ export const getProject = createServerFn({ method: "GET" })
     };
   });
 
+export const getProjectsListing = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await admin();
+  const [projects, projectsI18n, focus, focusI18n, tags, tagsI18n, partners, partnersI18n, tagLinks, partnerLinks] = await Promise.all([
+    sb.from("projects").select("*").eq("published", true).order("published_at", { ascending: false, nullsFirst: false }),
+    sb.from("projects_i18n").select("*"),
+    sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
+    sb.from("focus_areas_i18n").select("*"),
+    sb.from("tags").select("*"),
+    sb.from("tags_i18n").select("*"),
+    sb.from("partners").select("*").order("sort_order"),
+    (sb.from("partners_i18n" as any) as any).select("*"),
+    sb.from("project_tags").select("*"),
+    sb.from("project_partners").select("*"),
+  ]);
+  return {
+    projects: projects.data ?? [],
+    projectsI18n: projectsI18n.data ?? [],
+    focus: focus.data ?? [],
+    focusI18n: focusI18n.data ?? [],
+    tags: tags.data ?? [],
+    tagsI18n: tagsI18n.data ?? [],
+    partners: partners.data ?? [],
+    partnersI18n: (partnersI18n.data as any[]) ?? [],
+    tagLinks: tagLinks.data ?? [],
+    partnerLinks: partnerLinks.data ?? [],
+  };
+});
+
+
+
 
 export const getNewsList = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
