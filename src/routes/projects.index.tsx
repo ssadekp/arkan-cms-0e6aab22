@@ -63,7 +63,8 @@ function Body() {
             ?? f.slug,
         }))}
         selected={focusSel}
-        onToggle={(id) => setFocusSel((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id])}
+        single
+        onToggle={(id) => setFocusSel((s) => s.includes(id) ? [] : [id])}
       />
       <FilterGroup
         title={lang === "ar" ? "الحالة" : "Status"}
