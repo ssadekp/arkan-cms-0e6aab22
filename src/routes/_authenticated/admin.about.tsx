@@ -102,10 +102,18 @@ function AboutAdmin() {
         </Section>
 
         <Section title="Homepage statistics">
-          <p className="text-sm text-muted-foreground">Stats shown on the About and Home pages are managed in their own section.</p>
-          <Link to="/admin/stats">
-            <Button variant="outline" size="sm"><BarChart3 className="h-4 w-4 mr-2" />Manage Homepage Stats</Button>
-          </Link>
+          <ResourceManager
+            table="homepage_stats"
+            title="Homepage Stats"
+            rootFields={[
+              { key: "icon", label: "Icon name (lucide)" },
+              { key: "value", label: "Value (e.g. 1,200+)" },
+              { key: "sort_order", label: "Sort order", type: "number" },
+              { key: "active", label: "Active", type: "boolean" },
+            ]}
+            i18nFields={[{ key: "label", label: "Label" }]}
+            listLabel={(row, i18n) => `${row.value} — ${i18n.find((x: any) => x.stat_id === row.id && x.lang === "ar")?.label ?? ""}`}
+          />
         </Section>
 
         <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg">
