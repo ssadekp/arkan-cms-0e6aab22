@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,8 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { ResourceManager } from "@/components/admin/ResourceManager";
 import { toast } from "sonner";
-import { BarChart3 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   component: AboutAdmin,
