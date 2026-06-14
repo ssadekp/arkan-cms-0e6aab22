@@ -88,7 +88,7 @@ function AboutAdmin() {
             </TabsList>
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
-                <div className="space-y-1.5"><Label>Site name</Label><Input value={i18n[l].site_name} onChange={(e) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: e.target.value } })} /></div>
+                <div className="space-y-1.5"><Label>About page title</Label><Input value={i18n[l].about_title} onChange={(e) => setI18n({ ...i18n, [l]: { ...i18n[l], about_title: e.target.value } })} /></div>
                 <div className="space-y-1.5"><Label>Tagline</Label><Input value={i18n[l].tagline} onChange={(e) => setI18n({ ...i18n, [l]: { ...i18n[l], tagline: e.target.value } })} /></div>
                 <div className="space-y-1.5">
                   <Label>About (short summary)</Label>
