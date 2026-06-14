@@ -29,7 +29,7 @@ function AboutAdmin() {
     const all = data.settingsI18n as any[];
     const pick = (l: string) => {
       const r = all.find((x) => x.lang === l) ?? {};
-      return { site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "", about_body: r.about_body ?? "" };
+      return { about_title: r.about_title ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "", about_body: r.about_body ?? "" };
     };
     setI18n({ ar: pick("ar"), en: pick("en") });
   }, [data]);
@@ -42,7 +42,9 @@ function AboutAdmin() {
         const existing = all.find((x) => x.lang === l) ?? {};
         return {
           lang: l,
-          site_name: i18n[l].site_name,
+          site_name: existing.site_name ?? "",
+          admin_sidebar_name: existing.admin_sidebar_name ?? "",
+          about_title: i18n[l].about_title,
           tagline: i18n[l].tagline,
           about_short: i18n[l].about_short,
           about_body: i18n[l].about_body,
