@@ -179,13 +179,19 @@ function RichField({ label, value, onChange }: { label: string; value: any; onCh
   );
 }
 function blank() {
-  return { site_name: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
+  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
 }
 function stripI18n(r: any) {
   return {
-    site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "",
+    site_name: r.site_name ?? "",
+    admin_sidebar_name: r.admin_sidebar_name ?? "",
+    about_title: r.about_title ?? "",
+    tagline: r.tagline ?? "",
+    about_short: r.about_short ?? "",
     about_body: r.about_body ?? "",
-    footer_text: r.footer_text ?? "", seo_title: r.seo_title ?? "", seo_description: r.seo_description ?? "",
+    footer_text: r.footer_text ?? "",
+    seo_title: r.seo_title ?? "",
+    seo_description: r.seo_description ?? "",
     address: r.address ?? "",
   };
 }
