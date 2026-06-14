@@ -6,49 +6,57 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, BarChart3, LogOut, ArrowLeft, Tag, Info, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
-
-const topItems = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { to: "/admin/settings", label: "Settings", icon: Settings },
-];
-
-const pagesItems = [
-  { to: "/admin/pages", label: "Pages", icon: FileText },
-  { to: "/admin/about", label: "About Us", icon: Info },
-  { to: "/admin/contact", label: "Contact Us", icon: Mail },
-];
-
-const contentItems = [
-  { to: "/admin/focus-areas", label: "Focus Areas", icon: Target },
-  { to: "/admin/projects", label: "Projects", icon: FolderKanban },
-  { to: "/admin/tags", label: "Tags", icon: Tag },
-  { to: "/admin/partners", label: "Partners", icon: Users },
-  { to: "/admin/news", label: "News", icon: Newspaper },
-];
+import { useI18n } from "@/lib/i18n";
 
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const fn = useServerFn(adminListAll);
   const { data } = useQuery({ queryKey: ["admin-all"], queryFn: () => fn(), staleTime: 60_000 });
+  const { lang, setLang, t, dir } = useI18n();
 
   const i18nRows = (data?.settingsI18n as any[]) ?? [];
-  const siteName =
-    i18nRows.find((x) => x.lang === "ar")?.site_name ||
-    i18nRows.find((x) => x.lang === "en")?.site_name ||
+  const currentRow = i18nRows.find((x) => x.lang === lang) ?? {};
+  const fallbackRow = i18nRows.find((x) => x.lang === (lang === "ar" ? "en" : "ar")) ?? {};
+  const sidebarName =
+    currentRow.admin_sidebar_name ||
+    fallbackRow.admin_sidebar_name ||
+    currentRow.site_name ||
+    fallbackRow.site_name ||
     "CMS";
+
+  const topItems = [
+    { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
+    { to: "/admin/settings", label: t("admin.settings"), icon: Settings },
+  ];
+  const pagesItems = [
+    { to: "/admin/pages", label: t("admin.pages"), icon: FileText },
+    { to: "/admin/about", label: t("admin.aboutUs"), icon: Info },
+    { to: "/admin/contact", label: t("admin.contactUs"), icon: Mail },
+  ];
+  const contentItems = [
+    { to: "/admin/focus-areas", label: t("admin.focus"), icon: Target },
+    { to: "/admin/projects", label: t("admin.projects"), icon: FolderKanban },
+    { to: "/admin/tags", label: t("admin.tags"), icon: Tag },
+    { to: "/admin/partners", label: t("admin.partners"), icon: Users },
+    { to: "/admin/news", label: t("admin.news"), icon: Newspaper },
+  ];
+  const managementItems = [
+    { to: "/admin/users", label: t("admin.users"), icon: Users },
+  ];
 
   async function signOut() {
     await supabase.auth.signOut();
     navigate({ to: "/auth" });
   }
 
-  const renderItems = (items: typeof topItems) =>
+  const renderItems = (items: { to: string; label: string; icon: any; exact?: boolean }[]) =>
     items.map((it) => {
-      const active = (it as any).exact ? path === it.to : path.startsWith(it.to);
+      const active = it.exact ? path === it.to : path.startsWith(it.to);
       return (
         <SidebarMenuItem key={it.to}>
           <SidebarMenuButton asChild isActive={active}>
@@ -63,25 +71,31 @@ export function AdminShell({ title, children }: { title: string; children: React
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
-        <Sidebar collapsible="icon">
+      <div className="min-h-screen flex w-full bg-background" dir={dir}>
+        <Sidebar collapsible="icon" side={dir === "rtl" ? "right" : "left"}>
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupLabel>{siteName}</SidebarGroupLabel>
+              <SidebarGroupLabel>{sidebarName}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>{renderItems(topItems)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
-              <SidebarGroupLabel>Pages</SidebarGroupLabel>
+              <SidebarGroupLabel>{t("admin.group.pages")}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>{renderItems(pagesItems)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
-              <SidebarGroupLabel>Content</SidebarGroupLabel>
+              <SidebarGroupLabel>{t("admin.group.content")}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>{renderItems(contentItems)}</SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <SidebarGroup>
+              <SidebarGroupLabel>{t("admin.group.management")}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>{renderItems(managementItems)}</SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
             <SidebarGroup>
@@ -89,12 +103,12 @@ export function AdminShell({ title, children }: { title: string; children: React
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild>
-                      <Link to="/"><ArrowLeft className="h-4 w-4" /><span>View site</span></Link>
+                      <Link to="/"><ArrowLeft className="h-4 w-4" /><span>{t("admin.viewSite")}</span></Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton onClick={signOut}>
-                      <LogOut className="h-4 w-4" /><span>Sign out</span>
+                      <LogOut className="h-4 w-4" /><span>{t("nav.signout")}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -107,6 +121,17 @@ export function AdminShell({ title, children }: { title: string; children: React
           <header className="h-14 border-b border-border/60 flex items-center px-4 gap-3">
             <SidebarTrigger />
             <h1 className="text-base font-semibold">{title}</h1>
+            <div className="ms-auto">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+                aria-label="Toggle language"
+              >
+                <Languages className="h-4 w-4" />
+                <span className="ms-1">{lang === "ar" ? "English" : "العربية"}</span>
+              </Button>
+            </div>
           </header>
           <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>

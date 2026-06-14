@@ -104,6 +104,25 @@ function SettingsPage() {
           <Field label="OG image URL" value={root.seo_og_image} onChange={(v) => setRoot({ ...root, seo_og_image: v })} />
         </Section>
 
+        <Section title="Site identity (AR / EN)">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium">Site name</span> appears on the public website (footer, header brand).{" "}
+            <span className="font-medium">Admin sidebar name</span> appears only in this admin panel's sidebar.
+          </p>
+          <Tabs defaultValue="ar">
+            <TabsList>
+              <TabsTrigger value="ar">العربية</TabsTrigger>
+              <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            {(["ar", "en"] as const).map((l) => (
+              <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field label={l === "ar" ? "اسم الموقع (Site name)" : "Site name"} value={i18n[l].site_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: v } })} />
+                <Field label={l === "ar" ? "اسم لوحة التحكم (Admin sidebar name)" : "Admin sidebar name"} value={i18n[l].admin_sidebar_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], admin_sidebar_name: v } })} />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </Section>
+
         <Section title="Footer & SEO content (AR / EN)">
           <p className="text-xs text-muted-foreground">
             Contact details are managed under <span className="font-medium">Contact Us</span>. About content and statistics are managed under <span className="font-medium">About Us</span>.
@@ -115,7 +134,6 @@ function SettingsPage() {
             </TabsList>
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
-                <Field label={l === "ar" ? "اسم الموقع" : "Site name"} value={i18n[l].site_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: v } })} />
                 <Field label="Footer text" textarea value={i18n[l].footer_text} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], footer_text: v } })} />
                 <Field label="SEO title" value={i18n[l].seo_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_title: v } })} />
                 <Field label="SEO description" textarea value={i18n[l].seo_description} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], seo_description: v } })} />
@@ -123,6 +141,7 @@ function SettingsPage() {
             ))}
           </Tabs>
         </Section>
+
 
 
         <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg">
@@ -160,13 +179,19 @@ function RichField({ label, value, onChange }: { label: string; value: any; onCh
   );
 }
 function blank() {
-  return { site_name: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
+  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "" };
 }
 function stripI18n(r: any) {
   return {
-    site_name: r.site_name ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "",
+    site_name: r.site_name ?? "",
+    admin_sidebar_name: r.admin_sidebar_name ?? "",
+    about_title: r.about_title ?? "",
+    tagline: r.tagline ?? "",
+    about_short: r.about_short ?? "",
     about_body: r.about_body ?? "",
-    footer_text: r.footer_text ?? "", seo_title: r.seo_title ?? "", seo_description: r.seo_description ?? "",
+    footer_text: r.footer_text ?? "",
+    seo_title: r.seo_title ?? "",
+    seo_description: r.seo_description ?? "",
     address: r.address ?? "",
   };
 }
