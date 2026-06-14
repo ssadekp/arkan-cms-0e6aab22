@@ -388,22 +388,34 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
+          last_login_at: string | null
+          phone: string | null
+          status: string
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
+          last_login_at?: string | null
+          phone?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
+          last_login_at?: string | null
+          phone?: string | null
+          status?: string
           updated_at?: string
         }
         Relationships: []
@@ -593,7 +605,9 @@ export type Database = {
         Row: {
           about_body: string | null
           about_short: string
+          about_title: string
           address: string
+          admin_sidebar_name: string
           footer_text: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description: string
@@ -605,7 +619,9 @@ export type Database = {
         Insert: {
           about_body?: string | null
           about_short?: string
+          about_title?: string
           address?: string
+          admin_sidebar_name?: string
           footer_text?: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description?: string
@@ -617,7 +633,9 @@ export type Database = {
         Update: {
           about_body?: string | null
           about_short?: string
+          about_title?: string
           address?: string
+          admin_sidebar_name?: string
           footer_text?: string
           lang?: Database["public"]["Enums"]["app_language"]
           seo_description?: string
@@ -714,10 +732,11 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_language: "ar" | "en"
-      app_role: "admin" | "editor"
+      app_role: "admin" | "editor" | "super_admin" | "author"
       project_status: "planned" | "ongoing" | "completed"
     }
     CompositeTypes: {
@@ -847,7 +866,7 @@ export const Constants = {
   public: {
     Enums: {
       app_language: ["ar", "en"],
-      app_role: ["admin", "editor"],
+      app_role: ["admin", "editor", "super_admin", "author"],
       project_status: ["planned", "ongoing", "completed"],
     },
   },
