@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
+import { ImageUpload, GalleryUpload } from "./ImageUpload";
 
 
 type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats";
