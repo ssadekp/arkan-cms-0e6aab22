@@ -40,6 +40,8 @@ function UsersPage() {
   const createFn = useServerFn(createUser);
   const updateFn = useServerFn(updateUser);
   const deleteFn = useServerFn(deleteUser);
+  const canPromoteFn = useServerFn(canSelfPromote);
+  const promoteFn = useServerFn(promoteSelfToSuperAdmin);
   const qc = useQueryClient();
 
   const [search, setSearch] = useState("");
