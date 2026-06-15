@@ -14,30 +14,18 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     try {
-      if (mode === "signin") {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        toast.success("Signed in");
-        navigate({ to: "/admin" });
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email, password,
-          options: { emailRedirectTo: window.location.origin, data: { full_name: name } },
-        });
-        if (error) throw error;
-        toast.success("Account created. You can sign in now.");
-        setMode("signin");
-      }
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      toast.success("Signed in");
+      navigate({ to: "/admin" });
     } catch (err: any) {
       toast.error(err.message ?? "Auth failed");
     } finally {
@@ -48,16 +36,12 @@ function AuthPage() {
   return (
     <div className="min-h-screen hero-gradient grid place-items-center px-4">
       <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold mb-1">{mode === "signin" ? "Sign in" : "Create account"}</h1>
-        <p className="text-sm text-muted-foreground mb-6">Admin & editor access for Lam7et Khair CMS</p>
+        <h1 className="text-2xl font-bold mb-1">Sign in</h1>
+        <p className="text-sm text-muted-foreground mb-6">
+          Admin & editor access for Lam7et Khair CMS. Accounts are created by an administrator.
+        </p>
 
         <form onSubmit={submit} className="space-y-4">
-          {mode === "signup" && (
-            <div className="space-y-1.5">
-              <Label htmlFor="name">Full name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-          )}
           <div className="space-y-1.5">
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -67,17 +51,13 @@ function AuthPage() {
             <Input id="password" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
           </div>
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "..." : mode === "signin" ? "Sign in" : "Sign up"}
+            {loading ? "..." : "Sign in"}
           </Button>
         </form>
 
-        <button
-          type="button"
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-4 text-sm text-primary hover:underline w-full text-center"
-        >
-          {mode === "signin" ? "No account? Create one" : "Already have an account? Sign in"}
-        </button>
+        <p className="mt-4 text-xs text-muted-foreground text-center">
+          Need access? Contact your administrator.
+        </p>
       </Card>
     </div>
   );
