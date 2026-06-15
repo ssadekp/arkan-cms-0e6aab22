@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listUsers, createUser, updateUser, deleteUser } from "@/lib/users.functions";
+import { listUsers, createUser, updateUser, deleteUser, canSelfPromote, promoteSelfToSuperAdmin } from "@/lib/users.functions";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
