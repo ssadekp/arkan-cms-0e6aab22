@@ -62,6 +62,20 @@ function UsersPage() {
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["admin-users"] });
 
+  const { data: promoStatus } = useQuery({
+    queryKey: ["can-self-promote"],
+    queryFn: () => canPromoteFn(),
+  });
+  const promoteMut = useMutation({
+    mutationFn: () => promoteFn(),
+    onSuccess: () => {
+      toast.success("You are now Super Admin");
+      qc.invalidateQueries({ queryKey: ["can-self-promote"] });
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const createMut = useMutation({
     mutationFn: (payload: any) => createFn({ data: payload }),
     onSuccess: () => { toast.success("User created"); setAddOpen(false); invalidate(); },
