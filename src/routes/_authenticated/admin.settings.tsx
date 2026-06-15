@@ -58,6 +58,7 @@ function SettingsPage() {
       return save({ data: {
         ...root,
         logo_url: root.logo_url || null,
+        favicon_url: root.favicon_url || null,
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
         seo_og_image: root.seo_og_image || null,
