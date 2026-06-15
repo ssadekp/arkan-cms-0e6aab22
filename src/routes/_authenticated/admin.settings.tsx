@@ -33,6 +33,7 @@ function SettingsPage() {
     if (s) {
       setRoot({
         logo_url: s.logo_url ?? "",
+        favicon_url: (s as any).favicon_url ?? "",
         primary_color: s.primary_color,
         accent_color: s.accent_color,
         default_language: s.default_language,
