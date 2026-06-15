@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/pages")({
         title="Pages"
         rootFields={[
           { key: "slug", label: "Slug" },
-          { key: "hero_image", label: "Hero image URL" },
+          { key: "hero_image", label: "Hero image", type: "image" },
           { key: "show_in_nav", label: "Show in main nav", type: "boolean" },
           { key: "nav_order", label: "Nav order", type: "number" },
           { key: "published", label: "Published", type: "boolean" },

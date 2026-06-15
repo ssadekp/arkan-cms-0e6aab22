@@ -37,7 +37,7 @@ function Projects() {
         title="Projects"
         rootFields={[
           { key: "slug", label: "Slug" },
-          { key: "hero_image", label: "Hero image URL" },
+          { key: "hero_image", label: "Hero image", type: "image" },
           { key: "gallery", label: "Gallery", type: "gallery" },
           { key: "focus_area_id", label: "Focus area", type: "select", options: focusOptions },
           { key: "status", label: "Status", type: "enum", options: statusOptions },

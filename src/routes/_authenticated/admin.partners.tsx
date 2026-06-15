@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/partners")({
         title="Partners"
         rootFields={[
           { key: "name", label: "Internal name (fallback)" },
-          { key: "logo_url", label: "Logo URL" },
+          { key: "logo_url", label: "Logo", type: "image" },
           { key: "website_url", label: "Website URL" },
           { key: "show_on_home", label: "Show on home", type: "boolean" },
           { key: "sort_order", label: "Sort order", type: "number" },
