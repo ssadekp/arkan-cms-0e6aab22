@@ -118,7 +118,13 @@ function SettingsPage() {
         </Section>
 
         <Section title="SEO">
-          <Field label="OG image URL" value={root.seo_og_image} onChange={(v) => setRoot({ ...root, seo_og_image: v })} />
+          <ImageUpload
+            label="Social share image (Open Graph)"
+            value={root.seo_og_image}
+            onChange={(v) => setRoot({ ...root, seo_og_image: v })}
+            folder="seo"
+            help="Appears when the site is shared on social media. 1200×630 recommended."
+          />
         </Section>
 
         <Section title="Site identity (AR / EN)">
