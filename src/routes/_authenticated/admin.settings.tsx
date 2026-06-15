@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
@@ -32,6 +33,7 @@ function SettingsPage() {
     if (s) {
       setRoot({
         logo_url: s.logo_url ?? "",
+        favicon_url: (s as any).favicon_url ?? "",
         primary_color: s.primary_color,
         accent_color: s.accent_color,
         default_language: s.default_language,
@@ -56,6 +58,7 @@ function SettingsPage() {
       return save({ data: {
         ...root,
         logo_url: root.logo_url || null,
+        favicon_url: root.favicon_url || null,
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
         seo_og_image: root.seo_og_image || null,
@@ -80,7 +83,21 @@ function SettingsPage() {
     <AdminShell title="Settings">
       <div className="max-w-3xl space-y-6">
         <Section title="Branding">
-          <Field label="Logo URL" value={root.logo_url} onChange={(v) => setRoot({ ...root, logo_url: v })} />
+          <ImageUpload
+            label="Logo"
+            value={root.logo_url}
+            onChange={(v) => setRoot({ ...root, logo_url: v })}
+            folder="branding"
+            help="Shown in the site header and footer."
+          />
+          <ImageUpload
+            label="Favicon"
+            value={root.favicon_url}
+            onChange={(v) => setRoot({ ...root, favicon_url: v })}
+            folder="branding"
+            accept="image/png,image/x-icon,image/svg+xml,image/jpeg,image/webp"
+            help="Browser tab icon. Square PNG, ICO, or SVG works best."
+          />
           <div className="grid grid-cols-2 gap-3">
             <Field label="Primary color" value={root.primary_color} onChange={(v) => setRoot({ ...root, primary_color: v })} />
             <Field label="Accent color" value={root.accent_color} onChange={(v) => setRoot({ ...root, accent_color: v })} />
@@ -101,7 +118,13 @@ function SettingsPage() {
         </Section>
 
         <Section title="SEO">
-          <Field label="OG image URL" value={root.seo_og_image} onChange={(v) => setRoot({ ...root, seo_og_image: v })} />
+          <ImageUpload
+            label="Social share image (Open Graph)"
+            value={root.seo_og_image}
+            onChange={(v) => setRoot({ ...root, seo_og_image: v })}
+            folder="seo"
+            help="Appears when the site is shared on social media. 1200×630 recommended."
+          />
         </Section>
 
         <Section title="Site identity (AR / EN)">

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/news")({
         title="News"
         rootFields={[
           { key: "slug", label: "Slug" },
-          { key: "hero_image", label: "Hero image URL" },
+          { key: "hero_image", label: "Hero image", type: "image" },
           { key: "gallery", label: "Gallery", type: "gallery" },
           { key: "published", label: "Published", type: "boolean" },
         ]}

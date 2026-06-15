@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
+import { ImageUpload, GalleryUpload } from "./ImageUpload";
 
 
 type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats";
@@ -293,39 +294,18 @@ function FieldInput({ field, value, onChange }: { field: FieldSpec; value: any; 
   }
   if (field.type === "gallery") {
     return (
-      <div className="space-y-1.5">
-        <Label>{field.label}</Label>
-        <GalleryEditor value={value ?? "[]"} onChange={onChange} />
-      </div>
+      <GalleryUpload label={field.label} value={value ?? "[]"} onChange={onChange} folder="gallery" />
+    );
+  }
+  if (field.type === "image" || field.type === "url") {
+    return (
+      <ImageUpload label={field.label} value={value} onChange={onChange} folder="content" />
     );
   }
   return (
     <div className="space-y-1.5">
       <Label>{field.label}</Label>
       <Input type={field.type === "number" ? "number" : "text"} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />
-    </div>
-  );
-}
-
-function GalleryEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  let urls: string[] = [];
-  try { urls = JSON.parse(value || "[]"); if (!Array.isArray(urls)) urls = []; } catch { urls = []; }
-  const set = (next: string[]) => onChange(JSON.stringify(next));
-  return (
-    <div className="space-y-2">
-      {urls.map((u, idx) => (
-        <div key={idx} className="flex gap-2">
-          <Input value={u} onChange={(e) => {
-            const n = [...urls]; n[idx] = e.target.value; set(n);
-          }} placeholder="https://..." />
-          <Button type="button" variant="outline" size="icon" onClick={() => set(urls.filter((_, i) => i !== idx))}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      ))}
-      <Button type="button" variant="outline" size="sm" onClick={() => set([...urls, ""])}>
-        <Plus className="h-4 w-4 me-2" /> Add image URL
-      </Button>
     </div>
   );
 }

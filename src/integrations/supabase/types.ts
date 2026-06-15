@@ -565,6 +565,7 @@ export type Database = {
           contact_email: string | null
           contact_phone: string | null
           default_language: Database["public"]["Enums"]["app_language"]
+          favicon_url: string | null
           id: number
           logo_url: string | null
           map_embed_url: string | null
@@ -578,6 +579,7 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
+          favicon_url?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -591,6 +593,7 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
+          favicon_url?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
