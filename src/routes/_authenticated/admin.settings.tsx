@@ -83,7 +83,21 @@ function SettingsPage() {
     <AdminShell title="Settings">
       <div className="max-w-3xl space-y-6">
         <Section title="Branding">
-          <Field label="Logo URL" value={root.logo_url} onChange={(v) => setRoot({ ...root, logo_url: v })} />
+          <ImageUpload
+            label="Logo"
+            value={root.logo_url}
+            onChange={(v) => setRoot({ ...root, logo_url: v })}
+            folder="branding"
+            help="Shown in the site header and footer."
+          />
+          <ImageUpload
+            label="Favicon"
+            value={root.favicon_url}
+            onChange={(v) => setRoot({ ...root, favicon_url: v })}
+            folder="branding"
+            accept="image/png,image/x-icon,image/svg+xml,image/jpeg,image/webp"
+            help="Browser tab icon. Square PNG, ICO, or SVG works best."
+          />
           <div className="grid grid-cols-2 gap-3">
             <Field label="Primary color" value={root.primary_color} onChange={(v) => setRoot({ ...root, primary_color: v })} />
             <Field label="Accent color" value={root.accent_color} onChange={(v) => setRoot({ ...root, accent_color: v })} />
