@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listUsers, createUser, updateUser, deleteUser } from "@/lib/users.functions";
+import { listUsers, createUser, updateUser, deleteUser, canSelfPromote, promoteSelfToSuperAdmin } from "@/lib/users.functions";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +25,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { Pencil, Trash2, UserPlus, Eye, Power } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Eye, Power, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersPage,
@@ -40,6 +40,8 @@ function UsersPage() {
   const createFn = useServerFn(createUser);
   const updateFn = useServerFn(updateUser);
   const deleteFn = useServerFn(deleteUser);
+  const canPromoteFn = useServerFn(canSelfPromote);
+  const promoteFn = useServerFn(promoteSelfToSuperAdmin);
   const qc = useQueryClient();
 
   const [search, setSearch] = useState("");
@@ -59,6 +61,20 @@ function UsersPage() {
   const isAdmin = callerRoles.includes("admin");
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["admin-users"] });
+
+  const { data: promoStatus } = useQuery({
+    queryKey: ["can-self-promote"],
+    queryFn: () => canPromoteFn(),
+  });
+  const promoteMut = useMutation({
+    mutationFn: () => promoteFn(),
+    onSuccess: () => {
+      toast.success("You are now Super Admin");
+      qc.invalidateQueries({ queryKey: ["can-self-promote"] });
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
 
   const createMut = useMutation({
     mutationFn: (payload: any) => createFn({ data: payload }),
@@ -99,7 +115,18 @@ function UsersPage() {
               ))}
             </SelectContent>
           </Select>
-          <div className="ms-auto">
+          <div className="ms-auto flex items-center gap-2">
+            {promoStatus?.eligible && (
+              <Button
+                variant="outline"
+                onClick={() => promoteMut.mutate()}
+                disabled={promoteMut.isPending}
+                title="One-time: become Super Admin (no super admin exists yet)"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                {promoteMut.isPending ? "Promoting…" : "Promote me to Super Admin"}
+              </Button>
+            )}
             {isSuper && (
               <Dialog open={addOpen} onOpenChange={setAddOpen}>
                 <DialogTrigger asChild>
