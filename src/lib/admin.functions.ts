@@ -68,6 +68,7 @@ export const adminListAll = createServerFn({ method: "GET" })
 
 const settingsSchema = z.object({
   logo_url: z.string().nullable().optional(),
+  favicon_url: z.string().nullable().optional(),
   primary_color: z.string().min(1),
   accent_color: z.string().min(1),
   default_language: z.enum(["ar", "en"]),
