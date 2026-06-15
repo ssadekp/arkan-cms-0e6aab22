@@ -25,7 +25,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { Pencil, Trash2, UserPlus, Eye, Power } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Eye, Power, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersPage,
