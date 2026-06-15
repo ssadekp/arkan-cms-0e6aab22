@@ -168,3 +168,47 @@ export const deleteUser = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+/**
+ * One-time self-promotion: any existing admin can promote themselves to
+ * super_admin, but only while no super_admin exists yet in the system.
+ */
+export const canSelfPromote = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const callerRoles = await getCallerRoles(context.userId);
+    if (!callerRoles.includes("admin") && !callerRoles.includes("super_admin")) {
+      return { eligible: false, hasSuperAdmin: false };
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "super_admin" as any)
+      .limit(1);
+    const hasSuperAdmin = (data ?? []).length > 0;
+    return {
+      eligible: !hasSuperAdmin && callerRoles.includes("admin"),
+      hasSuperAdmin,
+      isSuperAdmin: callerRoles.includes("super_admin"),
+    };
+  });
+
+export const promoteSelfToSuperAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const callerRoles = await getCallerRoles(context.userId);
+    if (!callerRoles.includes("admin")) throw new Error("Only an existing admin can self-promote");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: existing } = await supabaseAdmin
+      .from("user_roles")
+      .select("user_id")
+      .eq("role", "super_admin" as any)
+      .limit(1);
+    if ((existing ?? []).length > 0) throw new Error("A super admin already exists");
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: context.userId, role: "super_admin" as any });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
