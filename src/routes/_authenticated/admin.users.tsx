@@ -115,7 +115,18 @@ function UsersPage() {
               ))}
             </SelectContent>
           </Select>
-          <div className="ms-auto">
+          <div className="ms-auto flex items-center gap-2">
+            {promoStatus?.eligible && (
+              <Button
+                variant="outline"
+                onClick={() => promoteMut.mutate()}
+                disabled={promoteMut.isPending}
+                title="One-time: become Super Admin (no super admin exists yet)"
+              >
+                <ShieldCheck className="h-4 w-4" />
+                {promoteMut.isPending ? "Promoting…" : "Promote me to Super Admin"}
+              </Button>
+            )}
             {isSuper && (
               <Dialog open={addOpen} onOpenChange={setAddOpen}>
                 <DialogTrigger asChild>
