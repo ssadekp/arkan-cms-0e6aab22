@@ -29,6 +29,11 @@ function Body() {
     (data.tagsI18n as any[]).find((x) => x.tag_id === id && x.lang === lang)?.name
     ?? (data.tagsI18n as any[]).find((x) => x.tag_id === id)?.name
     ?? "";
+  const focusName = data.focus
+    ? (data.focusI18n as any[]).find((x) => x.lang === lang)?.title
+      ?? (data.focusI18n as any[]).find((x) => x.lang === "ar")?.title
+      ?? (data.focus as any).slug
+    : null;
 
   return (
     <article>
@@ -37,6 +42,11 @@ function Body() {
       </div>
       <div className="container-narrow py-12">
         <div className="flex flex-wrap items-center gap-2 mb-3">
+          {focusName && (
+            <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+              {focusName}
+            </span>
+          )}
           {status && (
             <span className="inline-block rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
               {status}
