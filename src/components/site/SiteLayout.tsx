@@ -48,7 +48,6 @@ function Inner({ children }: { children: ReactNode }) {
       <Footer
         siteName={siteName}
         footerText={footerText}
-        social={(settings?.social_links as Record<string, string>) ?? {}}
         contact={{ email: settings?.contact_email, phone: settings?.contact_phone, address }}
       />
     </div>

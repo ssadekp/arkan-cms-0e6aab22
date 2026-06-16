@@ -45,6 +45,7 @@ const dict: Dict = {
   "admin.news": { ar: "الأخبار", en: "News" },
   "admin.stats": { ar: "إحصائيات الرئيسية", en: "Homepage Stats" },
   "admin.users": { ar: "المستخدمون", en: "Users" },
+  "admin.socialLinks": { ar: "روابط التواصل الاجتماعي", en: "Social Links" },
   "admin.viewSite": { ar: "عرض الموقع", en: "View site" },
   "admin.group.pages": { ar: "الصفحات", en: "Pages" },
   "admin.group.content": { ar: "المحتوى", en: "Content" },
