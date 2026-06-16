@@ -62,7 +62,7 @@ function Body() {
 
         {(data as any).partners?.length > 0 && (
           <div className="mt-16">
-            <h2 className="text-2xl font-semibold mb-6">Partners</h2>
+            <h2 className="text-2xl font-semibold mb-6">{lang === "ar" ? "الجمعيات والمؤسسات المشاركة" : "Partners"}</h2>
             <div className="flex flex-wrap gap-3">
               {(data as any).partners.map((p: any) => {
                 const name = (data as any).partnersI18n?.find((x: any) => x.partner_id === p.id && x.lang === lang)?.name
