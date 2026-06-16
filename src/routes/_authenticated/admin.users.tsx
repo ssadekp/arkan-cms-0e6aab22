@@ -391,3 +391,98 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
     </div>
   );
 }
+
+function AvatarUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  async function pick(file: File | null) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast.error("Please choose an image");
+    if (file.size > 5 * 1024 * 1024) return toast.error("Max file size is 5 MB");
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from("user-avatars").upload(path, file, {
+        contentType: file.type, upsert: false,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from("user-avatars").getPublicUrl(path);
+      onChange(data.publicUrl);
+      toast.success("Photo uploaded");
+    } catch (e: any) {
+      toast.error(e.message ?? "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="flex items-center gap-3">
+      <Avatar className="h-14 w-14">
+        <AvatarImage src={value || undefined} />
+        <AvatarFallback>?</AvatarFallback>
+      </Avatar>
+      <div className="flex-1">
+        <Input
+          type="file"
+          accept="image/*"
+          disabled={busy}
+          onChange={(e) => pick(e.target.files?.[0] ?? null)}
+        />
+        {value && (
+          <button type="button" className="text-xs text-muted-foreground hover:text-destructive mt-1" onClick={() => onChange("")}>
+            Remove photo
+          </button>
+        )}
+      </div>
+      {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+    </div>
+  );
+}
+
+function PasswordResetDialog({
+  user, onClose, onSubmit, pending,
+}: {
+  user: any | null;
+  onClose: () => void;
+  onSubmit: (password: string) => void;
+  pending?: boolean;
+}) {
+  const { t } = useI18n();
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  function submit() {
+    if (pw.length < 8) return toast.error(t("users.passwordTooShort"));
+    if (pw !== pw2) return toast.error(t("users.passwordMismatch"));
+    onSubmit(pw);
+  }
+  return (
+    <Dialog open={!!user} onOpenChange={(o) => { if (!o) { setPw(""); setPw2(""); onClose(); } }}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>{t("users.resetPassword")}</DialogTitle>
+        </DialogHeader>
+        {user && (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {user.full_name || user.email}
+            </p>
+            <FieldRow label={t("users.newPassword")}>
+              <Input type="password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus />
+            </FieldRow>
+            <FieldRow label={t("users.confirmPassword")}>
+              <Input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} />
+            </FieldRow>
+          </div>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button onClick={submit} disabled={pending}>
+            {pending ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : <KeyRound className="h-4 w-4 me-2" />}
+            {t("common.save")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
