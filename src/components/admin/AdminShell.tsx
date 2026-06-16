@@ -44,6 +44,7 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/tags", label: t("admin.tags"), icon: Tag },
     { to: "/admin/partners", label: t("admin.partners"), icon: Users },
     { to: "/admin/news", label: t("admin.news"), icon: Newspaper },
+    { to: "/admin/documents", label: t("admin.documents"), icon: FileArchive },
   ];
   const managementItems = [
     { to: "/admin/users", label: t("admin.users"), icon: Users },
