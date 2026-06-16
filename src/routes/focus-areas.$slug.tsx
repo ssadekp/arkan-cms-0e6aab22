@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getFocusArea } from "@/lib/content.functions";
+import { LightboxGallery } from "@/components/site/Lightbox";
 
 export const Route = createFileRoute("/focus-areas/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
