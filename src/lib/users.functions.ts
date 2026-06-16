@@ -169,6 +169,23 @@ export const deleteUser = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminSetUserPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d) => z.object({
+    id: z.string().uuid(),
+    password: z.string().min(8).max(128),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const callerRoles = await getCallerRoles(context.userId);
+    if (!callerRoles.includes("super_admin") && !callerRoles.includes("admin")) {
+      throw new Error("Forbidden");
+    }
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.id, { password: data.password });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 /**
  * One-time self-promotion: any existing admin can promote themselves to
  * super_admin, but only while no super_admin exists yet in the system.

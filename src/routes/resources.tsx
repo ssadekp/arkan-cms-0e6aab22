@@ -103,7 +103,9 @@ function Body() {
               <Badge variant="secondary" className="self-start mb-2">
                 {LABELS[doc.category as Category][lang]}
               </Badge>
-              <h3 className="font-semibold leading-snug flex-1">{doc.title}</h3>
+              <h3 className="font-semibold leading-snug flex-1" dir={lang === "ar" ? "rtl" : "ltr"}>
+                {lang === "ar" ? (doc.title_ar || doc.title_en) : (doc.title_en || doc.title_ar)}
+              </h3>
               <Button variant="ghost" size="sm" className="mt-4 self-start gap-1.5" tabIndex={-1}>
                 {lang === "ar" ? "عرض الملف" : "View file"}
                 <ExternalLink className="h-3.5 w-3.5" />

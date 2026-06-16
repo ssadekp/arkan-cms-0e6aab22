@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listUsers, createUser, updateUser, deleteUser, canSelfPromote, promoteSelfToSuperAdmin } from "@/lib/users.functions";
+import { listUsers, createUser, updateUser, deleteUser, canSelfPromote, promoteSelfToSuperAdmin, adminSetUserPassword } from "@/lib/users.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -25,7 +26,7 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n";
-import { Pencil, Trash2, UserPlus, Eye, Power, ShieldCheck } from "lucide-react";
+import { Pencil, Trash2, UserPlus, Eye, Power, ShieldCheck, KeyRound, Upload, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
   component: UsersPage,
@@ -42,6 +43,7 @@ function UsersPage() {
   const deleteFn = useServerFn(deleteUser);
   const canPromoteFn = useServerFn(canSelfPromote);
   const promoteFn = useServerFn(promoteSelfToSuperAdmin);
+  const passwordFn = useServerFn(adminSetUserPassword);
   const qc = useQueryClient();
 
   const [search, setSearch] = useState("");
@@ -49,6 +51,7 @@ function UsersPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editUser, setEditUser] = useState<any | null>(null);
   const [viewUser, setViewUser] = useState<any | null>(null);
+  const [pwUser, setPwUser] = useState<any | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-users", search, roleFilter],
@@ -89,6 +92,11 @@ function UsersPage() {
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteFn({ data: { id } }),
     onSuccess: () => { toast.success("Deleted"); invalidate(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const passwordMut = useMutation({
+    mutationFn: (payload: { id: string; password: string }) => passwordFn({ data: payload }),
+    onSuccess: () => { toast.success(t("users.passwordUpdated")); setPwUser(null); },
     onError: (e: any) => toast.error(e.message),
   });
   const toggleStatus = (u: any) =>
@@ -198,6 +206,9 @@ function UsersPage() {
                             <Button size="icon" variant="ghost" onClick={() => setEditUser(u)} title={t("users.editUser")}>
                               <Pencil className="h-4 w-4" />
                             </Button>
+                            <Button size="icon" variant="ghost" onClick={() => setPwUser(u)} title={t("users.resetPassword")}>
+                              <KeyRound className="h-4 w-4" />
+                            </Button>
                             <Button size="icon" variant="ghost" onClick={() => toggleStatus(u)} title={u.status === "active" ? t("users.deactivate") : t("users.activate")}>
                               <Power className="h-4 w-4" />
                             </Button>
@@ -243,6 +254,13 @@ function UsersPage() {
             />
           </Dialog>
         )}
+
+        <PasswordResetDialog
+          user={pwUser}
+          onClose={() => setPwUser(null)}
+          onSubmit={(password: string) => passwordMut.mutate({ id: pwUser.id, password })}
+          pending={passwordMut.isPending}
+        />
 
         <Sheet open={!!viewUser} onOpenChange={(o) => !o && setViewUser(null)}>
           <SheetContent>
@@ -333,8 +351,8 @@ function UserDialog({
         <FieldRow label={t("users.phone")}>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
         </FieldRow>
-        <FieldRow label={t("users.avatarUrl")}>
-          <Input value={avatar_url} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://..." />
+        <FieldRow label={t("users.avatar")}>
+          <AvatarUpload value={avatar_url} onChange={setAvatarUrl} />
         </FieldRow>
         {canEditRole && (
           <FieldRow label={t("users.role")}>
@@ -373,3 +391,98 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
     </div>
   );
 }
+
+function AvatarUpload({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [busy, setBusy] = useState(false);
+  async function pick(file: File | null) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast.error("Please choose an image");
+    if (file.size > 5 * 1024 * 1024) return toast.error("Max file size is 5 MB");
+    setBusy(true);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from("user-avatars").upload(path, file, {
+        contentType: file.type, upsert: false,
+      });
+      if (error) throw error;
+      const { data } = supabase.storage.from("user-avatars").getPublicUrl(path);
+      onChange(data.publicUrl);
+      toast.success("Photo uploaded");
+    } catch (e: any) {
+      toast.error(e.message ?? "Upload failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="flex items-center gap-3">
+      <Avatar className="h-14 w-14">
+        <AvatarImage src={value || undefined} />
+        <AvatarFallback>?</AvatarFallback>
+      </Avatar>
+      <div className="flex-1">
+        <Input
+          type="file"
+          accept="image/*"
+          disabled={busy}
+          onChange={(e) => pick(e.target.files?.[0] ?? null)}
+        />
+        {value && (
+          <button type="button" className="text-xs text-muted-foreground hover:text-destructive mt-1" onClick={() => onChange("")}>
+            Remove photo
+          </button>
+        )}
+      </div>
+      {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+    </div>
+  );
+}
+
+function PasswordResetDialog({
+  user, onClose, onSubmit, pending,
+}: {
+  user: any | null;
+  onClose: () => void;
+  onSubmit: (password: string) => void;
+  pending?: boolean;
+}) {
+  const { t } = useI18n();
+  const [pw, setPw] = useState("");
+  const [pw2, setPw2] = useState("");
+  function submit() {
+    if (pw.length < 8) return toast.error(t("users.passwordTooShort"));
+    if (pw !== pw2) return toast.error(t("users.passwordMismatch"));
+    onSubmit(pw);
+  }
+  return (
+    <Dialog open={!!user} onOpenChange={(o) => { if (!o) { setPw(""); setPw2(""); onClose(); } }}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle>{t("users.resetPassword")}</DialogTitle>
+        </DialogHeader>
+        {user && (
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {user.full_name || user.email}
+            </p>
+            <FieldRow label={t("users.newPassword")}>
+              <Input type="password" value={pw} onChange={(e) => setPw(e.target.value)} autoFocus />
+            </FieldRow>
+            <FieldRow label={t("users.confirmPassword")}>
+              <Input type="password" value={pw2} onChange={(e) => setPw2(e.target.value)} />
+            </FieldRow>
+          </div>
+        )}
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button onClick={submit} disabled={pending}>
+            {pending ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : <KeyRound className="h-4 w-4 me-2" />}
+            {t("common.save")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+

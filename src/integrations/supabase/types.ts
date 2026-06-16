@@ -47,21 +47,24 @@ export type Database = {
           created_at: string
           file_url: string
           id: string
-          title: string
+          title_ar: string
+          title_en: string
         }
         Insert: {
           category: Database["public"]["Enums"]["document_category"]
           created_at?: string
           file_url: string
           id?: string
-          title: string
+          title_ar?: string
+          title_en?: string
         }
         Update: {
           category?: Database["public"]["Enums"]["document_category"]
           created_at?: string
           file_url?: string
           id?: string
-          title?: string
+          title_ar?: string
+          title_en?: string
         }
         Relationships: []
       }
@@ -680,6 +683,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      social_links: {
+        Row: {
+          created_at: string
+          id: string
+          platform_icon: string
+          platform_name: string
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform_icon: string
+          platform_name: string
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform_icon?: string
+          platform_name?: string
+          sort_order?: number
+          url?: string
+        }
+        Relationships: []
       }
       tags: {
         Row: {

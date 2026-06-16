@@ -45,6 +45,7 @@ const dict: Dict = {
   "admin.news": { ar: "الأخبار", en: "News" },
   "admin.stats": { ar: "إحصائيات الرئيسية", en: "Homepage Stats" },
   "admin.users": { ar: "المستخدمون", en: "Users" },
+  "admin.socialLinks": { ar: "روابط التواصل الاجتماعي", en: "Social Links" },
   "admin.viewSite": { ar: "عرض الموقع", en: "View site" },
   "admin.group.pages": { ar: "الصفحات", en: "Pages" },
   "admin.group.content": { ar: "المحتوى", en: "Content" },
@@ -80,6 +81,12 @@ const dict: Dict = {
   "users.role.user": { ar: "مستخدم", en: "User" },
   "users.noUsers": { ar: "لا يوجد مستخدمون", en: "No users" },
   "users.actions": { ar: "إجراءات", en: "Actions" },
+  "users.resetPassword": { ar: "إعادة تعيين كلمة المرور", en: "Reset Password" },
+  "users.newPassword": { ar: "كلمة المرور الجديدة", en: "New Password" },
+  "users.confirmPassword": { ar: "تأكيد كلمة المرور", en: "Confirm Password" },
+  "users.passwordTooShort": { ar: "يجب أن لا تقل كلمة المرور عن 8 أحرف", en: "Password must be at least 8 characters" },
+  "users.passwordMismatch": { ar: "كلمتا المرور غير متطابقتين", en: "Passwords do not match" },
+  "users.passwordUpdated": { ar: "تم تحديث كلمة المرور", en: "Password updated" },
 };
 
 interface I18nCtx {
