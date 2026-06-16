@@ -34,9 +34,10 @@ function Body() {
           />
         )}
         {gallery.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3">
-            {gallery.map((g, i) => <img key={i} src={g} alt="" className="rounded-lg aspect-square object-cover" />)}
-          </div>
+          <LightboxGallery
+            images={gallery}
+            className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3"
+          />
         )}
       </div>
     </article>
