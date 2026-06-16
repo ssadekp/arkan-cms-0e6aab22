@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -32,9 +33,15 @@ import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
+import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
@@ -153,6 +160,12 @@ const AuthenticatedAdminFocusAreasRoute =
     path: '/admin/focus-areas',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminDocumentsRoute =
+  AuthenticatedAdminDocumentsRouteImport.update({
+    id: '/admin/documents',
+    path: '/admin/documents',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminContactRoute =
   AuthenticatedAdminContactRouteImport.update({
     id: '/admin/contact',
@@ -171,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -180,6 +194,7 @@ export interface FileRoutesByFullPath {
   '/projects/': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
+  '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -197,6 +212,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -206,6 +222,7 @@ export interface FileRoutesByTo {
   '/projects': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
+  '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -225,6 +242,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -234,6 +252,7 @@ export interface FileRoutesById {
   '/projects/': typeof ProjectsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
+  '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -253,6 +272,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -262,6 +282,7 @@ export interface FileRouteTypes {
     | '/projects/'
     | '/admin/about'
     | '/admin/contact'
+    | '/admin/documents'
     | '/admin/focus-areas'
     | '/admin/news'
     | '/admin/pages'
@@ -279,6 +300,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -288,6 +310,7 @@ export interface FileRouteTypes {
     | '/projects'
     | '/admin/about'
     | '/admin/contact'
+    | '/admin/documents'
     | '/admin/focus-areas'
     | '/admin/news'
     | '/admin/pages'
@@ -306,6 +329,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -315,6 +339,7 @@ export interface FileRouteTypes {
     | '/projects/'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/contact'
+    | '/_authenticated/admin/documents'
     | '/_authenticated/admin/focus-areas'
     | '/_authenticated/admin/news'
     | '/_authenticated/admin/pages'
@@ -334,6 +359,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   PartnersRoute: typeof PartnersRoute
+  ResourcesRoute: typeof ResourcesRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   PSlugRoute: typeof PSlugRoute
@@ -345,6 +371,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partners': {
       id: '/partners'
       path: '/partners'
@@ -506,6 +539,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFocusAreasRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/documents': {
+      id: '/_authenticated/admin/documents'
+      path: '/admin/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AuthenticatedAdminDocumentsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/contact': {
       id: '/_authenticated/admin/contact'
       path: '/admin/contact'
@@ -526,6 +566,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
+  AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
@@ -541,6 +582,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
+  AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
@@ -564,6 +606,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   PartnersRoute: PartnersRoute,
+  ResourcesRoute: ResourcesRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   PSlugRoute: PSlugRoute,

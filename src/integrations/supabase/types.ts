@@ -41,6 +41,30 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          category: Database["public"]["Enums"]["document_category"]
+          created_at: string
+          file_url: string
+          id: string
+          title: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["document_category"]
+          created_at?: string
+          file_url: string
+          id?: string
+          title: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["document_category"]
+          created_at?: string
+          file_url?: string
+          id?: string
+          title?: string
+        }
+        Relationships: []
+      }
       focus_area_partners: {
         Row: {
           focus_area_id: string
@@ -740,6 +764,7 @@ export type Database = {
     Enums: {
       app_language: "ar" | "en"
       app_role: "admin" | "editor" | "super_admin" | "author"
+      document_category: "regulation" | "form" | "achievement"
       project_status: "planned" | "ongoing" | "completed"
     }
     CompositeTypes: {
@@ -870,6 +895,7 @@ export const Constants = {
     Enums: {
       app_language: ["ar", "en"],
       app_role: ["admin", "editor", "super_admin", "author"],
+      document_category: ["regulation", "form", "achievement"],
       project_status: ["planned", "ongoing", "completed"],
     },
   },
