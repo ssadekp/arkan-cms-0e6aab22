@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getProject } from "@/lib/content.functions";
+import { LightboxGallery } from "@/components/site/Lightbox";
 
 export const Route = createFileRoute("/projects/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
@@ -28,6 +29,11 @@ function Body() {
     (data.tagsI18n as any[]).find((x) => x.tag_id === id && x.lang === lang)?.name
     ?? (data.tagsI18n as any[]).find((x) => x.tag_id === id)?.name
     ?? "";
+  const focusName = data.focus
+    ? (data.focusI18n as any[]).find((x) => x.lang === lang)?.title
+      ?? (data.focusI18n as any[]).find((x) => x.lang === "ar")?.title
+      ?? (data.focus as any).slug
+    : null;
 
   return (
     <article>
@@ -36,6 +42,11 @@ function Body() {
       </div>
       <div className="container-narrow py-12">
         <div className="flex flex-wrap items-center gap-2 mb-3">
+          {focusName && (
+            <span className="inline-flex items-center rounded-full bg-secondary text-secondary-foreground px-3 py-1 text-xs font-semibold uppercase tracking-wide">
+              {focusName}
+            </span>
+          )}
           {status && (
             <span className="inline-block rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
               {status}
@@ -54,9 +65,10 @@ function Body() {
         />
 
         {gallery.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3">
-            {gallery.map((g, i) => <img key={i} src={g} alt="" className="rounded-lg aspect-square object-cover" />)}
-          </div>
+          <LightboxGallery
+            images={gallery}
+            className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3"
+          />
         )}
 
         {data.partners.length > 0 && (

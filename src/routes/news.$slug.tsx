@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getNewsArticle } from "@/lib/content.functions";
+import { LightboxGallery } from "@/components/site/Lightbox";
 
 export const Route = createFileRoute("/news/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
@@ -33,9 +34,10 @@ function Body() {
           />
         )}
         {gallery.length > 0 && (
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3">
-            {gallery.map((g, i) => <img key={i} src={g} alt="" className="rounded-lg aspect-square object-cover" />)}
-          </div>
+          <LightboxGallery
+            images={gallery}
+            className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3"
+          />
         )}
       </div>
     </article>

@@ -87,7 +87,7 @@ export const getProject = createServerFn({ method: "GET" })
     const sb = await admin();
     const project = await sb.from("projects").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!project.data) return null;
-    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n] = await Promise.all([
+    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n, focus, focusI18n] = await Promise.all([
       sb.from("projects_i18n").select("*").eq("project_id", project.data.id),
       sb.from("project_partners").select("partner_id").eq("project_id", project.data.id),
       sb.from("partners").select("*"),
@@ -95,6 +95,12 @@ export const getProject = createServerFn({ method: "GET" })
       sb.from("project_tags").select("tag_id").eq("project_id", project.data.id),
       sb.from("tags").select("*"),
       sb.from("tags_i18n").select("*"),
+      project.data.focus_area_id
+        ? sb.from("focus_areas").select("*").eq("id", project.data.focus_area_id).maybeSingle()
+        : Promise.resolve({ data: null } as any),
+      project.data.focus_area_id
+        ? sb.from("focus_areas_i18n").select("*").eq("focus_area_id", project.data.focus_area_id)
+        : Promise.resolve({ data: [] } as any),
     ]);
     const partnerIds = new Set((partnerLinks.data ?? []).map((p) => p.partner_id));
     const tagIds = new Set((tagLinks.data ?? []).map((t) => t.tag_id));
@@ -105,6 +111,8 @@ export const getProject = createServerFn({ method: "GET" })
       partnersI18n: (partnersI18n.data as any[]) ?? [],
       tags: (tags.data ?? []).filter((t) => tagIds.has(t.id)),
       tagsI18n: tagsI18n.data ?? [],
+      focus: (focus as any).data ?? null,
+      focusI18n: ((focusI18n as any).data ?? []) as any[],
     };
   });
 
