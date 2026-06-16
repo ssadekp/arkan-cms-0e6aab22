@@ -12,6 +12,8 @@ const dict: Dict = {
   "nav.partners": { ar: "الشركاء", en: "Partners" },
   "nav.news": { ar: "الأخبار", en: "News" },
   "nav.contact": { ar: "تواصل معنا", en: "Contact" },
+  "nav.resources": { ar: "الوثائق والتقارير", en: "Documents" },
+  "admin.documents": { ar: "الوثائق", en: "Documents" },
   "nav.admin": { ar: "لوحة التحكم", en: "Admin" },
   "nav.signin": { ar: "تسجيل الدخول", en: "Sign in" },
   "nav.signout": { ar: "تسجيل الخروج", en: "Sign out" },
