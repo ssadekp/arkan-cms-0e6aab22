@@ -351,8 +351,8 @@ function UserDialog({
         <FieldRow label={t("users.phone")}>
           <Input value={phone} onChange={(e) => setPhone(e.target.value)} />
         </FieldRow>
-        <FieldRow label={t("users.avatarUrl")}>
-          <Input value={avatar_url} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://..." />
+        <FieldRow label={t("users.avatar")}>
+          <AvatarUpload value={avatar_url} onChange={setAvatarUrl} />
         </FieldRow>
         {canEditRole && (
           <FieldRow label={t("users.role")}>
