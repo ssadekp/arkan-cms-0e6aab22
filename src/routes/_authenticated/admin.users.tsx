@@ -43,6 +43,7 @@ function UsersPage() {
   const deleteFn = useServerFn(deleteUser);
   const canPromoteFn = useServerFn(canSelfPromote);
   const promoteFn = useServerFn(promoteSelfToSuperAdmin);
+  const passwordFn = useServerFn(adminSetUserPassword);
   const qc = useQueryClient();
 
   const [search, setSearch] = useState("");
@@ -50,6 +51,7 @@ function UsersPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [editUser, setEditUser] = useState<any | null>(null);
   const [viewUser, setViewUser] = useState<any | null>(null);
+  const [pwUser, setPwUser] = useState<any | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-users", search, roleFilter],
@@ -90,6 +92,11 @@ function UsersPage() {
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteFn({ data: { id } }),
     onSuccess: () => { toast.success("Deleted"); invalidate(); },
+    onError: (e: any) => toast.error(e.message),
+  });
+  const passwordMut = useMutation({
+    mutationFn: (payload: { id: string; password: string }) => passwordFn({ data: payload }),
+    onSuccess: () => { toast.success(t("users.passwordUpdated")); setPwUser(null); },
     onError: (e: any) => toast.error(e.message),
   });
   const toggleStatus = (u: any) =>
