@@ -25,6 +25,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n }: Props) {
     { to: "/projects", label: t("nav.projects") },
     { to: "/partners", label: t("nav.partners") },
     { to: "/news", label: t("nav.news") },
+    { to: "/resources", label: t("nav.resources") },
     { to: "/contact", label: t("nav.contact") },
   ];
 

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -36,6 +37,11 @@ import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 
+const ResourcesRoute = ResourcesRouteImport.update({
+  id: '/resources',
+  path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PartnersRoute = PartnersRouteImport.update({
   id: '/partners',
   path: '/partners',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -234,6 +242,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
@@ -263,6 +272,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -318,6 +329,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/resources'
     | '/focus-areas/$slug'
     | '/news/$slug'
     | '/p/$slug'
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   PartnersRoute: typeof PartnersRoute
+  ResourcesRoute: typeof ResourcesRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   PSlugRoute: typeof PSlugRoute
@@ -358,6 +371,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/resources': {
+      id: '/resources'
+      path: '/resources'
+      fullPath: '/resources'
+      preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/partners': {
       id: '/partners'
       path: '/partners'
@@ -586,6 +606,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   PartnersRoute: PartnersRoute,
+  ResourcesRoute: ResourcesRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   PSlugRoute: PSlugRoute,
