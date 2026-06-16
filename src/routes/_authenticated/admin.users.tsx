@@ -206,6 +206,9 @@ function UsersPage() {
                             <Button size="icon" variant="ghost" onClick={() => setEditUser(u)} title={t("users.editUser")}>
                               <Pencil className="h-4 w-4" />
                             </Button>
+                            <Button size="icon" variant="ghost" onClick={() => setPwUser(u)} title={t("users.resetPassword")}>
+                              <KeyRound className="h-4 w-4" />
+                            </Button>
                             <Button size="icon" variant="ghost" onClick={() => toggleStatus(u)} title={u.status === "active" ? t("users.deactivate") : t("users.activate")}>
                               <Power className="h-4 w-4" />
                             </Button>
@@ -251,6 +254,13 @@ function UsersPage() {
             />
           </Dialog>
         )}
+
+        <PasswordResetDialog
+          user={pwUser}
+          onClose={() => setPwUser(null)}
+          onSubmit={(password) => passwordMut.mutate({ id: pwUser.id, password })}
+          pending={passwordMut.isPending}
+        />
 
         <Sheet open={!!viewUser} onOpenChange={(o) => !o && setViewUser(null)}>
           <SheetContent>
