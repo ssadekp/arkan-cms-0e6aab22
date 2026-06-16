@@ -258,7 +258,7 @@ function UsersPage() {
         <PasswordResetDialog
           user={pwUser}
           onClose={() => setPwUser(null)}
-          onSubmit={(password) => passwordMut.mutate({ id: pwUser.id, password })}
+          onSubmit={(password: string) => passwordMut.mutate({ id: pwUser.id, password })}
           pending={passwordMut.isPending}
         />
 
