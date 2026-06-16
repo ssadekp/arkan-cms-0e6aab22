@@ -47,7 +47,8 @@ export const Route = createFileRoute("/_authenticated/admin/documents")({
 
 function DocumentsAdmin() {
   const qc = useQueryClient();
-  const [title, setTitle] = useState("");
+  const [titleAr, setTitleAr] = useState("");
+  const [titleEn, setTitleEn] = useState("");
   const [category, setCategory] = useState<Category>("regulation");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
@@ -67,7 +68,8 @@ function DocumentsAdmin() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim()) return toast.error("Title is required");
+    if (!titleAr.trim()) return toast.error("Arabic title is required");
+    if (!titleEn.trim()) return toast.error("English title is required");
     if (!file) return toast.error("Please choose a PDF file");
     if (file.type !== "application/pdf") return toast.error("Only PDF files are allowed");
 
@@ -81,10 +83,16 @@ function DocumentsAdmin() {
       const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
       const { error: insErr } = await supabase
         .from("documents")
-        .insert({ title: title.trim(), category, file_url: urlData.publicUrl });
+        .insert({
+          title_ar: titleAr.trim(),
+          title_en: titleEn.trim(),
+          category,
+          file_url: urlData.publicUrl,
+        });
       if (insErr) throw new Error(insErr.message);
       toast.success("Document uploaded");
-      setTitle("");
+      setTitleAr("");
+      setTitleEn("");
       setCategory("regulation");
       setFile(null);
       if (fileRef.current) fileRef.current.value = "";
@@ -100,7 +108,6 @@ function DocumentsAdmin() {
   async function onDelete(id: string, fileUrl: string) {
     if (!confirm("Delete this document?")) return;
     try {
-      // Extract storage path from public URL
       const marker = `/${BUCKET}/`;
       const idx = fileUrl.indexOf(marker);
       if (idx !== -1) {
@@ -126,8 +133,12 @@ function DocumentsAdmin() {
         <CardContent>
           <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1.5">
-              <Label>Title</Label>
-              <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Document title" />
+              <Label>Arabic Title *</Label>
+              <Input value={titleAr} onChange={(e) => setTitleAr(e.target.value)} placeholder="عنوان الوثيقة" dir="rtl" />
+            </div>
+            <div className="space-y-1.5">
+              <Label>English Title *</Label>
+              <Input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} placeholder="Document title" />
             </div>
             <div className="space-y-1.5">
               <Label>Category</Label>
@@ -140,7 +151,7 @@ function DocumentsAdmin() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5 md:col-span-2">
+            <div className="space-y-1.5">
               <Label>PDF File</Label>
               <Input
                 ref={fileRef}
@@ -172,7 +183,8 @@ function DocumentsAdmin() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
+                  <TableHead>Arabic Title</TableHead>
+                  <TableHead>English Title</TableHead>
                   <TableHead>Category</TableHead>
                   <TableHead>File</TableHead>
                   <TableHead className="w-24"></TableHead>
@@ -181,12 +193,13 @@ function DocumentsAdmin() {
               <TableBody>
                 {data.map((doc) => (
                   <TableRow key={doc.id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium" dir="rtl">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        {doc.title}
+                        <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                        {doc.title_ar}
                       </div>
                     </TableCell>
+                    <TableCell className="font-medium">{doc.title_en}</TableCell>
                     <TableCell>
                       <Badge variant="secondary">{CATEGORY_LABELS[doc.category as Category]}</Badge>
                     </TableCell>
