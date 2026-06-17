@@ -35,6 +35,30 @@ function Inner({ children }: { children: ReactNode }) {
     applyFavicon((settings as any)?.favicon_url);
   }, [settings]);
 
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const html = (settings as any)?.head_scripts as string | null | undefined;
+    if (!html) return;
+    const container = document.createElement("div");
+    container.setAttribute("data-injected-head", "site-head-scripts");
+    container.innerHTML = html;
+    const nodes: Node[] = [];
+    Array.from(container.childNodes).forEach((node) => {
+      if (node.nodeType === 1 && (node as Element).tagName === "SCRIPT") {
+        const src = node as HTMLScriptElement;
+        const fresh = document.createElement("script");
+        Array.from(src.attributes).forEach((a) => fresh.setAttribute(a.name, a.value));
+        fresh.text = src.text;
+        document.head.appendChild(fresh);
+        nodes.push(fresh);
+      } else {
+        document.head.appendChild(node);
+        nodes.push(node);
+      }
+    });
+    return () => { nodes.forEach((n) => n.parentNode?.removeChild(n)); };
+  }, [(settings as any)?.head_scripts]);
+
 
   return (
     <div className="min-h-screen flex flex-col">
