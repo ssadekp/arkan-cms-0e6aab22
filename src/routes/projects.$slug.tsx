@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getProject } from "@/lib/content.functions";
+import { sanitizeHtml } from "@/lib/sanitize";
 import { LightboxGallery } from "@/components/site/Lightbox";
 
 export const Route = createFileRoute("/projects/$slug")({
@@ -61,7 +62,7 @@ function Body() {
         <h1 className="text-4xl font-bold">{i18n?.title}</h1>
         <div
           className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: (i18n as any)?.description ?? "" }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml((i18n as any)?.description ?? "") }}
         />
 
         {gallery.length > 0 && (

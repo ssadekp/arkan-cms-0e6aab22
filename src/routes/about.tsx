@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getSiteData, getHomeData } from "@/lib/content.functions";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const Route = createFileRoute("/about")({
   head: () => ({ meta: [{ title: "About — Lam7et Khair" }, { name: "description", content: "About our foundation." }] }),
@@ -22,10 +23,10 @@ function AboutBody() {
       <h1 className="text-4xl font-bold">{i18n?.about_title || i18n?.site_name}</h1>
       <p className="mt-2 text-lg text-primary">{i18n?.tagline}</p>
       {i18n?.about_short && (
-        <div className="mt-8 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: i18n.about_short }} />
+        <div className="mt-8 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: sanitizeHtml(i18n.about_short) }} />
       )}
       {i18n?.about_body && (
-        <div className="mt-6 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: i18n.about_body }} />
+        <div className="mt-6 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: sanitizeHtml(i18n.about_body) }} />
       )}
 
       {(home?.stats?.length ?? 0) > 0 && (
