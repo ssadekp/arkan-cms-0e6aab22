@@ -45,6 +45,7 @@ function SettingsPage() {
         seo_og_image: s.seo_og_image ?? "",
         map_embed_url: (s as any).map_embed_url ?? "",
         sponsorship_url: (s as any).sponsorship_url ?? "",
+        head_scripts: (s as any).head_scripts ?? "",
         social_links: s.social_links ?? {},
       });
     }
@@ -65,6 +66,7 @@ function SettingsPage() {
         seo_og_image: root.seo_og_image || null,
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
+        head_scripts: root.head_scripts || null,
         social_links: root.social_links ?? {},
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
@@ -148,6 +150,23 @@ function SettingsPage() {
             help="Appears when the site is shared on social media. 1200×630 recommended."
           />
         </Section>
+
+        <Section title="Header scripts (Google Tag Manager, analytics, etc.)">
+          <p className="text-xs text-muted-foreground">
+            Paste raw HTML/script tags here (e.g. the GTM <code>&lt;script&gt;</code> snippet). It will be injected into the <code>&lt;head&gt;</code> of every public page. Leave empty to disable. Only paste code from sources you trust.
+          </p>
+          <div className="space-y-1.5">
+            <Label>Head scripts</Label>
+            <Textarea
+              rows={8}
+              className="font-mono text-xs"
+              value={root.head_scripts ?? ""}
+              onChange={(e) => setRoot({ ...root, head_scripts: e.target.value })}
+              placeholder={"<!-- Google Tag Manager -->\n<script>...</script>"}
+            />
+          </div>
+        </Section>
+
 
         <Section title="Site identity (AR / EN)">
           <p className="text-xs text-muted-foreground">
