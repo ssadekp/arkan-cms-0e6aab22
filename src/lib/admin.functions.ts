@@ -93,6 +93,7 @@ const settingsSchema = z.object({
       { message: "Only Google Maps or OpenStreetMap embed URLs are allowed" },
     ),
   sponsorship_url: z.string().nullable().optional(),
+  head_scripts: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
 
   i18n: z.array(z.object({
