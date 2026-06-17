@@ -151,6 +151,23 @@ function SettingsPage() {
           />
         </Section>
 
+        <Section title="Header scripts (Google Tag Manager, analytics, etc.)">
+          <p className="text-xs text-muted-foreground">
+            Paste raw HTML/script tags here (e.g. the GTM <code>&lt;script&gt;</code> snippet). It will be injected into the <code>&lt;head&gt;</code> of every public page. Leave empty to disable. Only paste code from sources you trust.
+          </p>
+          <div className="space-y-1.5">
+            <Label>Head scripts</Label>
+            <Textarea
+              rows={8}
+              className="font-mono text-xs"
+              value={root.head_scripts ?? ""}
+              onChange={(e) => setRoot({ ...root, head_scripts: e.target.value })}
+              placeholder={"<!-- Google Tag Manager -->\n<script>...</script>"}
+            />
+          </div>
+        </Section>
+
+
         <Section title="Site identity (AR / EN)">
           <p className="text-xs text-muted-foreground">
             <span className="font-medium">Site name</span> appears on the public website (footer, header brand).{" "}
