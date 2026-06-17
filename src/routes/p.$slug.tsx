@@ -28,7 +28,7 @@ function Body() {
         <h1 className="text-4xl font-bold">{i?.title}</h1>
         <div
           className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
-          dangerouslySetInnerHTML={{ __html: i?.body ?? "" }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(i?.body ?? "") }}
         />
       </div>
     </article>
