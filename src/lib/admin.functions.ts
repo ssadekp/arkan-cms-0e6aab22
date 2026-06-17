@@ -75,7 +75,23 @@ const settingsSchema = z.object({
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
-  map_embed_url: z.string().nullable().optional(),
+  map_embed_url: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (v) => {
+        if (!v) return true;
+        try {
+          const u = new URL(v);
+          if (u.protocol !== "https:") return false;
+          return ["www.google.com", "maps.google.com", "www.openstreetmap.org"].includes(u.hostname);
+        } catch {
+          return false;
+        }
+      },
+      { message: "Only Google Maps or OpenStreetMap embed URLs are allowed" },
+    ),
   sponsorship_url: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
 
