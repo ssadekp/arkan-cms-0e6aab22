@@ -599,6 +599,7 @@ export type Database = {
           primary_color: string
           seo_og_image: string | null
           social_links: Json
+          sponsorship_url: string | null
           updated_at: string
         }
         Insert: {
@@ -613,6 +614,7 @@ export type Database = {
           primary_color?: string
           seo_og_image?: string | null
           social_links?: Json
+          sponsorship_url?: string | null
           updated_at?: string
         }
         Update: {
@@ -627,6 +629,7 @@ export type Database = {
           primary_color?: string
           seo_og_image?: string | null
           social_links?: Json
+          sponsorship_url?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -644,6 +647,7 @@ export type Database = {
           seo_title: string
           setting_id: number
           site_name: string
+          sponsorship_text: string | null
           tagline: string
         }
         Insert: {
@@ -658,6 +662,7 @@ export type Database = {
           seo_title?: string
           setting_id: number
           site_name?: string
+          sponsorship_text?: string | null
           tagline?: string
         }
         Update: {
@@ -672,6 +677,7 @@ export type Database = {
           seo_title?: string
           setting_id?: number
           site_name?: string
+          sponsorship_text?: string | null
           tagline?: string
         }
         Relationships: [
