@@ -66,6 +66,7 @@ function SettingsPage() {
         seo_og_image: root.seo_og_image || null,
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
+        head_scripts: root.head_scripts || null,
         social_links: root.social_links ?? {},
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
