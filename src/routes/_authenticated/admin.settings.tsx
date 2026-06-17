@@ -45,6 +45,7 @@ function SettingsPage() {
         seo_og_image: s.seo_og_image ?? "",
         map_embed_url: (s as any).map_embed_url ?? "",
         sponsorship_url: (s as any).sponsorship_url ?? "",
+        head_scripts: (s as any).head_scripts ?? "",
         social_links: s.social_links ?? {},
       });
     }
