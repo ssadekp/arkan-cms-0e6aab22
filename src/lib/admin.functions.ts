@@ -76,6 +76,7 @@ const settingsSchema = z.object({
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
   map_embed_url: z.string().nullable().optional(),
+  sponsorship_url: z.string().nullable().optional(),
   social_links: z.record(z.string(), z.string()),
 
   i18n: z.array(z.object({
@@ -90,9 +91,11 @@ const settingsSchema = z.object({
     seo_title: z.string(),
     seo_description: z.string(),
     address: z.string(),
+    sponsorship_text: z.string().optional().default(""),
   })),
 
 });
+
 
 export const saveSiteSettings = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
