@@ -8,11 +8,12 @@ interface Props {
   siteName: string;
   footerText: string;
   contact: { email?: string | null; phone?: string | null; address?: string | null };
+  sponsorshipText?: string;
+  sponsorshipUrl?: string;
 }
 
-const ARKAN_URL = "https://arkan-foundation.org";
+export function Footer({ siteName, footerText, contact, sponsorshipText, sponsorshipUrl }: Props) {
 
-export function Footer({ siteName, footerText, contact }: Props) {
   const { t, lang, dir } = useI18n();
 
   const { data: socialLinks } = useQuery({
@@ -73,17 +74,23 @@ export function Footer({ siteName, footerText, contact }: Props) {
             {" — "}
             {lang === "ar" ? "جميع الحقوق محفوظة" : "All rights reserved"}
           </span>
-          <span>
-            {lang === "ar" ? "تحت رعاية " : "Under the patronage of "}
-            <a
-              href={ARKAN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-foreground hover:text-primary underline-offset-4 hover:underline transition"
-            >
-              {lang === "ar" ? "مؤسسة أركان" : "Arkan Foundation"}
-            </a>
-          </span>
+          {sponsorshipText ? (
+            sponsorshipUrl ? (
+              <a
+                href={sponsorshipUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground/90 hover:text-primary underline-offset-4 hover:underline transition"
+              >
+                {sponsorshipText}
+              </a>
+            ) : (
+              <span className="font-medium text-foreground/90">{sponsorshipText}</span>
+            )
+          ) : (
+            <span />
+          )}
+
         </div>
       </div>
     </footer>

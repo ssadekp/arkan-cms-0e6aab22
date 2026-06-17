@@ -7,7 +7,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, Share2 } from "lucide-react";
+import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { useI18n } from "@/lib/i18n";
@@ -48,8 +48,8 @@ export function AdminShell({ title, children }: { title: string; children: React
   ];
   const managementItems = [
     { to: "/admin/users", label: t("admin.users"), icon: Users },
-    { to: "/admin/social-links", label: t("admin.socialLinks"), icon: Share2 },
   ];
+
 
   async function signOut() {
     await supabase.auth.signOut();

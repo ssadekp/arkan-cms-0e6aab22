@@ -27,7 +27,6 @@ import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminTagsRouteImport } from './routes/_authenticated/admin.tags'
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
-import { Route as AuthenticatedAdminSocialLinksRouteImport } from './routes/_authenticated/admin.social-links'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminProjectsRouteImport } from './routes/_authenticated/admin.projects'
 import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authenticated/admin.partners'
@@ -127,12 +126,6 @@ const AuthenticatedAdminStatsRoute = AuthenticatedAdminStatsRouteImport.update({
   path: '/admin/stats',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAdminSocialLinksRoute =
-  AuthenticatedAdminSocialLinksRouteImport.update({
-    id: '/admin/social-links',
-    path: '/admin/social-links',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedAdminSettingsRoute =
   AuthenticatedAdminSettingsRouteImport.update({
     id: '/admin/settings',
@@ -208,7 +201,6 @@ export interface FileRoutesByFullPath {
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -237,7 +229,6 @@ export interface FileRoutesByTo {
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -268,7 +259,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
   '/_authenticated/admin/projects': typeof AuthenticatedAdminProjectsRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
-  '/_authenticated/admin/social-links': typeof AuthenticatedAdminSocialLinksRoute
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -299,7 +289,6 @@ export interface FileRouteTypes {
     | '/admin/partners'
     | '/admin/projects'
     | '/admin/settings'
-    | '/admin/social-links'
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
@@ -328,7 +317,6 @@ export interface FileRouteTypes {
     | '/admin/partners'
     | '/admin/projects'
     | '/admin/settings'
-    | '/admin/social-links'
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
@@ -358,7 +346,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/partners'
     | '/_authenticated/admin/projects'
     | '/_authenticated/admin/settings'
-    | '/_authenticated/admin/social-links'
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
@@ -510,13 +497,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminStatsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/social-links': {
-      id: '/_authenticated/admin/social-links'
-      path: '/admin/social-links'
-      fullPath: '/admin/social-links'
-      preLoaderRoute: typeof AuthenticatedAdminSocialLinksRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/admin/settings': {
       id: '/_authenticated/admin/settings'
       path: '/admin/settings'
@@ -593,7 +573,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
   AuthenticatedAdminProjectsRoute: typeof AuthenticatedAdminProjectsRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
-  AuthenticatedAdminSocialLinksRoute: typeof AuthenticatedAdminSocialLinksRoute
   AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
   AuthenticatedAdminTagsRoute: typeof AuthenticatedAdminTagsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -610,7 +589,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
   AuthenticatedAdminProjectsRoute: AuthenticatedAdminProjectsRoute,
   AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
-  AuthenticatedAdminSocialLinksRoute: AuthenticatedAdminSocialLinksRoute,
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminTagsRoute: AuthenticatedAdminTagsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
