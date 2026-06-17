@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getPage } from "@/lib/content.functions";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const Route = createFileRoute("/p/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
