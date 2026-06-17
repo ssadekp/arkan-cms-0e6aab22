@@ -31,7 +31,7 @@ function Body() {
         {i18n?.body && (
           <div
             className="prose prose-sm sm:prose-base max-w-none mt-6 dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: i18n.body }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(i18n.body) }}
           />
         )}
         {gallery.length > 0 && (
