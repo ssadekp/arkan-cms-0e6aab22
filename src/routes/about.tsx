@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getSiteData, getHomeData } from "@/lib/content.functions";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 export const Route = createFileRoute("/about")({
   head: () => ({ meta: [{ title: "About — Lam7et Khair" }, { name: "description", content: "About our foundation." }] }),
