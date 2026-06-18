@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { SOCIAL_PLATFORMS, SocialIcon, type SocialPlatform } from "@/components/site/SocialIcon";
 import { Trash2, Plus, Loader2 } from "lucide-react";
@@ -46,6 +47,13 @@ function SettingsPage() {
         map_embed_url: (s as any).map_embed_url ?? "",
         sponsorship_url: (s as any).sponsorship_url ?? "",
         head_scripts: (s as any).head_scripts ?? "",
+        show_all_sections: (s as any).show_all_sections ?? true,
+        show_focus_areas: (s as any).show_focus_areas ?? true,
+        show_projects: (s as any).show_projects ?? true,
+        show_news: (s as any).show_news ?? true,
+        show_documents: (s as any).show_documents ?? true,
+        show_partners: (s as any).show_partners ?? true,
+        show_stats: (s as any).show_stats ?? true,
         social_links: s.social_links ?? {},
       });
     }
@@ -67,6 +75,13 @@ function SettingsPage() {
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
         head_scripts: root.head_scripts || null,
+        show_all_sections: root.show_all_sections ?? true,
+        show_focus_areas: root.show_focus_areas ?? true,
+        show_projects: root.show_projects ?? true,
+        show_news: root.show_news ?? true,
+        show_documents: root.show_documents ?? true,
+        show_partners: root.show_partners ?? true,
+        show_stats: root.show_stats ?? true,
         social_links: root.social_links ?? {},
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
