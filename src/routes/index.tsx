@@ -84,6 +84,7 @@ function HomeBody() {
       )}
 
       {/* FOCUS AREAS */}
+      {show("show_focus_areas") && (
       <section className="container-narrow py-16">
         <div className="flex items-end justify-between mb-8">
           <h2 className="text-2xl font-semibold">{t("home.focus")}</h2>
@@ -115,8 +116,10 @@ function HomeBody() {
           })}
         </div>
       </section>
+      )}
 
       {/* PROJECTS */}
+      {show("show_projects") && (
       <section className="bg-surface/40 border-y border-border/60 py-16">
         <div className="container-narrow">
           <div className="flex items-end justify-between mb-8">
@@ -142,9 +145,10 @@ function HomeBody() {
           </div>
         </div>
       </section>
+      )}
 
       {/* NEWS */}
-      {(home?.news?.length ?? 0) > 0 && (
+      {show("show_news") && (home?.news?.length ?? 0) > 0 && (
         <section className="container-narrow py-16">
           <div className="flex items-end justify-between mb-8">
             <h2 className="text-2xl font-semibold">{t("home.news")}</h2>
@@ -172,7 +176,7 @@ function HomeBody() {
       )}
 
       {/* PARTNERS */}
-      {(home?.partners?.length ?? 0) > 0 && (
+      {show("show_partners") && (home?.partners?.length ?? 0) > 0 && (
         <section className="container-narrow py-16">
           <h2 className="text-2xl font-semibold text-center mb-8">{t("home.partners")}</h2>
           <div className="flex flex-wrap items-center justify-center gap-8">
