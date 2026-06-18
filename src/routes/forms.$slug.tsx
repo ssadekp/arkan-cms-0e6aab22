@@ -92,8 +92,8 @@ function PublicForm() {
         <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
           {fields.map((f) => (
             <FieldRenderer key={f.id} field={f} lang={lang} value={values[f.field_key]}
-              onChange={(v) => setValues({ ...values, [f.field_key]: v })}
-              onFile={(file) => setFiles({ ...files, [f.field_key]: file })} />
+              onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
+              onFile={(file: File | null) => setFiles({ ...files, [f.field_key]: file })} />
           ))}
           <Button type="submit" size="lg" disabled={mut.isPending}>
             {mut.isPending ? (lang === "ar" ? "جار الإرسال…" : "Submitting…") : (lang === "ar" ? "إرسال" : "Submit")}

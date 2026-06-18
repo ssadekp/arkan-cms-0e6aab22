@@ -22,6 +22,7 @@ import { Route as FocusAreasIndexRouteImport } from './routes/focus-areas.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
+import { Route as FormsSlugRouteImport } from './routes/forms.$slug'
 import { Route as FocusAreasSlugRouteImport } from './routes/focus-areas.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -38,6 +39,8 @@ import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
+import { Route as AuthenticatedAdminFormsIdRouteImport } from './routes/_authenticated/admin.forms.$id'
+import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
 
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
@@ -101,6 +104,11 @@ const PSlugRoute = PSlugRouteImport.update({
 const NewsSlugRoute = NewsSlugRouteImport.update({
   id: '/news/$slug',
   path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormsSlugRoute = FormsSlugRouteImport.update({
+  id: '/forms/$slug',
+  path: '/forms/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FocusAreasSlugRoute = FocusAreasSlugRouteImport.update({
@@ -189,6 +197,18 @@ const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   path: '/admin/about',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminFormsIdRoute =
+  AuthenticatedAdminFormsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminFormsRoute,
+  } as any)
+const AuthenticatedAdminFormsIdSubmissionsRoute =
+  AuthenticatedAdminFormsIdSubmissionsRouteImport.update({
+    id: '/submissions',
+    path: '/submissions',
+    getParentRoute: () => AuthenticatedAdminFormsIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -198,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PartnersRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
+  '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -208,7 +229,7 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
-  '/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -219,6 +240,8 @@ export interface FileRoutesByFullPath {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
+  '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -228,6 +251,7 @@ export interface FileRoutesByTo {
   '/partners': typeof PartnersRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
+  '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -238,7 +262,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
-  '/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -249,6 +273,8 @@ export interface FileRoutesByTo {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
+  '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -260,6 +286,7 @@ export interface FileRoutesById {
   '/partners': typeof PartnersRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
+  '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
@@ -270,7 +297,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
-  '/_authenticated/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/_authenticated/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -281,6 +308,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
+  '/_authenticated/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -292,6 +321,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/resources'
     | '/focus-areas/$slug'
+    | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
@@ -313,6 +343,8 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin/'
+    | '/admin/forms/$id'
+    | '/admin/forms/$id/submissions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -322,6 +354,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/resources'
     | '/focus-areas/$slug'
+    | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
@@ -343,6 +376,8 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin'
+    | '/admin/forms/$id'
+    | '/admin/forms/$id/submissions'
   id:
     | '__root__'
     | '/'
@@ -353,6 +388,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/resources'
     | '/focus-areas/$slug'
+    | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
@@ -374,6 +410,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/forms/$id'
+    | '/_authenticated/admin/forms/$id/submissions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -385,6 +423,7 @@ export interface RootRouteChildren {
   PartnersRoute: typeof PartnersRoute
   ResourcesRoute: typeof ResourcesRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
+  FormsSlugRoute: typeof FormsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   PSlugRoute: typeof PSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
@@ -484,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/news/$slug'
       fullPath: '/news/$slug'
       preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forms/$slug': {
+      id: '/forms/$slug'
+      path: '/forms/$slug'
+      fullPath: '/forms/$slug'
+      preLoaderRoute: typeof FormsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/focus-areas/$slug': {
@@ -598,15 +644,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/forms/$id': {
+      id: '/_authenticated/admin/forms/$id'
+      path: '/$id'
+      fullPath: '/admin/forms/$id'
+      preLoaderRoute: typeof AuthenticatedAdminFormsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminFormsRoute
+    }
+    '/_authenticated/admin/forms/$id/submissions': {
+      id: '/_authenticated/admin/forms/$id/submissions'
+      path: '/submissions'
+      fullPath: '/admin/forms/$id/submissions'
+      preLoaderRoute: typeof AuthenticatedAdminFormsIdSubmissionsRouteImport
+      parentRoute: typeof AuthenticatedAdminFormsIdRoute
+    }
   }
 }
+
+interface AuthenticatedAdminFormsIdRouteChildren {
+  AuthenticatedAdminFormsIdSubmissionsRoute: typeof AuthenticatedAdminFormsIdSubmissionsRoute
+}
+
+const AuthenticatedAdminFormsIdRouteChildren: AuthenticatedAdminFormsIdRouteChildren =
+  {
+    AuthenticatedAdminFormsIdSubmissionsRoute:
+      AuthenticatedAdminFormsIdSubmissionsRoute,
+  }
+
+const AuthenticatedAdminFormsIdRouteWithChildren =
+  AuthenticatedAdminFormsIdRoute._addFileChildren(
+    AuthenticatedAdminFormsIdRouteChildren,
+  )
+
+interface AuthenticatedAdminFormsRouteChildren {
+  AuthenticatedAdminFormsIdRoute: typeof AuthenticatedAdminFormsIdRouteWithChildren
+}
+
+const AuthenticatedAdminFormsRouteChildren: AuthenticatedAdminFormsRouteChildren =
+  {
+    AuthenticatedAdminFormsIdRoute: AuthenticatedAdminFormsIdRouteWithChildren,
+  }
+
+const AuthenticatedAdminFormsRouteWithChildren =
+  AuthenticatedAdminFormsRoute._addFileChildren(
+    AuthenticatedAdminFormsRouteChildren,
+  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
-  AuthenticatedAdminFormsRoute: typeof AuthenticatedAdminFormsRoute
+  AuthenticatedAdminFormsRoute: typeof AuthenticatedAdminFormsRouteWithChildren
   AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
@@ -624,7 +713,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
-  AuthenticatedAdminFormsRoute: AuthenticatedAdminFormsRoute,
+  AuthenticatedAdminFormsRoute: AuthenticatedAdminFormsRouteWithChildren,
   AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
@@ -650,6 +739,7 @@ const rootRouteChildren: RootRouteChildren = {
   PartnersRoute: PartnersRoute,
   ResourcesRoute: ResourcesRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
+  FormsSlugRoute: FormsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   PSlugRoute: PSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
