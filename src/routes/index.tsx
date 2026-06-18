@@ -35,6 +35,9 @@ function HomeBody() {
   const { data: site } = useQuery({ queryKey: ["site-data"], queryFn: () => siteFn(), staleTime: 60_000 });
 
   const settingsI18n = pickI18n(site?.settingsI18n, lang);
+  const s: any = site?.settings ?? {};
+  const showAll = s.show_all_sections !== false;
+  const show = (key: string) => showAll && s[key] !== false;
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
 
   return (
@@ -63,7 +66,7 @@ function HomeBody() {
       </section>
 
       {/* STATS */}
-      {(home?.stats?.length ?? 0) > 0 && (
+      {show("show_stats") && (home?.stats?.length ?? 0) > 0 && (
         <section className="container-narrow py-16">
           <h2 className="text-2xl font-semibold text-center mb-10">{t("home.stats")}</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
