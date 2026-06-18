@@ -14,6 +14,142 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_form_fields: {
+        Row: {
+          created_at: string
+          field_key: string
+          field_type: string
+          form_id: string
+          id: string
+          label_ar: string
+          label_en: string
+          options_json: Json
+          placeholder_ar: string
+          placeholder_en: string
+          position: number
+          required: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          field_key: string
+          field_type: string
+          form_id: string
+          id?: string
+          label_ar?: string
+          label_en?: string
+          options_json?: Json
+          placeholder_ar?: string
+          placeholder_en?: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          field_key?: string
+          field_type?: string
+          form_id?: string
+          id?: string
+          label_ar?: string
+          label_en?: string
+          options_json?: Json
+          placeholder_ar?: string
+          placeholder_en?: string
+          position?: number
+          required?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_form_fields_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "contact_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_form_submissions: {
+        Row: {
+          created_at: string
+          data: Json
+          files: Json
+          form_id: string
+          id: string
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          data?: Json
+          files?: Json
+          form_id: string
+          id?: string
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          data?: Json
+          files?: Json
+          form_id?: string
+          id?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_form_submissions_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "contact_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_forms: {
+        Row: {
+          created_at: string
+          description_ar: string
+          description_en: string
+          id: string
+          notify_email: string | null
+          published: boolean
+          slug: string
+          success_message_ar: string
+          success_message_en: string
+          title_ar: string
+          title_en: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_ar?: string
+          description_en?: string
+          id?: string
+          notify_email?: string | null
+          published?: boolean
+          slug: string
+          success_message_ar?: string
+          success_message_en?: string
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_ar?: string
+          description_en?: string
+          id?: string
+          notify_email?: string | null
+          published?: boolean
+          slug?: string
+          success_message_ar?: string
+          success_message_en?: string
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -212,6 +348,53 @@ export type Database = {
             columns: ["stat_id"]
             isOneToOne: false
             referencedRelation: "homepage_stats"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      menu_items: {
+        Row: {
+          created_at: string
+          id: string
+          label_ar: string
+          label_en: string
+          parent_id: string | null
+          position: number
+          published: boolean
+          target: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label_ar?: string
+          label_en?: string
+          parent_id?: string | null
+          position?: number
+          published?: boolean
+          target?: string
+          updated_at?: string
+          url?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label_ar?: string
+          label_en?: string
+          parent_id?: string | null
+          position?: number
+          published?: boolean
+          target?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_items_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
             referencedColumns: ["id"]
           },
         ]
@@ -599,6 +782,13 @@ export type Database = {
           map_embed_url: string | null
           primary_color: string
           seo_og_image: string | null
+          show_all_sections: boolean
+          show_documents: boolean
+          show_focus_areas: boolean
+          show_news: boolean
+          show_partners: boolean
+          show_projects: boolean
+          show_stats: boolean
           social_links: Json
           sponsorship_url: string | null
           updated_at: string
@@ -615,6 +805,13 @@ export type Database = {
           map_embed_url?: string | null
           primary_color?: string
           seo_og_image?: string | null
+          show_all_sections?: boolean
+          show_documents?: boolean
+          show_focus_areas?: boolean
+          show_news?: boolean
+          show_partners?: boolean
+          show_projects?: boolean
+          show_stats?: boolean
           social_links?: Json
           sponsorship_url?: string | null
           updated_at?: string
@@ -631,6 +828,13 @@ export type Database = {
           map_embed_url?: string | null
           primary_color?: string
           seo_og_image?: string | null
+          show_all_sections?: boolean
+          show_documents?: boolean
+          show_focus_areas?: boolean
+          show_news?: boolean
+          show_partners?: boolean
+          show_projects?: boolean
+          show_stats?: boolean
           social_links?: Json
           sponsorship_url?: string | null
           updated_at?: string
