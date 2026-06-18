@@ -67,6 +67,7 @@ function Inner({ children }: { children: ReactNode }) {
         logoUrl={settings?.logo_url}
         navPages={data?.navPages ?? []}
         navPagesI18n={data?.navPagesI18n ?? []}
+        menuItems={(data as any)?.menuItems ?? []}
       />
       <main className="flex-1">{children}</main>
       <Footer
