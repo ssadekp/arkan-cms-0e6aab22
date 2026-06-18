@@ -32,6 +32,8 @@ import { Route as AuthenticatedAdminProjectsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authenticated/admin.partners'
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
+import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin.menu'
+import { Route as AuthenticatedAdminFormsRouteImport } from './routes/_authenticated/admin.forms'
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
@@ -154,6 +156,16 @@ const AuthenticatedAdminNewsRoute = AuthenticatedAdminNewsRouteImport.update({
   path: '/admin/news',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminMenuRoute = AuthenticatedAdminMenuRouteImport.update({
+  id: '/admin/menu',
+  path: '/admin/menu',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminFormsRoute = AuthenticatedAdminFormsRouteImport.update({
+  id: '/admin/forms',
+  path: '/admin/forms',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAdminFocusAreasRoute =
   AuthenticatedAdminFocusAreasRouteImport.update({
     id: '/admin/focus-areas',
@@ -196,6 +208,8 @@ export interface FileRoutesByFullPath {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
+  '/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -224,6 +238,8 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
+  '/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -254,6 +270,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
+  '/_authenticated/admin/forms': typeof AuthenticatedAdminFormsRoute
+  '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
   '/_authenticated/admin/partners': typeof AuthenticatedAdminPartnersRoute
@@ -284,6 +302,8 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
+    | '/admin/forms'
+    | '/admin/menu'
     | '/admin/news'
     | '/admin/pages'
     | '/admin/partners'
@@ -312,6 +332,8 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
+    | '/admin/forms'
+    | '/admin/menu'
     | '/admin/news'
     | '/admin/pages'
     | '/admin/partners'
@@ -341,6 +363,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
     | '/_authenticated/admin/focus-areas'
+    | '/_authenticated/admin/forms'
+    | '/_authenticated/admin/menu'
     | '/_authenticated/admin/news'
     | '/_authenticated/admin/pages'
     | '/_authenticated/admin/partners'
@@ -532,6 +556,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminNewsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/menu': {
+      id: '/_authenticated/admin/menu'
+      path: '/admin/menu'
+      fullPath: '/admin/menu'
+      preLoaderRoute: typeof AuthenticatedAdminMenuRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/forms': {
+      id: '/_authenticated/admin/forms'
+      path: '/admin/forms'
+      fullPath: '/admin/forms'
+      preLoaderRoute: typeof AuthenticatedAdminFormsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/focus-areas': {
       id: '/_authenticated/admin/focus-areas'
       path: '/admin/focus-areas'
@@ -568,6 +606,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
+  AuthenticatedAdminFormsRoute: typeof AuthenticatedAdminFormsRoute
+  AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
   AuthenticatedAdminPartnersRoute: typeof AuthenticatedAdminPartnersRoute
@@ -584,6 +624,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
+  AuthenticatedAdminFormsRoute: AuthenticatedAdminFormsRoute,
+  AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,
   AuthenticatedAdminPartnersRoute: AuthenticatedAdminPartnersRoute,
