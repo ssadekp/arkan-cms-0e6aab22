@@ -94,6 +94,13 @@ const settingsSchema = z.object({
     ),
   sponsorship_url: z.string().nullable().optional(),
   head_scripts: z.string().nullable().optional(),
+  show_all_sections: z.boolean().optional(),
+  show_focus_areas: z.boolean().optional(),
+  show_projects: z.boolean().optional(),
+  show_news: z.boolean().optional(),
+  show_documents: z.boolean().optional(),
+  show_partners: z.boolean().optional(),
+  show_stats: z.boolean().optional(),
   social_links: z.record(z.string(), z.string()),
 
   i18n: z.array(z.object({

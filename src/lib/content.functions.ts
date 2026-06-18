@@ -8,13 +8,14 @@ async function admin() {
 
 export const getSiteData = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
-  const [settings, settingsI18n, stats, statsI18n, navPages, navPagesI18n] = await Promise.all([
+  const [settings, settingsI18n, stats, statsI18n, navPages, navPagesI18n, menuItems] = await Promise.all([
     sb.from("site_settings").select("*").eq("id", 1).maybeSingle(),
     sb.from("site_settings_i18n").select("*").eq("setting_id", 1),
     sb.from("homepage_stats").select("*").eq("active", true).order("sort_order"),
     sb.from("homepage_stats_i18n").select("*"),
     sb.from("pages").select("id, slug, show_in_nav, nav_order").eq("show_in_nav", true).eq("published", true).order("nav_order"),
     sb.from("pages_i18n").select("page_id, lang, title"),
+    sb.from("menu_items" as any).select("*").eq("published", true).order("position"),
   ]);
   return {
     settings: settings.data,
@@ -23,6 +24,7 @@ export const getSiteData = createServerFn({ method: "GET" }).handler(async () =>
     statsI18n: statsI18n.data ?? [],
     navPages: navPages.data ?? [],
     navPagesI18n: navPagesI18n.data ?? [],
+    menuItems: (menuItems.data as any[]) ?? [],
   };
 });
 
