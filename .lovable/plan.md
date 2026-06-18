@@ -1,81 +1,62 @@
+## 1. Homepage section visibility toggles
 
-# Plan: Settings cleanup, Users module, Admin i18n
+Add boolean columns to `site_settings`:
+- `show_focus_areas`, `show_projects`, `show_news`, `show_documents`, `show_partners`, `show_stats` (default true)
+- `show_all_sections` master toggle (default true)
 
-## 1. Separate site name from About Us title
+In **admin Settings**, add a "Homepage sections" card with switches (AR & EN labels).
+In `src/routes/index.tsx`, read `site` settings and conditionally render each section (AND with master toggle).
 
-Right now `site_settings_i18n.site_name` is used for two things:
-- The admin sidebar label (and brand name in the site)
-- The hero/title on the public About Us page
+## 2. Menu builder (replaces auto nav)
 
-Change:
-- Add two new columns on `site_settings_i18n`: `admin_sidebar_name` (text) and keep `site_name` strictly for the public website name.
-- Add a new column on `pages_i18n` (or a dedicated row on `site_settings_i18n`) for the **About Us page title** — proposal: add `about_title` on `site_settings_i18n` (AR/EN), shown as the H1 on the public About page.
-- Settings page (admin): expose `site_name` (AR/EN) and `admin_sidebar_name` (AR/EN) as two separate, clearly labelled fields under a new "Site identity" section.
-- About Us admin page: stop editing `site_name`; instead edit `about_title` (AR/EN) + tagline + short + body.
-- `AdminShell` reads `admin_sidebar_name` (fallback to `site_name`).
-- Public About route renders `about_title` as the H1 (fallback to current behaviour).
+New table `menu_items`:
+- `id`, `parent_id` (nullable, self-FK, 1 level only — enforced in UI), `position` int, `label_en`, `label_ar`, `url` text (internal path or external), `target` ("_self"|"_blank"), `published` bool
 
-## 2. Users Management
+New admin page `/admin/menu`:
+- Drag-to-reorder list (use existing UI primitives, simple up/down buttons to keep it small)
+- "Add submenu item" only available on top-level rows
+- CRUD via existing admin function pattern
 
-New admin section **Users** with full CRUD and role-based access.
+`src/components/site/Header.tsx` fetches menu via a new public server fn `getMenu()` and renders top-level items; items with children render as a dropdown (use existing `NavigationMenu` shadcn component). Falls back to current static nav if no items configured.
 
-### Database
-- Extend `app_role` enum with `super_admin` and `author` (keep existing `admin`, `editor`, plus `user`).
-- Extend `public.profiles` with: `phone`, `avatar_url`, `status` (`active` / `inactive`, default `active`), `last_login_at`. (`full_name`, `email` already implied; if missing, add them too.)
-- Trigger on `auth.users` sign-in to update `last_login_at` — or update from the client on successful sign-in (simpler, no auth-schema triggers).
-- Helper SQL function `is_super_admin(uuid)` mirroring `has_role`.
-- RLS:
-  - `profiles`: user can read/update self; super_admin/admin can read all + update non-role fields.
-  - `user_roles`: only super_admin can insert/delete/update.
+## 3. Custom contact forms
 
-### Server functions (`src/lib/users.functions.ts`)
-All `.middleware([requireSupabaseAuth])`, gated by role checks:
-- `listUsers({ search, role })` — super_admin/admin only. Joins `profiles` + `user_roles` + uses `supabaseAdmin.auth.admin.listUsers()` for email/last_sign_in_at.
-- `createUser({ email, password, full_name, phone, role, avatar_url })` — super_admin only. Uses `supabaseAdmin.auth.admin.createUser`, then upserts profile + role.
-- `updateUser({ id, full_name, phone, avatar_url, status, role })` — super_admin only for role; admin can edit profile fields except role.
-- `deleteUser({ id })` — super_admin only.
-- `setUserStatus({ id, status })` — super_admin/admin.
-- `getUserProfile({ id })` — staff.
+Tables:
+- `contact_forms`: `id`, `slug` (unique), `title_en`, `title_ar`, `description_en`, `description_ar`, `success_message_en`, `success_message_ar`, `notify_email`, `published`
+- `contact_form_fields`: `id`, `form_id`, `position`, `field_key`, `field_type` (text|email|phone|textarea|select|radio|checkbox|file|date|number), `label_en`, `label_ar`, `placeholder_en`, `placeholder_ar`, `required` bool, `options_json` (for select/radio/checkbox)
+- `contact_form_submissions`: `id`, `form_id`, `data jsonb`, `files jsonb` (array of {field_key, path, name}), `created_at`, `ip` text, `user_agent` text
 
-### UI (`src/routes/_authenticated/admin.users.tsx`)
-- Table with: avatar, full name, email, phone, role badge, status badge, created, last login.
-- Top bar: search input (name/email), role filter (`all` + each role).
-- Row actions: Edit, Activate/Deactivate, Delete, View profile (drawer).
-- "Add User" dialog with all fields including avatar upload (reuse existing image input pattern or plain URL).
-- Permissions enforced both client-side (hide buttons) and server-side (role checks).
-- Sidebar: add **Users** entry under a new top-level "Management" group (visible only to staff; "Add user / delete / change role" controls visible only to super_admin).
+RLS:
+- forms/fields: public SELECT where `published=true`; admin write
+- submissions: admin SELECT/DELETE only; public INSERT into published forms (validated via server fn)
 
-## 3. Admin panel i18n (AR/EN, RTL/LTR)
+File uploads use existing `site-media` bucket under `contact-uploads/{form_id}/{submission_id}/`.
 
-- Reuse the existing `useI18n()` provider. Expand the dictionary in `src/lib/i18n.tsx` with all admin strings (sidebar labels, page titles, table headers, buttons, form labels, toasts, confirmations, status names, role names).
-- Replace every hard-coded English string in `src/components/admin/**` and `src/routes/_authenticated/admin.*.tsx` with `t("admin....")`.
-- Add a language switcher in the admin header (next to the SidebarTrigger) calling `setLang(...)`.
-- `dir`/`lang` already flip on `<html>` via the provider — verify sidebar uses logical CSS (`ms-*` / `me-*`) where needed; flip sidebar to the right side in RTL via `side="right"` on `<Sidebar>` when `dir === "rtl"`.
-- Persist language choice (already done via `localStorage`).
+Public route `/forms/$slug` renders the form dynamically. Replaces nothing — existing `/contact` page stays.
 
-### Out of scope for this task
-- Translating user-generated content (already i18n via existing AR/EN columns).
-- Email notifications for new users.
+Admin pages:
+- `/admin/forms` — list/create/edit forms + field builder
+- `/admin/forms/$id/submissions` — table view + "Export to Excel" button (uses `xlsx` lib client-side, downloads `.xlsx`)
 
-## Files affected
+## 4. Files
 
-**New**
-- `src/lib/users.functions.ts`
-- `src/routes/_authenticated/admin.users.tsx`
-- Migration: enum values, profiles columns, RLS, helper fn
+**New migrations** (one combined):
+- alter `site_settings` for visibility flags
+- create `menu_items`, `contact_forms`, `contact_form_fields`, `contact_form_submissions` with GRANTs + RLS
 
-**Edited**
-- `src/lib/i18n.tsx` (dictionary)
-- `src/components/admin/AdminShell.tsx` (i18n labels, language toggle, Users nav, sidebar side based on dir, use `admin_sidebar_name`)
-- `src/lib/admin.functions.ts` (saveSiteSettings schema: add `admin_sidebar_name`, `about_title`)
-- `src/routes/_authenticated/admin.settings.tsx` (new "Site identity" section)
-- `src/routes/_authenticated/admin.about.tsx` (edit `about_title` instead of `site_name`)
-- `src/routes/about.tsx` (use `about_title` for H1)
-- All other `src/routes/_authenticated/admin.*.tsx` and admin components — replace strings with `t()`
+**New code:**
+- `src/lib/menu.functions.ts` (public `getMenu`, admin CRUD)
+- `src/lib/forms.functions.ts` (public `getForm`, `submitForm`; admin list/CRUD/list-submissions/delete-submission)
+- `src/routes/_authenticated/admin.menu.tsx`
+- `src/routes/_authenticated/admin.forms.tsx`
+- `src/routes/_authenticated/admin.forms.$id.tsx` (field builder)
+- `src/routes/_authenticated/admin.forms.$id.submissions.tsx` (+ Excel export)
+- `src/routes/forms.$slug.tsx`
+- update `src/routes/index.tsx`, `src/components/site/Header.tsx`, `src/routes/_authenticated/admin.settings.tsx`, `src/components/admin/AdminShell.tsx` (sidebar entries), `src/lib/admin.functions.ts` (extend settings schema)
+- `bun add xlsx` for Excel export
 
-## Confirm before I start
-
-This is a large change (~15 files + migration). Want me to proceed end-to-end, or split into phases? I'd suggest this order if you prefer phases:
-1. Settings/About separation (small)
-2. Admin i18n
-3. Users module (largest)
+## Notes
+- Submenus capped at 1 level as you chose
+- Forms support all field types you selected (text/email/phone/textarea, select/radio/checkbox, file, date/number)
+- Master "hide all sections" toggle leaves only the hero on the homepage
+- Excel export is client-side; works for any submission count up to tens of thousands

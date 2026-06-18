@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { SOCIAL_PLATFORMS, SocialIcon, type SocialPlatform } from "@/components/site/SocialIcon";
 import { Trash2, Plus, Loader2 } from "lucide-react";
@@ -46,6 +47,13 @@ function SettingsPage() {
         map_embed_url: (s as any).map_embed_url ?? "",
         sponsorship_url: (s as any).sponsorship_url ?? "",
         head_scripts: (s as any).head_scripts ?? "",
+        show_all_sections: (s as any).show_all_sections ?? true,
+        show_focus_areas: (s as any).show_focus_areas ?? true,
+        show_projects: (s as any).show_projects ?? true,
+        show_news: (s as any).show_news ?? true,
+        show_documents: (s as any).show_documents ?? true,
+        show_partners: (s as any).show_partners ?? true,
+        show_stats: (s as any).show_stats ?? true,
         social_links: s.social_links ?? {},
       });
     }
@@ -67,6 +75,13 @@ function SettingsPage() {
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
         head_scripts: root.head_scripts || null,
+        show_all_sections: root.show_all_sections ?? true,
+        show_focus_areas: root.show_focus_areas ?? true,
+        show_projects: root.show_projects ?? true,
+        show_news: root.show_news ?? true,
+        show_documents: root.show_documents ?? true,
+        show_partners: root.show_partners ?? true,
+        show_stats: root.show_stats ?? true,
         social_links: root.social_links ?? {},
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
@@ -139,6 +154,25 @@ function SettingsPage() {
               </TabsContent>
             ))}
           </Tabs>
+        </Section>
+
+        <Section title="Homepage sections (إظهار / إخفاء أقسام الصفحة الرئيسية)">
+          <p className="text-xs text-muted-foreground">
+            Turn off the master toggle to hide every homepage section (only the hero remains). Or hide individual sections below.
+          </p>
+          <ToggleRow
+            label="Show all sections (الإظهار العام)"
+            checked={root.show_all_sections ?? true}
+            onChange={(v) => setRoot({ ...root, show_all_sections: v })}
+          />
+          <div className="grid sm:grid-cols-2 gap-2 pt-2 border-t border-border/60">
+            <ToggleRow label="Statistics (الإحصائيات)" checked={root.show_stats ?? true} onChange={(v) => setRoot({ ...root, show_stats: v })} />
+            <ToggleRow label="Focus Areas (مجالات العمل)" checked={root.show_focus_areas ?? true} onChange={(v) => setRoot({ ...root, show_focus_areas: v })} />
+            <ToggleRow label="Projects (المشاريع)" checked={root.show_projects ?? true} onChange={(v) => setRoot({ ...root, show_projects: v })} />
+            <ToggleRow label="News (الأخبار)" checked={root.show_news ?? true} onChange={(v) => setRoot({ ...root, show_news: v })} />
+            <ToggleRow label="Partners (الشركاء)" checked={root.show_partners ?? true} onChange={(v) => setRoot({ ...root, show_partners: v })} />
+            <ToggleRow label="Documents (الوثائق)" checked={root.show_documents ?? true} onChange={(v) => setRoot({ ...root, show_documents: v })} />
+          </div>
         </Section>
 
         <Section title="SEO">
@@ -359,6 +393,14 @@ function Field({ label, value, onChange, textarea }: { label: string; value: any
       {textarea
         ? <Textarea rows={3} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />
         : <Input value={value ?? ""} onChange={(e) => onChange(e.target.value)} />}
+    </div>
+  );
+}
+function ToggleRow({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between rounded-md border border-border/60 px-3 py-2">
+      <Label className="text-sm font-normal">{label}</Label>
+      <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );
 }

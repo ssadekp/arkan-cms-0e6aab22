@@ -7,7 +7,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive } from "lucide-react";
+import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { useI18n } from "@/lib/i18n";
@@ -35,8 +35,10 @@ export function AdminShell({ title, children }: { title: string; children: React
   ];
   const pagesItems = [
     { to: "/admin/pages", label: t("admin.pages"), icon: FileText },
+    { to: "/admin/menu", label: lang === "ar" ? "القائمة الرئيسية" : "Main Menu", icon: ListTree },
     { to: "/admin/about", label: t("admin.aboutUs"), icon: Info },
     { to: "/admin/contact", label: t("admin.contactUs"), icon: Mail },
+    { to: "/admin/forms", label: lang === "ar" ? "نماذج التواصل" : "Contact Forms", icon: MessageSquare },
   ];
   const contentItems = [
     { to: "/admin/focus-areas", label: t("admin.focus"), icon: Target },
