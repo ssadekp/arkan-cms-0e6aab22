@@ -31,6 +31,8 @@ function PublicForm() {
   const [values, setValues] = useState<Record<string, any>>({});
   const [files, setFiles] = useState<Record<string, File | null>>({});
   const [done, setDone] = useState(false);
+  const [hp, setHp] = useState(""); // honeypot
+  const startedAtRef = useRef<number>(Date.now());
 
   const form: any = data?.form;
   const fields = ((data?.fields ?? []) as any[]).sort((a, b) => a.position - b.position);
