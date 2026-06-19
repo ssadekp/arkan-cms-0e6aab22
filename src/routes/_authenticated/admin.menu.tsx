@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { adminListMenu, saveMenuItem, deleteMenuItem, reorderMenuItems } from "@/lib/menu.functions";
+import { adminListMenu, saveMenuItem, deleteMenuItem, reorderMenuItems, getMenuPickerOptions } from "@/lib/menu.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,24 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Trash2, Edit2, ArrowUp, ArrowDown, CornerDownRight } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/menu")({
   component: MenuPage,
 });
+
+const DEFAULTS: { label_en: string; label_ar: string; url: string }[] = [
+  { label_en: "Home", label_ar: "الرئيسية", url: "/" },
+  { label_en: "About", label_ar: "من نحن", url: "/about" },
+  { label_en: "Focus Areas", label_ar: "مجالات العمل", url: "/focus-areas" },
+  { label_en: "Projects", label_ar: "المشاريع", url: "/projects" },
+  { label_en: "Partners", label_ar: "الشركاء", url: "/partners" },
+  { label_en: "News", label_ar: "الأخبار", url: "/news" },
+  { label_en: "Resources", label_ar: "المصادر", url: "/resources" },
+  { label_en: "Contact", label_ar: "تواصل معنا", url: "/contact" },
+];
+
 
 type Item = {
   id: string;
@@ -32,8 +44,11 @@ function MenuPage() {
   const list = useServerFn(adminListMenu);
   const reorder = useServerFn(reorderMenuItems);
   const del = useServerFn(deleteMenuItem);
+  const save = useServerFn(saveMenuItem);
+  const pickerFn = useServerFn(getMenuPickerOptions);
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["admin-menu"], queryFn: () => list() });
+  const { data: pickerData } = useQuery({ queryKey: ["admin-menu-picker"], queryFn: () => pickerFn() });
 
   const items: Item[] = (data?.items ?? []) as any;
   const parents = items.filter((i) => !i.parent_id).sort((a, b) => a.position - b.position);
@@ -58,49 +73,104 @@ function MenuPage() {
     invalidate();
   };
 
+  const quickAdd = async (preset: { label_en: string; label_ar: string; url: string }) => {
+    const maxPos = parents.reduce((m, p) => Math.max(m, p.position), 0);
+    await save({ data: {
+      id: null, parent_id: null, position: maxPos + 1,
+      label_en: preset.label_en, label_ar: preset.label_ar, url: preset.url,
+      target: "_self", published: true,
+    } as any });
+    toast.success(`Added "${preset.label_en}"`);
+    invalidate();
+  };
+
+
+  const usedUrls = useMemo(() => new Set(parents.map((p) => p.url)), [parents]);
+  const pickerGroups = useMemo(() => {
+    const allDefaults = DEFAULTS.filter((d) => !usedUrls.has(d.url));
+    const pages = (pickerData?.pages ?? []).filter((p: any) => !usedUrls.has(p.url));
+    const forms = (pickerData?.forms ?? []).filter((p: any) => !usedUrls.has(p.url));
+    const focusAreas = (pickerData?.focusAreas ?? []).filter((p: any) => !usedUrls.has(p.url));
+    return { allDefaults, pages, forms, focusAreas };
+  }, [pickerData, usedUrls]);
+
   return (
     <AdminShell title="Main Menu">
-      <div className="max-w-3xl space-y-4">
-        <div className="flex items-center justify-between">
+      <div className="max-w-3xl space-y-6">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <p className="text-sm text-muted-foreground">
             Build the public site's main menu. Top-level items can have one level of sub-items. Leave empty to fall back to the default menu.
           </p>
           <ItemDialog onSaved={invalidate} parents={parents} />
         </div>
 
-        {parents.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-            No menu items yet. The site is using the default menu.
+        {/* Quick picker */}
+        <div className="rounded-xl border border-border/60 bg-card p-4 space-y-3">
+          <div>
+            <div className="font-medium text-sm">Quick add from your site</div>
+            <p className="text-xs text-muted-foreground">Click any item to add it to the menu. Edit labels/URL afterwards if needed.</p>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {parents.map((p, idx) => {
-              const children = items.filter((c) => c.parent_id === p.id).sort((a, b) => a.position - b.position);
-              return (
-                <div key={p.id} className="rounded-xl border border-border/60 bg-card">
-                  <ItemRow item={p} onMoveUp={() => move(parents, idx, -1)} onMoveDown={() => move(parents, idx, 1)}
-                    onDelete={() => onDelete(p.id)} onSaved={invalidate} parents={parents} canAddChild />
-                  {children.length > 0 && (
-                    <div className="border-t border-border/60">
-                      {children.map((c, cIdx) => (
-                        <div key={c.id} className="border-b border-border/60 last:border-b-0 ps-8 flex items-center gap-2">
-                          <CornerDownRight className="h-3.5 w-3.5 text-muted-foreground" />
-                          <div className="flex-1">
-                            <ItemRow item={c} onMoveUp={() => move(children, cIdx, -1)} onMoveDown={() => move(children, cIdx, 1)}
-                              onDelete={() => onDelete(c.id)} onSaved={invalidate} parents={parents} />
+          <PickerGroup title="Default site sections" items={pickerGroups.allDefaults} onPick={quickAdd} />
+          <PickerGroup title="Pages" items={pickerGroups.pages} onPick={quickAdd} />
+          <PickerGroup title="Focus areas" items={pickerGroups.focusAreas} onPick={quickAdd} />
+          <PickerGroup title="Contact forms" items={pickerGroups.forms} onPick={quickAdd} />
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold mb-2">Current menu</h3>
+          {parents.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
+              No custom menu items yet — the site is showing the default menu above. Use the picker or "Add item" to start customising.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {parents.map((p, idx) => {
+                const children = items.filter((c) => c.parent_id === p.id).sort((a, b) => a.position - b.position);
+                return (
+                  <div key={p.id} className="rounded-xl border border-border/60 bg-card">
+                    <ItemRow item={p} onMoveUp={() => move(parents, idx, -1)} onMoveDown={() => move(parents, idx, 1)}
+                      onDelete={() => onDelete(p.id)} onSaved={invalidate} parents={parents} canAddChild />
+                    {children.length > 0 && (
+                      <div className="border-t border-border/60">
+                        {children.map((c, cIdx) => (
+                          <div key={c.id} className="border-b border-border/60 last:border-b-0 ps-8 flex items-center gap-2">
+                            <CornerDownRight className="h-3.5 w-3.5 text-muted-foreground" />
+                            <div className="flex-1">
+                              <ItemRow item={c} onMoveUp={() => move(children, cIdx, -1)} onMoveDown={() => move(children, cIdx, 1)}
+                                onDelete={() => onDelete(c.id)} onSaved={invalidate} parents={parents} />
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </AdminShell>
   );
+}
+
+function PickerGroup({ title, items, onPick }: { title: string; items: { label_en: string; label_ar: string; url: string }[]; onPick: (i: any) => void }) {
+  if (items.length === 0) return null;
+  return (
+    <div>
+      <div className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5">{title}</div>
+      <div className="flex flex-wrap gap-1.5">
+        {items.map((i) => (
+          <Button key={i.url + i.label_en} size="sm" variant="outline" onClick={() => onPick(i)} className="h-auto py-1 px-2">
+            <Plus className="h-3 w-3 me-1" />
+            <span className="text-xs">{i.label_en}</span>
+            <span className="text-[10px] text-muted-foreground ms-1.5">{i.url}</span>
+          </Button>
+        ))}
+      </div>
+    </div>
+  );
+
 }
 
 function ItemRow({ item, onMoveUp, onMoveDown, onDelete, onSaved, parents, canAddChild }: {

@@ -39,13 +39,39 @@ export const submitForm = createServerFn({ method: "POST" })
       url: z.string().optional(),
     })).default([]),
     user_agent: z.string().max(500).optional(),
+    // spam protection
+    hp: z.string().max(200).optional(), // honeypot: must be empty
+    started_at: z.number().int().optional(), // ms timestamp when form was rendered
   }).parse(d))
   .handler(async ({ data }) => {
+    // Honeypot: bots fill hidden fields. Silently succeed to avoid signalling.
+    if (data.hp && data.hp.trim() !== "") {
+      return { ok: true };
+    }
+    // Time gate: humans take more than 2s to fill a form.
+    if (data.started_at && Date.now() - data.started_at < 2000) {
+      return { ok: true };
+    }
+
     const sb = await admin();
     // ensure form is published
     const { data: form } = await sb.from("contact_forms" as any)
       .select("id, published").eq("id", data.form_id).maybeSingle();
     if (!form || !(form as any).published) throw new Error("Form unavailable");
+
+    // Per-form per-UA rate limit: ≤5 submissions in the last 10 minutes
+    if (data.user_agent) {
+      const sinceIso = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      const { count } = await (sb.from("contact_form_submissions" as any) as any)
+        .select("id", { count: "exact", head: true })
+        .eq("form_id", data.form_id)
+        .eq("user_agent", data.user_agent)
+        .gte("created_at", sinceIso);
+      if ((count ?? 0) >= 5) {
+        throw new Error("Too many submissions. Please try again later.");
+      }
+    }
+
     const { error } = await (sb.from("contact_form_submissions" as any) as any).insert({
       form_id: data.form_id,
       data: data.data,
@@ -55,6 +81,7 @@ export const submitForm = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 /* ---------- ADMIN ---------- */
 

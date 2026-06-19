@@ -13,7 +13,7 @@ import { Plus, Trash2, Edit2, ArrowLeft, Inbox } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/_authenticated/admin/forms/$id")({
+export const Route = createFileRoute("/_authenticated/admin/forms/$id/")({
   component: FormFieldsPage,
 });
 

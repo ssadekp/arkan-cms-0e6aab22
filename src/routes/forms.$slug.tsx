@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 import { CheckCircle2 } from "lucide-react";
 
@@ -31,6 +31,8 @@ function PublicForm() {
   const [values, setValues] = useState<Record<string, any>>({});
   const [files, setFiles] = useState<Record<string, File | null>>({});
   const [done, setDone] = useState(false);
+  const [hp, setHp] = useState(""); // honeypot
+  const startedAtRef = useRef<number>(Date.now());
 
   const form: any = data?.form;
   const fields = ((data?.fields ?? []) as any[]).sort((a, b) => a.position - b.position);
@@ -62,7 +64,7 @@ function PublicForm() {
           }
         }
       }
-      await submit({ data: { form_id: form.id, data: values, files: uploaded, user_agent: navigator.userAgent.slice(0, 500) } });
+      await submit({ data: { form_id: form.id, data: values, files: uploaded, user_agent: navigator.userAgent.slice(0, 500), hp, started_at: startedAtRef.current } });
     },
     onSuccess: () => { setDone(true); setValues({}); setFiles({}); },
     onError: (e: any) => toast.error(e.message),
@@ -90,6 +92,12 @@ function PublicForm() {
         </div>
       ) : (
         <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
+          {/* Honeypot: hidden from humans, filled by bots */}
+          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+            <label>Leave this field empty
+              <input type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
+            </label>
+          </div>
           {fields.map((f) => (
             <FieldRenderer key={f.id} field={f} lang={lang} value={values[f.field_key]}
               onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
