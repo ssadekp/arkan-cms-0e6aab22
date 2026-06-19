@@ -39,7 +39,7 @@ import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
-import { Route as AuthenticatedAdminFormsIdRouteImport } from './routes/_authenticated/admin.forms.$id'
+import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
 import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
 
 const ResourcesRoute = ResourcesRouteImport.update({
@@ -197,17 +197,17 @@ const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   path: '/admin/about',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAdminFormsIdRoute =
-  AuthenticatedAdminFormsIdRouteImport.update({
-    id: '/$id',
-    path: '/$id',
+const AuthenticatedAdminFormsIdIndexRoute =
+  AuthenticatedAdminFormsIdIndexRouteImport.update({
+    id: '/$id/',
+    path: '/$id/',
     getParentRoute: () => AuthenticatedAdminFormsRoute,
   } as any)
 const AuthenticatedAdminFormsIdSubmissionsRoute =
   AuthenticatedAdminFormsIdSubmissionsRouteImport.update({
-    id: '/submissions',
-    path: '/submissions',
-    getParentRoute: () => AuthenticatedAdminFormsIdRoute,
+    id: '/$id/submissions',
+    path: '/$id/submissions',
+    getParentRoute: () => AuthenticatedAdminFormsRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -240,8 +240,8 @@ export interface FileRoutesByFullPath {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
+  '/admin/forms/$id/': typeof AuthenticatedAdminFormsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -273,8 +273,8 @@ export interface FileRoutesByTo {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
-  '/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
+  '/admin/forms/$id': typeof AuthenticatedAdminFormsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -308,8 +308,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/admin/forms/$id': typeof AuthenticatedAdminFormsIdRouteWithChildren
   '/_authenticated/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
+  '/_authenticated/admin/forms/$id/': typeof AuthenticatedAdminFormsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -343,8 +343,8 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin/'
-    | '/admin/forms/$id'
     | '/admin/forms/$id/submissions'
+    | '/admin/forms/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -376,8 +376,8 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin'
-    | '/admin/forms/$id'
     | '/admin/forms/$id/submissions'
+    | '/admin/forms/$id'
   id:
     | '__root__'
     | '/'
@@ -410,8 +410,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
-    | '/_authenticated/admin/forms/$id'
     | '/_authenticated/admin/forms/$id/submissions'
+    | '/_authenticated/admin/forms/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -644,45 +644,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/forms/$id': {
-      id: '/_authenticated/admin/forms/$id'
+    '/_authenticated/admin/forms/$id/': {
+      id: '/_authenticated/admin/forms/$id/'
       path: '/$id'
-      fullPath: '/admin/forms/$id'
-      preLoaderRoute: typeof AuthenticatedAdminFormsIdRouteImport
+      fullPath: '/admin/forms/$id/'
+      preLoaderRoute: typeof AuthenticatedAdminFormsIdIndexRouteImport
       parentRoute: typeof AuthenticatedAdminFormsRoute
     }
     '/_authenticated/admin/forms/$id/submissions': {
       id: '/_authenticated/admin/forms/$id/submissions'
-      path: '/submissions'
+      path: '/$id/submissions'
       fullPath: '/admin/forms/$id/submissions'
       preLoaderRoute: typeof AuthenticatedAdminFormsIdSubmissionsRouteImport
-      parentRoute: typeof AuthenticatedAdminFormsIdRoute
+      parentRoute: typeof AuthenticatedAdminFormsRoute
     }
   }
 }
 
-interface AuthenticatedAdminFormsIdRouteChildren {
-  AuthenticatedAdminFormsIdSubmissionsRoute: typeof AuthenticatedAdminFormsIdSubmissionsRoute
-}
-
-const AuthenticatedAdminFormsIdRouteChildren: AuthenticatedAdminFormsIdRouteChildren =
-  {
-    AuthenticatedAdminFormsIdSubmissionsRoute:
-      AuthenticatedAdminFormsIdSubmissionsRoute,
-  }
-
-const AuthenticatedAdminFormsIdRouteWithChildren =
-  AuthenticatedAdminFormsIdRoute._addFileChildren(
-    AuthenticatedAdminFormsIdRouteChildren,
-  )
-
 interface AuthenticatedAdminFormsRouteChildren {
-  AuthenticatedAdminFormsIdRoute: typeof AuthenticatedAdminFormsIdRouteWithChildren
+  AuthenticatedAdminFormsIdSubmissionsRoute: typeof AuthenticatedAdminFormsIdSubmissionsRoute
+  AuthenticatedAdminFormsIdIndexRoute: typeof AuthenticatedAdminFormsIdIndexRoute
 }
 
 const AuthenticatedAdminFormsRouteChildren: AuthenticatedAdminFormsRouteChildren =
   {
-    AuthenticatedAdminFormsIdRoute: AuthenticatedAdminFormsIdRouteWithChildren,
+    AuthenticatedAdminFormsIdSubmissionsRoute:
+      AuthenticatedAdminFormsIdSubmissionsRoute,
+    AuthenticatedAdminFormsIdIndexRoute: AuthenticatedAdminFormsIdIndexRoute,
   }
 
 const AuthenticatedAdminFormsRouteWithChildren =
@@ -750,13 +738,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
