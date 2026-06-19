@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { adminListMenu, saveMenuItem, deleteMenuItem, reorderMenuItems } from "@/lib/menu.functions";
+import { adminListMenu, saveMenuItem, deleteMenuItem, reorderMenuItems, getMenuPickerOptions } from "@/lib/menu.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,12 +10,24 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, Trash2, Edit2, ArrowUp, ArrowDown, CornerDownRight } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/menu")({
   component: MenuPage,
 });
+
+const DEFAULTS: { label_en: string; label_ar: string; url: string }[] = [
+  { label_en: "Home", label_ar: "الرئيسية", url: "/" },
+  { label_en: "About", label_ar: "من نحن", url: "/about" },
+  { label_en: "Focus Areas", label_ar: "مجالات العمل", url: "/focus-areas" },
+  { label_en: "Projects", label_ar: "المشاريع", url: "/projects" },
+  { label_en: "Partners", label_ar: "الشركاء", url: "/partners" },
+  { label_en: "News", label_ar: "الأخبار", url: "/news" },
+  { label_en: "Resources", label_ar: "المصادر", url: "/resources" },
+  { label_en: "Contact", label_ar: "تواصل معنا", url: "/contact" },
+];
+
 
 type Item = {
   id: string;
