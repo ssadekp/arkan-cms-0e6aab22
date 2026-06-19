@@ -64,7 +64,7 @@ function PublicForm() {
           }
         }
       }
-      await submit({ data: { form_id: form.id, data: values, files: uploaded, user_agent: navigator.userAgent.slice(0, 500) } });
+      await submit({ data: { form_id: form.id, data: values, files: uploaded, user_agent: navigator.userAgent.slice(0, 500), hp, started_at: startedAtRef.current } });
     },
     onSuccess: () => { setDone(true); setValues({}); setFiles({}); },
     onError: (e: any) => toast.error(e.message),
