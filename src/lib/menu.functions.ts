@@ -24,6 +24,36 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async () => {
   return { items: (data as any[]) ?? [] };
 });
 
+export const getMenuPickerOptions = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertStaff(context.userId);
+    const sb = await admin();
+    const [pages, pagesI18n, forms, focus, focusI18n] = await Promise.all([
+      sb.from("pages").select("id, slug").eq("published", true),
+      sb.from("pages_i18n").select("page_id, lang, title"),
+      sb.from("contact_forms" as any).select("id, slug, title_en, title_ar").eq("published", true),
+      sb.from("focus_areas").select("id, slug").eq("published", true),
+      sb.from("focus_areas_i18n").select("focus_area_id, lang, title"),
+    ]);
+    return {
+      pages: (pages.data ?? []).map((p: any) => {
+        const en = (pagesI18n.data ?? []).find((x: any) => x.page_id === p.id && x.lang === "en");
+        const ar = (pagesI18n.data ?? []).find((x: any) => x.page_id === p.id && x.lang === "ar");
+        return { label_en: en?.title || p.slug, label_ar: ar?.title || p.slug, url: `/p/${p.slug}` };
+      }),
+      forms: ((forms.data as any[]) ?? []).map((f: any) => ({
+        label_en: f.title_en || f.slug, label_ar: f.title_ar || f.slug, url: `/forms/${f.slug}`,
+      })),
+      focusAreas: ((focus.data as any[]) ?? []).map((p: any) => {
+        const en = (focusI18n.data ?? []).find((x: any) => x.focus_area_id === p.id && x.lang === "en");
+        const ar = (focusI18n.data ?? []).find((x: any) => x.focus_area_id === p.id && x.lang === "ar");
+        return { label_en: en?.title || p.slug, label_ar: ar?.title || p.slug, url: `/focus-areas/${p.slug}` };
+      }),
+    };
+  });
+
+
 export const adminListMenu = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
