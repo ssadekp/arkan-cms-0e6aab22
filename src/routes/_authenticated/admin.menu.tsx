@@ -44,8 +44,11 @@ function MenuPage() {
   const list = useServerFn(adminListMenu);
   const reorder = useServerFn(reorderMenuItems);
   const del = useServerFn(deleteMenuItem);
+  const save = useServerFn(saveMenuItem);
+  const pickerFn = useServerFn(getMenuPickerOptions);
   const qc = useQueryClient();
   const { data } = useQuery({ queryKey: ["admin-menu"], queryFn: () => list() });
+  const { data: pickerData } = useQuery({ queryKey: ["admin-menu-picker"], queryFn: () => pickerFn() });
 
   const items: Item[] = (data?.items ?? []) as any;
   const parents = items.filter((i) => !i.parent_id).sort((a, b) => a.position - b.position);
@@ -69,6 +72,18 @@ function MenuPage() {
     toast.success("Deleted");
     invalidate();
   };
+
+  const quickAdd = async (preset: { label_en: string; label_ar: string; url: string }) => {
+    const maxPos = parents.reduce((m, p) => Math.max(m, p.position), 0);
+    await save({ data: {
+      id: null, parent_id: null, position: maxPos + 1,
+      label_en: preset.label_en, label_ar: preset.label_ar, url: preset.url,
+      target: "_self", published: true,
+    } as any });
+    toast.success(`Added "${preset.label_en}"`);
+    invalidate();
+  };
+
 
   return (
     <AdminShell title="Main Menu">
