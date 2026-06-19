@@ -92,6 +92,12 @@ function PublicForm() {
         </div>
       ) : (
         <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
+          {/* Honeypot: hidden from humans, filled by bots */}
+          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+            <label>Leave this field empty
+              <input type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
+            </label>
+          </div>
           {fields.map((f) => (
             <FieldRenderer key={f.id} field={f} lang={lang} value={values[f.field_key]}
               onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
