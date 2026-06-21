@@ -29,6 +29,7 @@ export type Database = {
           position: number
           required: boolean
           updated_at: string
+          width: string
         }
         Insert: {
           created_at?: string
@@ -44,6 +45,7 @@ export type Database = {
           position?: number
           required?: boolean
           updated_at?: string
+          width?: string
         }
         Update: {
           created_at?: string
@@ -59,6 +61,7 @@ export type Database = {
           position?: number
           required?: boolean
           updated_at?: string
+          width?: string
         }
         Relationships: [
           {
