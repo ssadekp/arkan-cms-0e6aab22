@@ -170,6 +170,7 @@ const fieldSchema = z.object({
   placeholder_en: z.string(),
   placeholder_ar: z.string(),
   required: z.boolean(),
+  width: z.enum(["full", "half", "third"]).default("full"),
   options_json: z.array(z.object({ value: z.string(), label_en: z.string(), label_ar: z.string() })),
 });
 

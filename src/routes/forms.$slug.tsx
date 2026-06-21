@@ -80,32 +80,50 @@ function PublicForm() {
   const success = (lang === "ar" ? form.success_message_ar : form.success_message_en) || "Thank you.";
 
   return (
-    <div className="container-narrow py-16 max-w-2xl" dir={dir}>
-      <h1 className="text-3xl font-bold mb-2">{title}</h1>
-      {desc && <p className="text-muted-foreground mb-8">{desc}</p>}
+    <div className="container-narrow py-16 max-w-3xl" dir={dir}>
+      <header className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{title}</h1>
+        {desc && <p className="text-muted-foreground mt-3 max-w-xl mx-auto">{desc}</p>}
+      </header>
 
       {done ? (
-        <div className="rounded-xl border border-border/60 bg-card p-8 text-center space-y-3">
-          <CheckCircle2 className="h-10 w-10 text-primary mx-auto" />
+        <div className="rounded-2xl border border-border/60 bg-card p-10 text-center space-y-4 shadow-sm">
+          <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
           <p className="text-lg">{success}</p>
           <Button variant="outline" onClick={() => setDone(false)}>{lang === "ar" ? "إرسال آخر" : "Submit another"}</Button>
         </div>
       ) : (
-        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}>
+        <form
+          className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm"
+          onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}
+        >
           {/* Honeypot: hidden from humans, filled by bots */}
           <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
             <label>Leave this field empty
               <input type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
             </label>
           </div>
-          {fields.map((f) => (
-            <FieldRenderer key={f.id} field={f} lang={lang} value={values[f.field_key]}
-              onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
-              onFile={(file: File | null) => setFiles({ ...files, [f.field_key]: file })} />
-          ))}
-          <Button type="submit" size="lg" disabled={mut.isPending}>
-            {mut.isPending ? (lang === "ar" ? "جار الإرسال…" : "Submitting…") : (lang === "ar" ? "إرسال" : "Submit")}
-          </Button>
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-x-5 gap-y-5">
+            {fields.map((f) => {
+              const w = f.width ?? "full";
+              const span = w === "third" ? "md:col-span-2" : w === "half" ? "md:col-span-3" : "md:col-span-6";
+              return (
+                <div key={f.id} className={span}>
+                  <FieldRenderer field={f} lang={lang} value={values[f.field_key]}
+                    onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
+                    onFile={(file: File | null) => setFiles({ ...files, [f.field_key]: file })} />
+                </div>
+              );
+            })}
+          </div>
+          <div className="mt-8 flex items-center justify-end gap-3 border-t border-border/60 pt-6">
+            <p className="text-xs text-muted-foreground me-auto">
+              {lang === "ar" ? "الحقول المميزة بـ * مطلوبة" : "Fields marked with * are required"}
+            </p>
+            <Button type="submit" size="lg" disabled={mut.isPending} className="min-w-32">
+              {mut.isPending ? (lang === "ar" ? "جار الإرسال…" : "Submitting…") : (lang === "ar" ? "إرسال" : "Submit")}
+            </Button>
+          </div>
         </form>
       )}
     </div>
