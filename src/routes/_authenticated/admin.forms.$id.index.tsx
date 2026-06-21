@@ -185,6 +185,6 @@ function blank(formId: string, position: number) {
   return {
     form_id: formId, position, field_key: "", field_type: "text",
     label_en: "", label_ar: "", placeholder_en: "", placeholder_ar: "",
-    required: false, options_json: [],
+    required: false, width: "full", options_json: [],
   };
 }
