@@ -130,9 +130,21 @@ function FieldDialog({ formId, field, nextPosition, onSaved, trigger }: {
             <Labeled label="Placeholder (English)"><Input value={v.placeholder_en} onChange={(e) => setV({ ...v, placeholder_en: e.target.value })} /></Labeled>
             <Labeled label="Placeholder (العربية)"><Input value={v.placeholder_ar} onChange={(e) => setV({ ...v, placeholder_ar: e.target.value })} dir="rtl" /></Labeled>
           </div>
-          <div className="flex items-center justify-between rounded-md border border-border/60 px-3 py-2">
-            <Label>Required</Label>
-            <Switch checked={v.required} onCheckedChange={(c) => setV({ ...v, required: c })} />
+          <div className="grid grid-cols-2 gap-3">
+            <Labeled label="Field width">
+              <Select value={v.width ?? "full"} onValueChange={(w) => setV({ ...v, width: w })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">Full width</SelectItem>
+                  <SelectItem value="half">Half width</SelectItem>
+                  <SelectItem value="third">Third width</SelectItem>
+                </SelectContent>
+              </Select>
+            </Labeled>
+            <div className="flex items-center justify-between rounded-md border border-border/60 px-3 py-2">
+              <Label>Required</Label>
+              <Switch checked={v.required} onCheckedChange={(c) => setV({ ...v, required: c })} />
+            </div>
           </div>
 
           {NEEDS_OPTIONS.has(v.field_type) && (
