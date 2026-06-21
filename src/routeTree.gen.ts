@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
+import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
 import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
 
@@ -197,6 +198,12 @@ const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   path: '/admin/about',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminFormsIndexRoute =
+  AuthenticatedAdminFormsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminFormsRoute,
+  } as any)
 const AuthenticatedAdminFormsIdIndexRoute =
   AuthenticatedAdminFormsIdIndexRouteImport.update({
     id: '/$id/',
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
   '/admin/forms/$id/': typeof AuthenticatedAdminFormsIdIndexRoute
 }
@@ -262,7 +270,6 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
-  '/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/forms': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
   '/admin/forms/$id': typeof AuthenticatedAdminFormsIdIndexRoute
 }
@@ -308,6 +316,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/_authenticated/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
   '/_authenticated/admin/forms/$id/': typeof AuthenticatedAdminFormsIdIndexRoute
 }
@@ -343,6 +352,7 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin/'
+    | '/admin/forms/'
     | '/admin/forms/$id/submissions'
     | '/admin/forms/$id/'
   fileRoutesByTo: FileRoutesByTo
@@ -365,7 +375,6 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
-    | '/admin/forms'
     | '/admin/menu'
     | '/admin/news'
     | '/admin/pages'
@@ -376,6 +385,7 @@ export interface FileRouteTypes {
     | '/admin/tags'
     | '/admin/users'
     | '/admin'
+    | '/admin/forms'
     | '/admin/forms/$id/submissions'
     | '/admin/forms/$id'
   id:
@@ -410,6 +420,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/forms/'
     | '/_authenticated/admin/forms/$id/submissions'
     | '/_authenticated/admin/forms/$id/'
   fileRoutesById: FileRoutesById
@@ -644,6 +655,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAboutRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/forms/': {
+      id: '/_authenticated/admin/forms/'
+      path: '/'
+      fullPath: '/admin/forms/'
+      preLoaderRoute: typeof AuthenticatedAdminFormsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminFormsRoute
+    }
     '/_authenticated/admin/forms/$id/': {
       id: '/_authenticated/admin/forms/$id/'
       path: '/$id'
@@ -662,12 +680,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminFormsRouteChildren {
+  AuthenticatedAdminFormsIndexRoute: typeof AuthenticatedAdminFormsIndexRoute
   AuthenticatedAdminFormsIdSubmissionsRoute: typeof AuthenticatedAdminFormsIdSubmissionsRoute
   AuthenticatedAdminFormsIdIndexRoute: typeof AuthenticatedAdminFormsIdIndexRoute
 }
 
 const AuthenticatedAdminFormsRouteChildren: AuthenticatedAdminFormsRouteChildren =
   {
+    AuthenticatedAdminFormsIndexRoute: AuthenticatedAdminFormsIndexRoute,
     AuthenticatedAdminFormsIdSubmissionsRoute:
       AuthenticatedAdminFormsIdSubmissionsRoute,
     AuthenticatedAdminFormsIdIndexRoute: AuthenticatedAdminFormsIdIndexRoute,
@@ -738,13 +758,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
