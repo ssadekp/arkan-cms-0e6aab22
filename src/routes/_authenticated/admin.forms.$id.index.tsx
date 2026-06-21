@@ -73,7 +73,9 @@ function FormFieldsPage() {
                     {f.label_en || f.label_ar || f.field_key}
                     {f.required && <span className="ms-1 text-destructive">*</span>}
                   </div>
-                  <div className="text-xs text-muted-foreground truncate">key: {f.field_key}</div>
+                  <div className="text-xs text-muted-foreground truncate">
+                    key: {f.field_key} · width: {f.width ?? "full"}
+                  </div>
                 </div>
                 <FieldDialog formId={id} field={f} nextPosition={f.position} onSaved={invalidate} trigger={
                   <Button variant="ghost" size="sm"><Edit2 className="h-4 w-4" /></Button>
