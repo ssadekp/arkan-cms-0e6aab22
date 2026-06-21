@@ -94,11 +94,11 @@ function PublicForm() {
         </div>
       ) : (
         <form
-          className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm"
+          className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm"
           onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}
         >
           {/* Honeypot: hidden from humans, filled by bots */}
-          <div aria-hidden="true" style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+          <div aria-hidden="true" style={{ position: "absolute", insetInlineStart: "-10000px", top: 0, width: 1, height: 1, overflow: "hidden", pointerEvents: "none" }}>
             <label>Leave this field empty
               <input type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} />
             </label>
