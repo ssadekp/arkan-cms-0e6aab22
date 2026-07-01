@@ -94,7 +94,8 @@ function PublicForm() {
         </div>
       ) : (
         <form
-          className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm"
+          dir={dir}
+          className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm text-start"
           onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}
         >
           {/* Honeypot: hidden from humans, filled by bots */}
@@ -109,15 +110,15 @@ function PublicForm() {
               const span = w === "third" ? "md:col-span-2" : w === "half" ? "md:col-span-3" : "md:col-span-6";
               return (
                 <div key={f.id} className={span}>
-                  <FieldRenderer field={f} lang={lang} value={values[f.field_key]}
+                  <FieldRenderer field={f} lang={lang} dir={dir} value={values[f.field_key]}
                     onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
                     onFile={(file: File | null) => setFiles({ ...files, [f.field_key]: file })} />
                 </div>
               );
             })}
           </div>
-          <div className="mt-8 flex items-center justify-end gap-3 border-t border-border/60 pt-6">
-            <p className="text-xs text-muted-foreground me-auto">
+          <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t border-border/60 pt-6">
+            <p className="text-xs text-muted-foreground me-auto text-start">
               {lang === "ar" ? "الحقول المميزة بـ * مطلوبة" : "Fields marked with * are required"}
             </p>
             <Button type="submit" size="lg" disabled={mut.isPending} className="min-w-32">
@@ -129,6 +130,7 @@ function PublicForm() {
     </div>
   );
 }
+
 
 function pickLabel(f: any, lang: string) {
   return (lang === "ar" ? f.label_ar : f.label_en) || f.label_en || f.label_ar || f.field_key;
