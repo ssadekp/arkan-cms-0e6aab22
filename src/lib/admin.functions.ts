@@ -131,7 +131,7 @@ export const saveSiteSettings = createServerFn({ method: "POST" })
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
     const { i18n, ...root } = data;
-    await sb.from("site_settings").update(root).eq("id", 1);
+    await sb.from("site_settings").upsert({ id: 1, ...root });
     for (const row of i18n) {
       await sb.from("site_settings_i18n").upsert({ setting_id: 1, ...row });
     }
