@@ -94,7 +94,8 @@ function PublicForm() {
         </div>
       ) : (
         <form
-          className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm"
+          dir={dir}
+          className="relative overflow-hidden rounded-2xl border border-border/60 bg-card p-6 md:p-8 shadow-sm text-start"
           onSubmit={(e) => { e.preventDefault(); mut.mutate(); }}
         >
           {/* Honeypot: hidden from humans, filled by bots */}
@@ -109,15 +110,15 @@ function PublicForm() {
               const span = w === "third" ? "md:col-span-2" : w === "half" ? "md:col-span-3" : "md:col-span-6";
               return (
                 <div key={f.id} className={span}>
-                  <FieldRenderer field={f} lang={lang} value={values[f.field_key]}
+                  <FieldRenderer field={f} lang={lang} dir={dir} value={values[f.field_key]}
                     onChange={(v: any) => setValues({ ...values, [f.field_key]: v })}
                     onFile={(file: File | null) => setFiles({ ...files, [f.field_key]: file })} />
                 </div>
               );
             })}
           </div>
-          <div className="mt-8 flex items-center justify-end gap-3 border-t border-border/60 pt-6">
-            <p className="text-xs text-muted-foreground me-auto">
+          <div className="mt-8 flex flex-wrap items-center justify-end gap-3 border-t border-border/60 pt-6">
+            <p className="text-xs text-muted-foreground me-auto text-start">
               {lang === "ar" ? "الحقول المميزة بـ * مطلوبة" : "Fields marked with * are required"}
             </p>
             <Button type="submit" size="lg" disabled={mut.isPending} className="min-w-32">
@@ -130,83 +131,99 @@ function PublicForm() {
   );
 }
 
+
 function pickLabel(f: any, lang: string) {
   return (lang === "ar" ? f.label_ar : f.label_en) || f.label_en || f.label_ar || f.field_key;
 }
 
-function FieldRenderer({ field, lang, value, onChange, onFile }: any) {
+function FieldRenderer({ field, lang, dir, value, onChange, onFile }: any) {
   const label = pickLabel(field, lang);
   const placeholder = (lang === "ar" ? field.placeholder_ar : field.placeholder_en) || "";
+  const description = (lang === "ar" ? field.description_ar : field.description_en) || "";
   const options: any[] = field.options_json ?? [];
   const optLabel = (o: any) => (lang === "ar" ? o.label_ar : o.label_en) || o.value;
+  const isRtl = dir === "rtl";
+
+  const inputCls = "text-start";
+  const wrap = "space-y-1.5 text-start";
 
   const head = (
-    <Label className="flex items-center gap-1">
-      {label}{field.required && <span className="text-destructive">*</span>}
+    <Label className="flex items-center gap-1 text-start w-full">
+      <span>{label}</span>
+      {field.required && <span className="text-destructive" aria-hidden="true">*</span>}
     </Label>
   );
 
+  const help = description ? (
+    <p className="text-xs text-muted-foreground text-start">{description}</p>
+  ) : null;
+
   switch (field.field_type) {
     case "textarea":
-      return <div className="space-y-1.5">{head}<Textarea rows={5} placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Textarea rows={5} dir={dir} placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className={inputCls} />{help}</div>;
     case "select":
       return (
-        <div className="space-y-1.5">{head}
-          <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={value ?? ""} onChange={(e) => onChange(e.target.value)}>
+        <div className={wrap}>{head}
+          <select dir={dir} className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-start" value={value ?? ""} onChange={(e) => onChange(e.target.value)}>
             <option value="">—</option>
             {options.map((o) => <option key={o.value} value={o.value}>{optLabel(o)}</option>)}
           </select>
+          {help}
         </div>
       );
     case "radio":
       return (
-        <div className="space-y-1.5">{head}
-          <div className="space-y-1">
+        <div className={wrap}>{head}
+          <div className="space-y-1.5">
             {options.map((o) => (
-              <label key={o.value} className="flex items-center gap-2 text-sm">
-                <input type="radio" name={field.field_key} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} />
-                {optLabel(o)}
+              <label key={o.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" className="accent-primary" name={field.field_key} value={o.value} checked={value === o.value} onChange={() => onChange(o.value)} />
+                <span>{optLabel(o)}</span>
               </label>
             ))}
           </div>
+          {help}
         </div>
       );
     case "checkbox": {
       const arr: string[] = Array.isArray(value) ? value : [];
       return (
-        <div className="space-y-1.5">{head}
-          <div className="space-y-1">
+        <div className={wrap}>{head}
+          <div className="space-y-1.5">
             {options.map((o) => {
               const checked = arr.includes(o.value);
               return (
-                <label key={o.value} className="flex items-center gap-2 text-sm">
-                  <input type="checkbox" checked={checked} onChange={(e) => {
+                <label key={o.value} className="flex items-center gap-2 text-sm cursor-pointer">
+                  <input type="checkbox" className="accent-primary" checked={checked} onChange={(e) => {
                     const next = e.target.checked ? [...arr, o.value] : arr.filter((x) => x !== o.value);
                     onChange(next);
                   }} />
-                  {optLabel(o)}
+                  <span>{optLabel(o)}</span>
                 </label>
               );
             })}
           </div>
+          {help}
         </div>
       );
     }
     case "file":
       return (
-        <div className="space-y-1.5">{head}
-          <Input type="file" onChange={(e) => onFile(e.target.files?.[0] ?? null)} />
+        <div className={wrap}>{head}
+          <Input type="file" dir={dir} onChange={(e) => onFile(e.target.files?.[0] ?? null)} className={isRtl ? "file:ms-0 file:me-3 text-start" : "text-start"} />
+          {help}
         </div>
       );
     case "date":
-      return <div className="space-y-1.5">{head}<Input type="date" value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Input type="date" dir={dir} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className={inputCls} />{help}</div>;
     case "number":
-      return <div className="space-y-1.5">{head}<Input type="number" placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Input type="number" dir={dir} placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className={inputCls} />{help}</div>;
     case "email":
-      return <div className="space-y-1.5">{head}<Input type="email" placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Input type="email" dir="ltr" placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className="text-start" />{help}</div>;
     case "phone":
-      return <div className="space-y-1.5">{head}<Input type="tel" placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Input type="tel" dir="ltr" placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className="text-start" />{help}</div>;
     default:
-      return <div className="space-y-1.5">{head}<Input placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} /></div>;
+      return <div className={wrap}>{head}<Input dir={dir} placeholder={placeholder} value={value ?? ""} onChange={(e) => onChange(e.target.value)} className={inputCls} />{help}</div>;
   }
 }
+
