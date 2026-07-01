@@ -54,7 +54,10 @@ function SettingsPage() {
         show_documents: (s as any).show_documents ?? true,
         show_partners: (s as any).show_partners ?? true,
         show_stats: (s as any).show_stats ?? true,
+        visitor_counter_enabled: (s as any).visitor_counter_enabled ?? true,
+        visitor_count_start: (s as any).visitor_count_start ?? 0,
         social_links: s.social_links ?? {},
+
       });
     }
 
@@ -82,7 +85,10 @@ function SettingsPage() {
         show_documents: root.show_documents ?? true,
         show_partners: root.show_partners ?? true,
         show_stats: root.show_stats ?? true,
+        visitor_counter_enabled: root.visitor_counter_enabled ?? true,
+        visitor_count_start: Number(root.visitor_count_start ?? 0) || 0,
         social_links: root.social_links ?? {},
+
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
           { lang: "en", ...stripI18n(i18n.en) },
@@ -156,7 +162,30 @@ function SettingsPage() {
           </Tabs>
         </Section>
 
+        <Section title="Visitor counter (Footer)">
+          <p className="text-xs text-muted-foreground">
+            Shows a live visitor count in the footer. The displayed number is
+            <span className="font-medium"> starting number + real visits</span>, so you can seed it with any historical value.
+          </p>
+          <ToggleRow
+            label="Show visitor counter in footer"
+            checked={root.visitor_counter_enabled ?? true}
+            onChange={(v) => setRoot({ ...root, visitor_counter_enabled: v })}
+          />
+          <div className="space-y-1.5">
+            <Label>Starting number</Label>
+            <Input
+              type="number"
+              min={0}
+              value={root.visitor_count_start ?? 0}
+              onChange={(e) => setRoot({ ...root, visitor_count_start: Number(e.target.value) || 0 })}
+            />
+            <p className="text-xs text-muted-foreground">Added to the live count before displaying.</p>
+          </div>
+        </Section>
+
         <Section title="Homepage sections (إظهار / إخفاء أقسام الصفحة الرئيسية)">
+
           <p className="text-xs text-muted-foreground">
             Turn off the master toggle to hide every homepage section (only the hero remains). Or hide individual sections below.
           </p>

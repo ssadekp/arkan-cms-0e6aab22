@@ -1,6 +1,7 @@
 import { useI18n } from "@/lib/i18n";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Eye } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SocialIcon, type SocialPlatform } from "./SocialIcon";
 
@@ -10,10 +11,42 @@ interface Props {
   contact: { email?: string | null; phone?: string | null; address?: string | null };
   sponsorshipText?: string;
   sponsorshipUrl?: string;
+  visitorCounterEnabled?: boolean;
 }
 
-export function Footer({ siteName, footerText, contact, sponsorshipText, sponsorshipUrl }: Props) {
+const SESSION_KEYS = { counted: "vc-counted", total: "vc-total" } as const;
 
+function useVisitorCount(enabled: boolean) {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!enabled) return;
+    if (typeof window === "undefined") return;
+
+    const cached = window.sessionStorage.getItem(SESSION_KEYS.total);
+    if (window.sessionStorage.getItem(SESSION_KEYS.counted) === "1" && cached) {
+      setCount(Number(cached) || 0);
+      return;
+    }
+
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase.rpc("increment_visitor_count");
+      if (cancelled) return;
+      if (!error && data != null) {
+        const n = Number(data);
+        setCount(n);
+        window.sessionStorage.setItem(SESSION_KEYS.counted, "1");
+        window.sessionStorage.setItem(SESSION_KEYS.total, String(n));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [enabled]);
+
+  return count;
+}
+
+export function Footer({ siteName, footerText, contact, sponsorshipText, sponsorshipUrl, visitorCounterEnabled = true }: Props) {
   const { t, lang, dir } = useI18n();
 
   const { data: socialLinks } = useQuery({
@@ -29,6 +62,10 @@ export function Footer({ siteName, footerText, contact, sponsorshipText, sponsor
     },
     staleTime: 60_000,
   });
+
+  const visitorCount = useVisitorCount(!!visitorCounterEnabled);
+  const formattedCount =
+    visitorCount == null ? null : new Intl.NumberFormat(lang === "ar" ? "ar-EG" : "en-US").format(visitorCount);
 
   return (
     <footer className="mt-24 border-t border-border/60 bg-sidebar text-sidebar-foreground">
@@ -62,6 +99,26 @@ export function Footer({ siteName, footerText, contact, sponsorshipText, sponsor
               </a>
             ))}
           </div>
+
+          {visitorCounterEnabled && (
+            <div className="mt-6" dir={dir}>
+              <div className="inline-flex items-center gap-3 rounded-full border border-border/60 bg-background/60 backdrop-blur px-4 py-2 shadow-sm">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60 opacity-75"></span>
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-primary"></span>
+                </span>
+                <Eye className="h-4 w-4 text-primary" />
+                <div className="flex flex-col leading-tight">
+                  <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                    {lang === "ar" ? "عدد الزوار" : "Visitors"}
+                  </span>
+                  <span className="text-sm font-semibold tabular-nums" aria-live="polite">
+                    {formattedCount ?? (lang === "ar" ? "..." : "...")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="border-t border-border/40 py-4">
@@ -90,7 +147,6 @@ export function Footer({ siteName, footerText, contact, sponsorshipText, sponsor
           ) : (
             <span />
           )}
-
         </div>
       </div>
     </footer>

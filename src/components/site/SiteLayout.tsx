@@ -76,7 +76,9 @@ function Inner({ children }: { children: ReactNode }) {
         contact={{ email: settings?.contact_email, phone: settings?.contact_phone, address }}
         sponsorshipText={(settingsI18n as any)?.sponsorship_text ?? ""}
         sponsorshipUrl={(settings as any)?.sponsorship_url ?? ""}
+        visitorCounterEnabled={(settings as any)?.visitor_counter_enabled ?? true}
       />
+
     </div>
   );
 }
