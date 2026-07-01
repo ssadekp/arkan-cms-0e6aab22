@@ -85,7 +85,10 @@ function SettingsPage() {
         show_documents: root.show_documents ?? true,
         show_partners: root.show_partners ?? true,
         show_stats: root.show_stats ?? true,
+        visitor_counter_enabled: root.visitor_counter_enabled ?? true,
+        visitor_count_start: Number(root.visitor_count_start ?? 0) || 0,
         social_links: root.social_links ?? {},
+
         i18n: [
           { lang: "ar", ...stripI18n(i18n.ar) },
           { lang: "en", ...stripI18n(i18n.en) },
