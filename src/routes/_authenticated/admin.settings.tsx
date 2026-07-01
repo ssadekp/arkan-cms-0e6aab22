@@ -54,7 +54,10 @@ function SettingsPage() {
         show_documents: (s as any).show_documents ?? true,
         show_partners: (s as any).show_partners ?? true,
         show_stats: (s as any).show_stats ?? true,
+        visitor_counter_enabled: (s as any).visitor_counter_enabled ?? true,
+        visitor_count_start: (s as any).visitor_count_start ?? 0,
         social_links: s.social_links ?? {},
+
       });
     }
 
