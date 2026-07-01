@@ -795,6 +795,9 @@ export type Database = {
           social_links: Json
           sponsorship_url: string | null
           updated_at: string
+          visitor_count_start: number
+          visitor_counter_enabled: boolean
+          visitor_hits: number
         }
         Insert: {
           accent_color?: string
@@ -818,6 +821,9 @@ export type Database = {
           social_links?: Json
           sponsorship_url?: string | null
           updated_at?: string
+          visitor_count_start?: number
+          visitor_counter_enabled?: boolean
+          visitor_hits?: number
         }
         Update: {
           accent_color?: string
@@ -841,6 +847,9 @@ export type Database = {
           social_links?: Json
           sponsorship_url?: string | null
           updated_at?: string
+          visitor_count_start?: number
+          visitor_counter_enabled?: boolean
+          visitor_hits?: number
         }
         Relationships: []
       }
@@ -1004,6 +1013,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_visitor_count: { Args: never; Returns: number }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_super_admin: { Args: { _user_id: string }; Returns: boolean }
     }
