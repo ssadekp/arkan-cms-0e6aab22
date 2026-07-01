@@ -101,7 +101,10 @@ const settingsSchema = z.object({
   show_documents: z.boolean().optional(),
   show_partners: z.boolean().optional(),
   show_stats: z.boolean().optional(),
+  visitor_counter_enabled: z.boolean().optional(),
+  visitor_count_start: z.number().int().nonnegative().optional(),
   social_links: z.record(z.string(), z.string()),
+
 
   i18n: z.array(z.object({
     lang: z.enum(["ar", "en"]),
