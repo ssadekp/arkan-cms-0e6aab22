@@ -5,7 +5,12 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, Quote, Target } from "lucide-react";
+import heroEducation from "@/assets/hero-education.jpg";
+import heroHealth from "@/assets/hero-health.jpg";
+import heroCommunity from "@/assets/hero-community.jpg";
+import heroRehab from "@/assets/hero-rehab.jpg";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,28 +47,96 @@ function HomeBody() {
 
   return (
     <>
-      {/* HERO */}
-      <section className="hero-gradient">
-        <div className="container-narrow py-24 md:py-32 text-center">
-          <span className="inline-block rounded-full bg-primary/15 text-primary px-3 py-1 text-xs font-medium mb-5">
-            {settingsI18n?.tagline}
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight max-w-3xl mx-auto">
-            {settingsI18n?.site_name}
-          </h1>
-          <p className="mt-5 text-lg text-muted-foreground max-w-2xl mx-auto">
-            {settingsI18n?.about_short}
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3 justify-center">
-            <Link to="/projects">
-              <Button size="lg" className="gap-2">{t("home.heroCta")} <Arrow className="h-4 w-4" /></Button>
-            </Link>
-            <Link to="/about">
-              <Button size="lg" variant="outline">{t("nav.about")}</Button>
-            </Link>
+      {/* HERO — mosaic collage over faint world map */}
+      <section className="relative overflow-hidden hero-gradient">
+        {/* faint world map backdrop */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 1200 500"
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.06] text-foreground"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <defs>
+            <pattern id="dots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+              <circle cx="1.2" cy="1.2" r="1.2" fill="currentColor" />
+            </pattern>
+            <mask id="worldmask">
+              {/* stylized continent silhouettes */}
+              <rect width="1200" height="500" fill="black" />
+              <path fill="white" d="M120,180 q40,-60 120,-60 q90,-10 140,40 q60,50 40,120 q-20,60 -100,80 q-90,20 -160,-20 q-70,-40 -60,-100 z" />
+              <path fill="white" d="M420,120 q60,-40 150,-30 q120,10 180,70 q60,60 40,150 q-20,90 -140,120 q-140,30 -240,-30 q-90,-60 -80,-160 q10,-80 90,-120 z" />
+              <path fill="white" d="M760,80 q80,-30 190,-10 q140,30 180,120 q30,90 -60,160 q-120,80 -260,60 q-140,-20 -170,-130 q-20,-100 120,-200 z" />
+              <path fill="white" d="M540,340 q40,-10 90,10 q60,30 40,90 q-30,70 -110,60 q-70,-10 -70,-80 q0,-60 50,-80 z" />
+            </mask>
+          </defs>
+          <rect width="1200" height="500" fill="url(#dots)" mask="url(#worldmask)" />
+        </svg>
+
+        <div className="container-narrow relative py-20 md:py-28">
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-center">
+            {/* HEADLINE — right in RTL, left in LTR (order via CSS) */}
+            <div className={`lg:col-span-6 ${dir === "rtl" ? "lg:order-2 text-right" : "lg:order-1 text-left"}`}>
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold tracking-wide">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                {settingsI18n?.tagline}
+              </span>
+              <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
+                {settingsI18n?.site_name}
+              </h1>
+              <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
+                {settingsI18n?.about_short}
+              </p>
+              <div className={`mt-8 flex flex-wrap gap-3 ${dir === "rtl" ? "justify-end" : "justify-start"}`}>
+                <Link to="/projects">
+                  <Button size="lg" className="gap-2 rounded-full px-6">
+                    {t("home.heroCta")} <Arrow className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link to="/about">
+                  <Button size="lg" variant="outline" className="rounded-full px-6 btn-ink border-transparent">
+                    {t("nav.about")}
+                  </Button>
+                </Link>
+              </div>
+            </div>
+
+            {/* MOSAIC — left in RTL, right in LTR */}
+            <div className={`lg:col-span-6 ${dir === "rtl" ? "lg:order-1" : "lg:order-2"}`}>
+              <div className="relative mx-auto aspect-square max-w-[520px]">
+                <div className="grid grid-cols-6 grid-rows-6 gap-3 h-full w-full">
+                  <div className="col-span-4 row-span-3 rounded-2xl overflow-hidden shadow-card">
+                    <img src={heroEducation} alt="" className="h-full w-full object-cover" width={1024} height={1024} />
+                  </div>
+                  <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-card">
+                    <img src={heroRehab} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
+                  </div>
+                  <div className="col-span-2 row-span-4 rounded-2xl overflow-hidden shadow-card bg-[var(--ink)] text-[var(--ink-foreground)] flex flex-col justify-end p-5">
+                    <div className="text-4xl md:text-5xl font-extrabold leading-none text-primary">15<span className="text-white">+</span></div>
+                    <div className="mt-2 text-xs uppercase tracking-wider opacity-80">{lang === "ar" ? "عام من العطاء" : "Years of impact"}</div>
+                  </div>
+                  <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-card">
+                    <img src={heroCommunity} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
+                  </div>
+                  <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-card">
+                    <img src={heroHealth} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
+                  </div>
+                </div>
+
+                {/* Floating quote card */}
+                <div className={`absolute ${dir === "rtl" ? "-right-4 md:-right-10" : "-left-4 md:-left-10"} -bottom-6 max-w-[240px] rounded-2xl bg-card border border-border/60 shadow-card p-4`}>
+                  <Quote className="h-5 w-5 text-primary" />
+                  <p className="mt-2 text-sm font-medium leading-snug">
+                    {lang === "ar"
+                      ? "لمحة خير تُغيّر حياة، وتزرع الأمل في كل بيت."
+                      : "A glimpse of goodness changes lives and plants hope in every home."}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* STATS */}
       {show("show_stats") && (home?.stats?.length ?? 0) > 0 && (
