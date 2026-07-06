@@ -476,7 +476,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "" };
+  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "" };
 }
 function stripI18n(r: any) {
   return {
@@ -492,5 +492,7 @@ function stripI18n(r: any) {
     address: r.address ?? "",
     sponsorship_text: r.sponsorship_text ?? "",
     hero_quote: r.hero_quote ?? "",
+    hero_title: r.hero_title ?? "",
+    hero_description: r.hero_description ?? "",
   };
 }
