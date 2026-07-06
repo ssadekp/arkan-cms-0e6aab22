@@ -75,6 +75,7 @@ const settingsSchema = z.object({
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
+  hero_image: z.string().nullable().optional(),
   map_embed_url: z
     .string()
     .nullable()
@@ -119,6 +120,7 @@ const settingsSchema = z.object({
     seo_description: z.string(),
     address: z.string(),
     sponsorship_text: z.string().optional().default(""),
+    hero_quote: z.string().optional().default(""),
   })),
 
 });

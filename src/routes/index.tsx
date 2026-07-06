@@ -7,9 +7,6 @@ import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Quote, Target } from "lucide-react";
 import heroEducation from "@/assets/hero-education.jpg";
-import heroHealth from "@/assets/hero-health.jpg";
-import heroCommunity from "@/assets/hero-community.jpg";
-import heroRehab from "@/assets/hero-rehab.jpg";
 
 
 export const Route = createFileRoute("/")({
@@ -103,34 +100,44 @@ function HomeBody() {
             {/* MOSAIC — left in RTL, right in LTR */}
             <div className={`lg:col-span-6 ${dir === "rtl" ? "lg:order-1" : "lg:order-2"}`}>
               <div className="relative mx-auto aspect-square max-w-[520px]">
-                <div className="grid grid-cols-6 grid-rows-6 gap-3 h-full w-full">
-                  <div className="col-span-4 row-span-3 rounded-2xl overflow-hidden shadow-card">
-                    <img src={heroEducation} alt="" className="h-full w-full object-cover" width={1024} height={1024} />
-                  </div>
-                  <div className="col-span-2 row-span-2 rounded-2xl overflow-hidden shadow-card">
-                    <img src={heroRehab} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
-                  </div>
-                  <div className="col-span-2 row-span-4 rounded-2xl overflow-hidden shadow-card bg-[var(--ink)] text-[var(--ink-foreground)] flex flex-col justify-end p-5">
-                    <div className="text-4xl md:text-5xl font-extrabold leading-none text-primary">15<span className="text-white">+</span></div>
-                    <div className="mt-2 text-xs uppercase tracking-wider opacity-80">{lang === "ar" ? "عام من العطاء" : "Years of impact"}</div>
-                  </div>
-                  <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-card">
-                    <img src={heroCommunity} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
-                  </div>
-                  <div className="col-span-2 row-span-3 rounded-2xl overflow-hidden shadow-card">
-                    <img src={heroHealth} alt="" loading="lazy" className="h-full w-full object-cover" width={1024} height={1024} />
-                  </div>
-                </div>
+                {(() => {
+                  const heroImg = (s.hero_image as string | null) || heroEducation;
+                  return (
+                    <div className="relative h-full w-full rounded-3xl overflow-hidden shadow-card">
+                      <img
+                        src={heroImg}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        width={1024}
+                        height={1024}
+                      />
+                      {/* subtle overlay for legibility of the years tile */}
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      {/* 15+ years tile */}
+                      <div className={`absolute ${dir === "rtl" ? "left-4" : "right-4"} top-4 rounded-2xl bg-[var(--ink)] text-[var(--ink-foreground)] px-4 py-3 shadow-card`}>
+                        <div className="text-3xl md:text-4xl font-extrabold leading-none">
+                          <span className="text-primary">15</span>
+                          <span className="text-white">+</span>
+                        </div>
+                        <div className="mt-1 text-[10px] uppercase tracking-wider opacity-80">
+                          {lang === "ar" ? "عام من العطاء" : "Years of impact"}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Floating quote card */}
-                <div className={`absolute ${dir === "rtl" ? "-right-4 md:-right-10" : "-left-4 md:-left-10"} -bottom-6 max-w-[240px] rounded-2xl bg-card border border-border/60 shadow-card p-4`}>
-                  <Quote className="h-5 w-5 text-primary" />
-                  <p className="mt-2 text-sm font-medium leading-snug">
-                    {lang === "ar"
-                      ? "لمحة خير تُغيّر حياة، وتزرع الأمل في كل بيت."
-                      : "A glimpse of goodness changes lives and plants hope in every home."}
-                  </p>
-                </div>
+                {(settingsI18n?.hero_quote || lang) && (
+                  <div className={`absolute ${dir === "rtl" ? "-right-4 md:-right-10" : "-left-4 md:-left-10"} -bottom-6 max-w-[240px] rounded-2xl bg-card border border-border/60 shadow-card p-4`}>
+                    <Quote className="h-5 w-5 text-primary" />
+                    <p className="mt-2 text-sm font-medium leading-snug">
+                      {settingsI18n?.hero_quote?.trim() || (lang === "ar"
+                        ? "لمحة خير تُغيّر حياة، وتزرع الأمل في كل بيت."
+                        : "A glimpse of goodness changes lives and plants hope in every home.")}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
