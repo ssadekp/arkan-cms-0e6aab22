@@ -140,7 +140,7 @@ function SettingsPage() {
 
         <Section title="Homepage hero">
           <p className="text-xs text-muted-foreground">
-            Main image shown in the homepage hero mosaic. Title & description come from <span className="font-medium">Site identity</span> (right side). The short quote below appears in the floating card on the left.
+            Content shown in the homepage hero. The image fills the mosaic frame on one side; title & description appear on the right, and the short quote appears as a floating card on the left. Leave title/description empty to fall back to the site name and short about text.
           </p>
           <ImageUpload
             label="Hero image"
@@ -156,6 +156,17 @@ function SettingsPage() {
             </TabsList>
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field
+                  label={l === "ar" ? "عنوان البطل (يظهر يمينًا)" : "Hero title (right side)"}
+                  value={i18n[l].hero_title}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_title: v } })}
+                />
+                <Field
+                  label={l === "ar" ? "وصف البطل (يظهر يمينًا)" : "Hero description (right side)"}
+                  textarea
+                  value={i18n[l].hero_description}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_description: v } })}
+                />
                 <Field
                   label={l === "ar" ? "اقتباس قصير (البطاقة العائمة)" : "Short quote (floating card)"}
                   textarea
@@ -465,7 +476,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "" };
+  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "" };
 }
 function stripI18n(r: any) {
   return {
@@ -481,5 +492,7 @@ function stripI18n(r: any) {
     address: r.address ?? "",
     sponsorship_text: r.sponsorship_text ?? "",
     hero_quote: r.hero_quote ?? "",
+    hero_title: r.hero_title ?? "",
+    hero_description: r.hero_description ?? "",
   };
 }

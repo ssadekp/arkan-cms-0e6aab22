@@ -78,10 +78,10 @@ function HomeBody() {
                 {settingsI18n?.tagline}
               </span>
               <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
-                {settingsI18n?.site_name}
+                {(settingsI18n as any)?.hero_title?.trim() || settingsI18n?.site_name}
               </h1>
               <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-                {settingsI18n?.about_short}
+                {(settingsI18n as any)?.hero_description?.trim() || settingsI18n?.about_short}
               </p>
               <div className={`mt-8 flex flex-wrap gap-3 ${dir === "rtl" ? "justify-end" : "justify-start"}`}>
                 <Link to="/projects">
