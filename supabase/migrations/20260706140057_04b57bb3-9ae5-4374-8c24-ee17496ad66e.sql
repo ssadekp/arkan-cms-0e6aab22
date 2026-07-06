@@ -1,0 +1,2 @@
+ALTER TABLE public.site_settings_i18n ADD COLUMN IF NOT EXISTS hero_title text NOT NULL DEFAULT '';
+ALTER TABLE public.site_settings_i18n ADD COLUMN IF NOT EXISTS hero_description text NOT NULL DEFAULT '';
