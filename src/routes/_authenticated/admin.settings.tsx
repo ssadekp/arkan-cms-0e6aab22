@@ -44,6 +44,7 @@ function SettingsPage() {
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
         seo_og_image: s.seo_og_image ?? "",
+        hero_image: (s as any).hero_image ?? "",
         map_embed_url: (s as any).map_embed_url ?? "",
         sponsorship_url: (s as any).sponsorship_url ?? "",
         head_scripts: (s as any).head_scripts ?? "",
@@ -75,6 +76,7 @@ function SettingsPage() {
         contact_email: root.contact_email || null,
         contact_phone: root.contact_phone || null,
         seo_og_image: root.seo_og_image || null,
+        hero_image: root.hero_image || null,
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
         head_scripts: root.head_scripts || null,
@@ -134,6 +136,35 @@ function SettingsPage() {
               <option value="en">English</option>
             </select>
           </div>
+        </Section>
+
+        <Section title="Homepage hero">
+          <p className="text-xs text-muted-foreground">
+            Main image shown in the homepage hero mosaic. Title & description come from <span className="font-medium">Site identity</span> (right side). The short quote below appears in the floating card on the left.
+          </p>
+          <ImageUpload
+            label="Hero image"
+            value={root.hero_image}
+            onChange={(v) => setRoot({ ...root, hero_image: v })}
+            folder="hero"
+            help="A single large photo. Square (1:1) works best; landscape also fine."
+          />
+          <Tabs defaultValue="ar">
+            <TabsList>
+              <TabsTrigger value="ar">العربية</TabsTrigger>
+              <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            {(["ar", "en"] as const).map((l) => (
+              <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field
+                  label={l === "ar" ? "اقتباس قصير (البطاقة العائمة)" : "Short quote (floating card)"}
+                  textarea
+                  value={i18n[l].hero_quote}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_quote: v } })}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
         </Section>
 
         <Section title="Sponsorship line (Footer)">
@@ -434,7 +465,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "" };
+  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "" };
 }
 function stripI18n(r: any) {
   return {
@@ -449,5 +480,6 @@ function stripI18n(r: any) {
     seo_description: r.seo_description ?? "",
     address: r.address ?? "",
     sponsorship_text: r.sponsorship_text ?? "",
+    hero_quote: r.hero_quote ?? "",
   };
 }
