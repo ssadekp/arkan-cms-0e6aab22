@@ -780,6 +780,7 @@ export type Database = {
           default_language: Database["public"]["Enums"]["app_language"]
           favicon_url: string | null
           head_scripts: string | null
+          hero_image: string | null
           id: number
           logo_url: string | null
           map_embed_url: string | null
@@ -806,6 +807,7 @@ export type Database = {
           default_language?: Database["public"]["Enums"]["app_language"]
           favicon_url?: string | null
           head_scripts?: string | null
+          hero_image?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -832,6 +834,7 @@ export type Database = {
           default_language?: Database["public"]["Enums"]["app_language"]
           favicon_url?: string | null
           head_scripts?: string | null
+          hero_image?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -861,6 +864,7 @@ export type Database = {
           address: string
           admin_sidebar_name: string
           footer_text: string
+          hero_quote: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description: string
           seo_title: string
@@ -876,6 +880,7 @@ export type Database = {
           address?: string
           admin_sidebar_name?: string
           footer_text?: string
+          hero_quote?: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description?: string
           seo_title?: string
@@ -891,6 +896,7 @@ export type Database = {
           address?: string
           admin_sidebar_name?: string
           footer_text?: string
+          hero_quote?: string
           lang?: Database["public"]["Enums"]["app_language"]
           seo_description?: string
           seo_title?: string
