@@ -121,6 +121,8 @@ const settingsSchema = z.object({
     address: z.string(),
     sponsorship_text: z.string().optional().default(""),
     hero_quote: z.string().optional().default(""),
+    hero_title: z.string().optional().default(""),
+    hero_description: z.string().optional().default(""),
   })),
 
 });
