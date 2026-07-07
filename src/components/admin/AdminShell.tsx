@@ -34,12 +34,14 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/settings", label: t("admin.settings"), icon: Settings },
   ];
   const pagesItems = [
+    { to: "/admin/homepage", label: lang === "ar" ? "الصفحة الرئيسية" : "Homepage", icon: Home },
     { to: "/admin/pages", label: t("admin.pages"), icon: FileText },
     { to: "/admin/menu", label: lang === "ar" ? "القائمة الرئيسية" : "Main Menu", icon: ListTree },
     { to: "/admin/about", label: t("admin.aboutUs"), icon: Info },
     { to: "/admin/contact", label: t("admin.contactUs"), icon: Mail },
     { to: "/admin/forms", label: lang === "ar" ? "نماذج التواصل" : "Contact Forms", icon: MessageSquare },
   ];
+
   const contentItems = [
     { to: "/admin/focus-areas", label: t("admin.focus"), icon: Target },
     { to: "/admin/projects", label: t("admin.projects"), icon: FolderKanban },
