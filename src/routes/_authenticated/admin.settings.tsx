@@ -191,25 +191,7 @@ function SettingsPage() {
         </p>
 
 
-        <Section title="Homepage sections (إظهار / إخفاء أقسام الصفحة الرئيسية)">
 
-          <p className="text-xs text-muted-foreground">
-            Turn off the master toggle to hide every homepage section (only the hero remains). Or hide individual sections below.
-          </p>
-          <ToggleRow
-            label="Show all sections (الإظهار العام)"
-            checked={root.show_all_sections ?? true}
-            onChange={(v) => setRoot({ ...root, show_all_sections: v })}
-          />
-          <div className="grid sm:grid-cols-2 gap-2 pt-2 border-t border-border/60">
-            <ToggleRow label="Statistics (الإحصائيات)" checked={root.show_stats ?? true} onChange={(v) => setRoot({ ...root, show_stats: v })} />
-            <ToggleRow label="Focus Areas (مجالات العمل)" checked={root.show_focus_areas ?? true} onChange={(v) => setRoot({ ...root, show_focus_areas: v })} />
-            <ToggleRow label="Projects (المشاريع)" checked={root.show_projects ?? true} onChange={(v) => setRoot({ ...root, show_projects: v })} />
-            <ToggleRow label="News (الأخبار)" checked={root.show_news ?? true} onChange={(v) => setRoot({ ...root, show_news: v })} />
-            <ToggleRow label="Partners (الشركاء)" checked={root.show_partners ?? true} onChange={(v) => setRoot({ ...root, show_partners: v })} />
-            <ToggleRow label="Documents (الوثائق)" checked={root.show_documents ?? true} onChange={(v) => setRoot({ ...root, show_documents: v })} />
-          </div>
-        </Section>
 
         <Section title="SEO">
           <ImageUpload
