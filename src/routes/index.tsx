@@ -46,7 +46,7 @@ function HomeBody() {
 
   return (
     <>
-      {/* HERO — full-bleed background image with overlaid text */}
+      {/* HERO — full-bleed background image with overlaid centered text */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
@@ -57,8 +57,20 @@ function HomeBody() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/40" />
         </div>
 
+        {/* Corner quote — top-right for AR, top-left for EN */}
+        {settingsI18n?.hero_quote?.trim() && (
+          <div
+            className={`hidden md:flex absolute top-6 ${dir === "rtl" ? "right-6" : "left-6"} z-10 max-w-xs items-start gap-3 rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-4 text-white`}
+          >
+            <Quote className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+            <p className="text-sm font-medium leading-snug text-white/95">
+              {settingsI18n.hero_quote}
+            </p>
+          </div>
+        )}
+
         <div className="container-narrow relative py-24 md:py-36 lg:py-44 text-white">
-          <div className={`max-w-2xl ${dir === "rtl" ? "text-right ms-auto" : "text-left"}`}>
+          <div className="max-w-3xl mx-auto text-center">
             {settingsI18n?.tagline && (
               <span className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur text-white px-3 py-1 text-xs font-semibold tracking-wide">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -68,12 +80,13 @@ function HomeBody() {
             <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight drop-shadow">
               {(settingsI18n as any)?.hero_title?.trim() || settingsI18n?.site_name}
             </h1>
-            <p className="mt-6 text-lg text-white/90 max-w-xl leading-relaxed">
+            <p className="mt-6 text-lg text-white/90 max-w-xl mx-auto leading-relaxed">
               {(settingsI18n as any)?.hero_description?.trim() || settingsI18n?.about_short}
             </p>
 
+            {/* Mobile fallback for the quote (corner card is hidden on small screens) */}
             {settingsI18n?.hero_quote?.trim() && (
-              <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-4 max-w-lg">
+              <div className="md:hidden mt-6 mx-auto flex items-start gap-3 rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-4 max-w-lg text-left rtl:text-right">
                 <Quote className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <p className="text-sm font-medium leading-snug text-white/95">
                   {settingsI18n.hero_quote}
@@ -81,7 +94,7 @@ function HomeBody() {
               </div>
             )}
 
-            <div className={`mt-8 flex flex-wrap gap-3 ${dir === "rtl" ? "justify-end" : "justify-start"}`}>
+            <div className="mt-8 flex flex-wrap gap-3 justify-center">
               <Link to="/projects">
                 <Button size="lg" className="gap-2 rounded-full px-6">
                   {t("home.heroCta")} <Arrow className="h-4 w-4" />
@@ -96,6 +109,7 @@ function HomeBody() {
           </div>
         </div>
       </section>
+
 
 
 
