@@ -138,46 +138,6 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Homepage hero">
-          <p className="text-xs text-muted-foreground">
-            Content shown in the homepage hero. The image fills the mosaic frame on one side; title & description appear on the right, and the short quote appears as a floating card on the left. Leave title/description empty to fall back to the site name and short about text.
-          </p>
-          <ImageUpload
-            label="Hero image"
-            value={root.hero_image}
-            onChange={(v) => setRoot({ ...root, hero_image: v })}
-            folder="hero"
-            help="A single large photo. Square (1:1) works best; landscape also fine."
-          />
-          <Tabs defaultValue="ar">
-            <TabsList>
-              <TabsTrigger value="ar">العربية</TabsTrigger>
-              <TabsTrigger value="en">English</TabsTrigger>
-            </TabsList>
-            {(["ar", "en"] as const).map((l) => (
-              <TabsContent key={l} value={l} className="space-y-3 pt-3">
-                <Field
-                  label={l === "ar" ? "عنوان البطل (يظهر يمينًا)" : "Hero title (right side)"}
-                  value={i18n[l].hero_title}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_title: v } })}
-                />
-                <Field
-                  label={l === "ar" ? "وصف البطل (يظهر يمينًا)" : "Hero description (right side)"}
-                  textarea
-                  value={i18n[l].hero_description}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_description: v } })}
-                />
-                <Field
-                  label={l === "ar" ? "اقتباس قصير (البطاقة العائمة)" : "Short quote (floating card)"}
-                  textarea
-                  value={i18n[l].hero_quote}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_quote: v } })}
-                />
-              </TabsContent>
-            ))}
-          </Tabs>
-        </Section>
-
         <Section title="Sponsorship line (Footer)">
           <p className="text-xs text-muted-foreground">
             Shown in the footer next to the copyright (e.g. "Under the patronage of …"). Leave the text empty to hide the line.
@@ -225,6 +185,11 @@ function SettingsPage() {
             <p className="text-xs text-muted-foreground">Added to the live count before displaying.</p>
           </div>
         </Section>
+
+        <p className="text-xs text-muted-foreground -mt-2">
+          Homepage hero and section visibility have moved to <span className="font-medium">Admin → Homepage</span>.
+        </p>
+
 
         <Section title="Homepage sections (إظهار / إخفاء أقسام الصفحة الرئيسية)">
 
