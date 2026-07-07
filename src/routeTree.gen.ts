@@ -34,6 +34,7 @@ import { Route as AuthenticatedAdminPartnersRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminPagesRouteImport } from './routes/_authenticated/admin.pages'
 import { Route as AuthenticatedAdminNewsRouteImport } from './routes/_authenticated/admin.news'
 import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin.menu'
+import { Route as AuthenticatedAdminHomepageRouteImport } from './routes/_authenticated/admin.homepage'
 import { Route as AuthenticatedAdminFormsRouteImport } from './routes/_authenticated/admin.forms'
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
@@ -170,6 +171,12 @@ const AuthenticatedAdminMenuRoute = AuthenticatedAdminMenuRouteImport.update({
   path: '/admin/menu',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminHomepageRoute =
+  AuthenticatedAdminHomepageRouteImport.update({
+    id: '/admin/homepage',
+    path: '/admin/homepage',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminFormsRoute = AuthenticatedAdminFormsRouteImport.update({
   id: '/admin/forms',
   path: '/admin/forms',
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
+  '/admin/homepage': typeof AuthenticatedAdminHomepageRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -270,6 +278,7 @@ export interface FileRoutesByTo {
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
+  '/admin/homepage': typeof AuthenticatedAdminHomepageRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/admin/news': typeof AuthenticatedAdminNewsRoute
   '/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -306,6 +315,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/_authenticated/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
+  '/_authenticated/admin/homepage': typeof AuthenticatedAdminHomepageRoute
   '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/admin/news': typeof AuthenticatedAdminNewsRoute
   '/_authenticated/admin/pages': typeof AuthenticatedAdminPagesRoute
@@ -342,6 +352,7 @@ export interface FileRouteTypes {
     | '/admin/documents'
     | '/admin/focus-areas'
     | '/admin/forms'
+    | '/admin/homepage'
     | '/admin/menu'
     | '/admin/news'
     | '/admin/pages'
@@ -375,6 +386,7 @@ export interface FileRouteTypes {
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
+    | '/admin/homepage'
     | '/admin/menu'
     | '/admin/news'
     | '/admin/pages'
@@ -410,6 +422,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/documents'
     | '/_authenticated/admin/focus-areas'
     | '/_authenticated/admin/forms'
+    | '/_authenticated/admin/homepage'
     | '/_authenticated/admin/menu'
     | '/_authenticated/admin/news'
     | '/_authenticated/admin/pages'
@@ -620,6 +633,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMenuRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/homepage': {
+      id: '/_authenticated/admin/homepage'
+      path: '/admin/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AuthenticatedAdminHomepageRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/forms': {
       id: '/_authenticated/admin/forms'
       path: '/admin/forms'
@@ -704,6 +724,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
   AuthenticatedAdminFormsRoute: typeof AuthenticatedAdminFormsRouteWithChildren
+  AuthenticatedAdminHomepageRoute: typeof AuthenticatedAdminHomepageRoute
   AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedAdminNewsRoute: typeof AuthenticatedAdminNewsRoute
   AuthenticatedAdminPagesRoute: typeof AuthenticatedAdminPagesRoute
@@ -722,6 +743,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
   AuthenticatedAdminFormsRoute: AuthenticatedAdminFormsRouteWithChildren,
+  AuthenticatedAdminHomepageRoute: AuthenticatedAdminHomepageRoute,
   AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedAdminNewsRoute: AuthenticatedAdminNewsRoute,
   AuthenticatedAdminPagesRoute: AuthenticatedAdminPagesRoute,

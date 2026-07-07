@@ -138,46 +138,6 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Homepage hero">
-          <p className="text-xs text-muted-foreground">
-            Content shown in the homepage hero. The image fills the mosaic frame on one side; title & description appear on the right, and the short quote appears as a floating card on the left. Leave title/description empty to fall back to the site name and short about text.
-          </p>
-          <ImageUpload
-            label="Hero image"
-            value={root.hero_image}
-            onChange={(v) => setRoot({ ...root, hero_image: v })}
-            folder="hero"
-            help="A single large photo. Square (1:1) works best; landscape also fine."
-          />
-          <Tabs defaultValue="ar">
-            <TabsList>
-              <TabsTrigger value="ar">العربية</TabsTrigger>
-              <TabsTrigger value="en">English</TabsTrigger>
-            </TabsList>
-            {(["ar", "en"] as const).map((l) => (
-              <TabsContent key={l} value={l} className="space-y-3 pt-3">
-                <Field
-                  label={l === "ar" ? "عنوان البطل (يظهر يمينًا)" : "Hero title (right side)"}
-                  value={i18n[l].hero_title}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_title: v } })}
-                />
-                <Field
-                  label={l === "ar" ? "وصف البطل (يظهر يمينًا)" : "Hero description (right side)"}
-                  textarea
-                  value={i18n[l].hero_description}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_description: v } })}
-                />
-                <Field
-                  label={l === "ar" ? "اقتباس قصير (البطاقة العائمة)" : "Short quote (floating card)"}
-                  textarea
-                  value={i18n[l].hero_quote}
-                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_quote: v } })}
-                />
-              </TabsContent>
-            ))}
-          </Tabs>
-        </Section>
-
         <Section title="Sponsorship line (Footer)">
           <p className="text-xs text-muted-foreground">
             Shown in the footer next to the copyright (e.g. "Under the patronage of …"). Leave the text empty to hide the line.
@@ -226,25 +186,12 @@ function SettingsPage() {
           </div>
         </Section>
 
-        <Section title="Homepage sections (إظهار / إخفاء أقسام الصفحة الرئيسية)">
+        <p className="text-xs text-muted-foreground -mt-2">
+          Homepage hero and section visibility have moved to <span className="font-medium">Admin → Homepage</span>.
+        </p>
 
-          <p className="text-xs text-muted-foreground">
-            Turn off the master toggle to hide every homepage section (only the hero remains). Or hide individual sections below.
-          </p>
-          <ToggleRow
-            label="Show all sections (الإظهار العام)"
-            checked={root.show_all_sections ?? true}
-            onChange={(v) => setRoot({ ...root, show_all_sections: v })}
-          />
-          <div className="grid sm:grid-cols-2 gap-2 pt-2 border-t border-border/60">
-            <ToggleRow label="Statistics (الإحصائيات)" checked={root.show_stats ?? true} onChange={(v) => setRoot({ ...root, show_stats: v })} />
-            <ToggleRow label="Focus Areas (مجالات العمل)" checked={root.show_focus_areas ?? true} onChange={(v) => setRoot({ ...root, show_focus_areas: v })} />
-            <ToggleRow label="Projects (المشاريع)" checked={root.show_projects ?? true} onChange={(v) => setRoot({ ...root, show_projects: v })} />
-            <ToggleRow label="News (الأخبار)" checked={root.show_news ?? true} onChange={(v) => setRoot({ ...root, show_news: v })} />
-            <ToggleRow label="Partners (الشركاء)" checked={root.show_partners ?? true} onChange={(v) => setRoot({ ...root, show_partners: v })} />
-            <ToggleRow label="Documents (الوثائق)" checked={root.show_documents ?? true} onChange={(v) => setRoot({ ...root, show_documents: v })} />
-          </div>
-        </Section>
+
+
 
         <Section title="SEO">
           <ImageUpload
