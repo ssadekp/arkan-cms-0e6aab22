@@ -42,107 +42,62 @@ function HomeBody() {
   const show = (key: string) => showAll && s[key] !== false;
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
 
+  const heroImg = (s.hero_image as string | null) || heroEducation;
+
   return (
     <>
-      {/* HERO — mosaic collage over faint world map */}
-      <section className="relative overflow-hidden hero-gradient">
-        {/* faint world map backdrop */}
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 1200 500"
-          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.06] text-foreground"
-          preserveAspectRatio="xMidYMid slice"
-        >
-          <defs>
-            <pattern id="dots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
-              <circle cx="1.2" cy="1.2" r="1.2" fill="currentColor" />
-            </pattern>
-            <mask id="worldmask">
-              {/* stylized continent silhouettes */}
-              <rect width="1200" height="500" fill="black" />
-              <path fill="white" d="M120,180 q40,-60 120,-60 q90,-10 140,40 q60,50 40,120 q-20,60 -100,80 q-90,20 -160,-20 q-70,-40 -60,-100 z" />
-              <path fill="white" d="M420,120 q60,-40 150,-30 q120,10 180,70 q60,60 40,150 q-20,90 -140,120 q-140,30 -240,-30 q-90,-60 -80,-160 q10,-80 90,-120 z" />
-              <path fill="white" d="M760,80 q80,-30 190,-10 q140,30 180,120 q30,90 -60,160 q-120,80 -260,60 q-140,-20 -170,-130 q-20,-100 120,-200 z" />
-              <path fill="white" d="M540,340 q40,-10 90,10 q60,30 40,90 q-30,70 -110,60 q-70,-10 -70,-80 q0,-60 50,-80 z" />
-            </mask>
-          </defs>
-          <rect width="1200" height="500" fill="url(#dots)" mask="url(#worldmask)" />
-        </svg>
+      {/* HERO — full-bleed background image with overlaid text */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0">
+          <img
+            src={heroImg}
+            alt=""
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/40" />
+        </div>
 
-        <div className="container-narrow relative py-20 md:py-28">
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-center">
-            {/* HEADLINE — right in RTL, left in LTR (order via CSS) */}
-            <div className={`lg:col-span-6 ${dir === "rtl" ? "lg:order-2 text-right" : "lg:order-1 text-left"}`}>
-              <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold tracking-wide">
+        <div className="container-narrow relative py-24 md:py-36 lg:py-44 text-white">
+          <div className={`max-w-2xl ${dir === "rtl" ? "text-right ms-auto" : "text-left"}`}>
+            {settingsI18n?.tagline && (
+              <span className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur text-white px-3 py-1 text-xs font-semibold tracking-wide">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {settingsI18n?.tagline}
+                {settingsI18n.tagline}
               </span>
-              <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight">
-                {(settingsI18n as any)?.hero_title?.trim() || settingsI18n?.site_name}
-              </h1>
-              <p className="mt-6 text-lg text-muted-foreground max-w-xl leading-relaxed">
-                {(settingsI18n as any)?.hero_description?.trim() || settingsI18n?.about_short}
-              </p>
-              <div className={`mt-8 flex flex-wrap gap-3 ${dir === "rtl" ? "justify-end" : "justify-start"}`}>
-                <Link to="/projects">
-                  <Button size="lg" className="gap-2 rounded-full px-6">
-                    {t("home.heroCta")} <Arrow className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <Link to="/about">
-                  <Button size="lg" variant="outline" className="rounded-full px-6 btn-ink border-transparent">
-                    {t("nav.about")}
-                  </Button>
-                </Link>
-              </div>
-            </div>
+            )}
+            <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight drop-shadow">
+              {(settingsI18n as any)?.hero_title?.trim() || settingsI18n?.site_name}
+            </h1>
+            <p className="mt-6 text-lg text-white/90 max-w-xl leading-relaxed">
+              {(settingsI18n as any)?.hero_description?.trim() || settingsI18n?.about_short}
+            </p>
 
-            {/* MOSAIC — left in RTL, right in LTR */}
-            <div className={`lg:col-span-6 ${dir === "rtl" ? "lg:order-1" : "lg:order-2"}`}>
-              <div className="relative mx-auto aspect-square max-w-[520px]">
-                {(() => {
-                  const heroImg = (s.hero_image as string | null) || heroEducation;
-                  return (
-                    <div className="relative h-full w-full rounded-3xl overflow-hidden shadow-card">
-                      <img
-                        src={heroImg}
-                        alt=""
-                        className="h-full w-full object-cover"
-                        width={1024}
-                        height={1024}
-                      />
-                      {/* subtle overlay for legibility of the years tile */}
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                      {/* 15+ years tile */}
-                      <div className={`absolute ${dir === "rtl" ? "left-4" : "right-4"} top-4 rounded-2xl bg-[var(--ink)] text-[var(--ink-foreground)] px-4 py-3 shadow-card`}>
-                        <div className="text-3xl md:text-4xl font-extrabold leading-none">
-                          <span className="text-primary">15</span>
-                          <span className="text-white">+</span>
-                        </div>
-                        <div className="mt-1 text-[10px] uppercase tracking-wider opacity-80">
-                          {lang === "ar" ? "عام من العطاء" : "Years of impact"}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Floating quote card */}
-                {(settingsI18n?.hero_quote || lang) && (
-                  <div className={`absolute ${dir === "rtl" ? "-right-4 md:-right-10" : "-left-4 md:-left-10"} -bottom-6 max-w-[240px] rounded-2xl bg-card border border-border/60 shadow-card p-4`}>
-                    <Quote className="h-5 w-5 text-primary" />
-                    <p className="mt-2 text-sm font-medium leading-snug">
-                      {settingsI18n?.hero_quote?.trim() || (lang === "ar"
-                        ? "لمحة خير تُغيّر حياة، وتزرع الأمل في كل بيت."
-                        : "A glimpse of goodness changes lives and plants hope in every home.")}
-                    </p>
-                  </div>
-                )}
+            {settingsI18n?.hero_quote?.trim() && (
+              <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/10 backdrop-blur border border-white/20 p-4 max-w-lg">
+                <Quote className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <p className="text-sm font-medium leading-snug text-white/95">
+                  {settingsI18n.hero_quote}
+                </p>
               </div>
+            )}
+
+            <div className={`mt-8 flex flex-wrap gap-3 ${dir === "rtl" ? "justify-end" : "justify-start"}`}>
+              <Link to="/projects">
+                <Button size="lg" className="gap-2 rounded-full px-6">
+                  {t("home.heroCta")} <Arrow className="h-4 w-4" />
+                </Button>
+              </Link>
+              <Link to="/about">
+                <Button size="lg" variant="outline" className="rounded-full px-6 bg-white/10 text-white border-white/40 hover:bg-white/20 hover:text-white">
+                  {t("nav.about")}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
+
+
 
 
       {/* STATS */}
