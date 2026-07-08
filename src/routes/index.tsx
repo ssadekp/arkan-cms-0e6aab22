@@ -7,6 +7,8 @@ import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Quote, Target } from "lucide-react";
 import heroEducation from "@/assets/hero-education.jpg";
+import focusBg from "@/assets/hero-community.jpg";
+
 
 
 export const Route = createFileRoute("/")({
