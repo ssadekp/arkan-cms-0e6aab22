@@ -134,40 +134,53 @@ function HomeBody() {
         </section>
       )}
 
-      {/* FOCUS AREAS */}
+      {/* FOCUS AREAS — dark band with bg image + 4 icon columns */}
       {show("show_focus_areas") && (
-      <section className="container-narrow py-16">
-        <div className="flex items-end justify-between mb-8">
-          <h2 className="text-2xl font-semibold">{t("home.focus")}</h2>
-          <Link to="/focus-areas" className="text-sm text-primary hover:underline">{t("common.viewAll")}</Link>
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {(home?.focus ?? []).map((f) => {
-            const i18n = pickI18n(home!.focusI18n.filter((x) => x.focus_area_id === f.id), lang);
-            return (
-              <Link
-                key={f.id}
-                to="/focus-areas/$slug"
-                params={{ slug: f.slug }}
-                className="group rounded-xl overflow-hidden border border-border/60 bg-card hover:border-primary/60 transition shadow-soft"
-              >
-                <div className="aspect-[4/3] bg-muted overflow-hidden">
-                  {f.hero_image ? (
-                    <img src={f.hero_image} alt={i18n?.title ?? ""} className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  ) : (
-                    <div className="h-full w-full grid place-items-center text-primary/40"><Target className="h-10 w-10" /></div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold">{i18n?.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{i18n?.description}</p>
-                </div>
+        <section className="relative overflow-hidden py-20 text-white">
+          <div className="absolute inset-0 -z-10">
+            <img src={focusBg} alt="" className="h-full w-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a1f14]/95 via-[#0a1f14]/88 to-[#0a1f14]/95" />
+          </div>
+          <div className="container-narrow">
+            <div className="text-center mb-14 max-w-2xl mx-auto">
+              <span className="inline-block h-1 w-12 bg-primary rounded-full mb-4" />
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight">{t("home.focus")}</h2>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
+              {(home?.focus ?? []).slice(0, 4).map((f) => {
+                const i18n = pickI18n(home!.focusI18n.filter((x) => x.focus_area_id === f.id), lang);
+                return (
+                  <Link
+                    key={f.id}
+                    to="/focus-areas/$slug"
+                    params={{ slug: f.slug }}
+                    className="group flex flex-col items-center text-center px-2"
+                  >
+                    <div className="relative mb-5">
+                      <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl group-hover:bg-primary/40 transition" />
+                      <div className="relative grid place-items-center h-20 w-20 rounded-full border border-white/20 bg-white/5 backdrop-blur group-hover:border-primary/60 group-hover:bg-primary/10 transition">
+                        {f.hero_image ? (
+                          <img src={f.hero_image} alt="" className="h-10 w-10 object-contain" />
+                        ) : (
+                          <Target className="h-9 w-9 text-primary" />
+                        )}
+                      </div>
+                    </div>
+                    <h3 className="font-semibold text-lg text-white group-hover:text-primary transition">{i18n?.title}</h3>
+                    <p className="mt-2 text-sm text-white/70 line-clamp-3 leading-relaxed">{i18n?.description}</p>
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="mt-12 text-center">
+              <Link to="/focus-areas" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-white transition">
+                {t("common.viewAll")} <Arrow className="h-4 w-4" />
               </Link>
-            );
-          })}
-        </div>
-      </section>
+            </div>
+          </div>
+        </section>
       )}
+
 
       {/* PROJECTS */}
       {show("show_projects") && (
