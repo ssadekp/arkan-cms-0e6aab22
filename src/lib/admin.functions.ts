@@ -123,6 +123,7 @@ const settingsSchema = z.object({
     hero_quote: z.string().optional().default(""),
     hero_title: z.string().optional().default(""),
     hero_description: z.string().optional().default(""),
+    hero_tagline: z.string().optional().default(""),
   })),
 
 });
