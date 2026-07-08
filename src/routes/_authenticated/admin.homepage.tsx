@@ -111,6 +111,11 @@ function HomepagePage() {
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
                 <Field
+                  label={l === "ar" ? "شارة قصيرة (Tagline)" : "Tagline (short badge)"}
+                  value={i18n[l].hero_tagline}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_tagline: v } })}
+                />
+                <Field
                   label={l === "ar" ? "عنوان البطل" : "Hero title"}
                   value={i18n[l].hero_title}
                   onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_title: v } })}
