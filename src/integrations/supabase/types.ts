@@ -866,6 +866,7 @@ export type Database = {
           footer_text: string
           hero_description: string
           hero_quote: string
+          hero_tagline: string
           hero_title: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description: string
@@ -884,6 +885,7 @@ export type Database = {
           footer_text?: string
           hero_description?: string
           hero_quote?: string
+          hero_tagline?: string
           hero_title?: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description?: string
@@ -902,6 +904,7 @@ export type Database = {
           footer_text?: string
           hero_description?: string
           hero_quote?: string
+          hero_tagline?: string
           hero_title?: string
           lang?: Database["public"]["Enums"]["app_language"]
           seo_description?: string

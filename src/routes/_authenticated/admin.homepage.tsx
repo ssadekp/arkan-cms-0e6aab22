@@ -111,6 +111,11 @@ function HomepagePage() {
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
                 <Field
+                  label={l === "ar" ? "شارة قصيرة (Tagline)" : "Tagline (short badge)"}
+                  value={i18n[l].hero_tagline}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_tagline: v } })}
+                />
+                <Field
                   label={l === "ar" ? "عنوان البطل" : "Hero title"}
                   value={i18n[l].hero_title}
                   onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], hero_title: v } })}
@@ -186,7 +191,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { hero_title: "", hero_description: "", hero_quote: "" };
+  return { hero_tagline: "", hero_title: "", hero_description: "", hero_quote: "" };
 }
 function mergeI18n(existing: any, patch: any) {
   return {
@@ -201,6 +206,7 @@ function mergeI18n(existing: any, patch: any) {
     seo_description: existing.seo_description ?? "",
     address: existing.address ?? "",
     sponsorship_text: existing.sponsorship_text ?? "",
+    hero_tagline: patch.hero_tagline ?? existing.hero_tagline ?? "",
     hero_title: patch.hero_title ?? existing.hero_title ?? "",
     hero_description: patch.hero_description ?? existing.hero_description ?? "",
     hero_quote: patch.hero_quote ?? existing.hero_quote ?? "",
