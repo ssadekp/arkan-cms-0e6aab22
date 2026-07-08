@@ -73,18 +73,22 @@ function HomeBody() {
 
         <div className="container-narrow relative py-24 md:py-36 lg:py-44 text-white">
           <div className="max-w-3xl mx-auto text-center">
-            {settingsI18n?.tagline && (
+            {(settingsI18n as any)?.hero_tagline?.trim() && (
               <span className="inline-flex items-center gap-2 rounded-full bg-white/15 backdrop-blur text-white px-3 py-1 text-xs font-semibold tracking-wide">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                {settingsI18n.tagline}
+                {(settingsI18n as any).hero_tagline}
               </span>
             )}
-            <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight drop-shadow">
-              {(settingsI18n as any)?.hero_title?.trim() || settingsI18n?.site_name}
-            </h1>
-            <p className="mt-6 text-lg text-white/90 max-w-xl mx-auto leading-relaxed">
-              {(settingsI18n as any)?.hero_description?.trim() || settingsI18n?.about_short}
-            </p>
+            {(settingsI18n as any)?.hero_title?.trim() && (
+              <h1 className="mt-5 text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight drop-shadow">
+                {(settingsI18n as any).hero_title}
+              </h1>
+            )}
+            {(settingsI18n as any)?.hero_description?.trim() && (
+              <p className="mt-6 text-lg text-white/90 max-w-xl mx-auto leading-relaxed">
+                {(settingsI18n as any).hero_description}
+              </p>
+            )}
 
             {/* Mobile fallback for the quote (corner card is hidden on small screens) */}
             {settingsI18n?.hero_quote?.trim() && (
