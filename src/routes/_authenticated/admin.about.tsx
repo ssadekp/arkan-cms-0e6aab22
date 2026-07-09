@@ -39,7 +39,7 @@ function AboutAdmin() {
       const s: any = data!.settings;
       const all = data!.settingsI18n as any[];
       const merge = (l: "ar" | "en") => {
-        const existing = all.find((x) => x.lang === l) ?? {};
+        const existing: any = all.find((x) => x.lang === l) ?? {};
         return {
           lang: l,
           site_name: existing.site_name ?? "",
@@ -52,6 +52,11 @@ function AboutAdmin() {
           seo_title: existing.seo_title ?? "",
           seo_description: existing.seo_description ?? "",
           address: existing.address ?? "",
+          sponsorship_text: existing.sponsorship_text ?? "",
+          hero_quote: existing.hero_quote ?? "",
+          hero_title: existing.hero_title ?? "",
+          hero_description: existing.hero_description ?? "",
+          hero_tagline: existing.hero_tagline ?? "",
         };
       };
       return save({ data: {
