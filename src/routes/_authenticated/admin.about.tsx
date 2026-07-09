@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichEditor } from "@/components/admin/RichEditor";
 import { ResourceManager } from "@/components/admin/ResourceManager";
 import { toast } from "sonner";
+import { mergeAboutI18n } from "@/lib/settings-merge";
 
 export const Route = createFileRoute("/_authenticated/admin/about")({
   component: AboutAdmin,
@@ -38,27 +39,8 @@ function AboutAdmin() {
     mutationFn: async () => {
       const s: any = data!.settings;
       const all = data!.settingsI18n as any[];
-      const merge = (l: "ar" | "en") => {
-        const existing: any = all.find((x) => x.lang === l) ?? {};
-        return {
-          lang: l,
-          site_name: existing.site_name ?? "",
-          admin_sidebar_name: existing.admin_sidebar_name ?? "",
-          about_title: i18n[l].about_title,
-          tagline: i18n[l].tagline,
-          about_short: i18n[l].about_short,
-          about_body: i18n[l].about_body,
-          footer_text: existing.footer_text ?? "",
-          seo_title: existing.seo_title ?? "",
-          seo_description: existing.seo_description ?? "",
-          address: existing.address ?? "",
-          sponsorship_text: existing.sponsorship_text ?? "",
-          hero_quote: existing.hero_quote ?? "",
-          hero_title: existing.hero_title ?? "",
-          hero_description: existing.hero_description ?? "",
-          hero_tagline: existing.hero_tagline ?? "",
-        };
-      };
+      const merge = (l: "ar" | "en") =>
+        mergeAboutI18n(l, all.find((x) => x.lang === l), i18n[l]);
       return save({ data: {
         logo_url: s.logo_url ?? null,
         primary_color: s.primary_color,
