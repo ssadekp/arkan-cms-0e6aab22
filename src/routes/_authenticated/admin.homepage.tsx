@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import { mergeHomepageI18n } from "@/lib/settings-merge";
 
 export const Route = createFileRoute("/_authenticated/admin/homepage")({
   component: HomepagePage,
@@ -76,8 +77,8 @@ function HomepagePage() {
         show_partners: root.show_partners ?? true,
         show_stats: root.show_stats ?? true,
         i18n: [
-          { lang: "ar", ...mergeI18n(arRow, i18n.ar) },
-          { lang: "en", ...mergeI18n(enRow, i18n.en) },
+          mergeHomepageI18n("ar", arRow, i18n.ar),
+          mergeHomepageI18n("en", enRow, i18n.en),
         ],
       } });
     },
@@ -192,23 +193,4 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
 }
 function blank() {
   return { hero_tagline: "", hero_title: "", hero_description: "", hero_quote: "" };
-}
-function mergeI18n(existing: any, patch: any) {
-  return {
-    site_name: existing.site_name ?? "",
-    admin_sidebar_name: existing.admin_sidebar_name ?? "",
-    about_title: existing.about_title ?? "",
-    tagline: existing.tagline ?? "",
-    about_short: existing.about_short ?? "",
-    about_body: existing.about_body ?? "",
-    footer_text: existing.footer_text ?? "",
-    seo_title: existing.seo_title ?? "",
-    seo_description: existing.seo_description ?? "",
-    address: existing.address ?? "",
-    sponsorship_text: existing.sponsorship_text ?? "",
-    hero_tagline: patch.hero_tagline ?? existing.hero_tagline ?? "",
-    hero_title: patch.hero_title ?? existing.hero_title ?? "",
-    hero_description: patch.hero_description ?? existing.hero_description ?? "",
-    hero_quote: patch.hero_quote ?? existing.hero_quote ?? "",
-  };
 }
