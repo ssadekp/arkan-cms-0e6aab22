@@ -1,0 +1,1 @@
+ALTER TABLE public.focus_areas ADD COLUMN IF NOT EXISTS icon TEXT;
