@@ -242,6 +242,7 @@ export type Database = {
           created_at: string
           gallery: Json
           hero_image: string | null
+          icon: string | null
           id: string
           published: boolean
           slug: string
@@ -252,6 +253,7 @@ export type Database = {
           created_at?: string
           gallery?: Json
           hero_image?: string | null
+          icon?: string | null
           id?: string
           published?: boolean
           slug: string
@@ -262,6 +264,7 @@ export type Database = {
           created_at?: string
           gallery?: Json
           hero_image?: string | null
+          icon?: string | null
           id?: string
           published?: boolean
           slug?: string
