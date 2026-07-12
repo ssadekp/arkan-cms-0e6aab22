@@ -784,6 +784,7 @@ export type Database = {
           favicon_url: string | null
           head_scripts: string | null
           hero_image: string | null
+          hero_slides: Json
           id: number
           logo_url: string | null
           map_embed_url: string | null
@@ -811,6 +812,7 @@ export type Database = {
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
+          hero_slides?: Json
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -838,6 +840,7 @@ export type Database = {
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
+          hero_slides?: Json
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null

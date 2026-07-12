@@ -33,6 +33,7 @@ function HomepagePage() {
     if (s) {
       setRoot({
         hero_image: s.hero_image ?? "",
+        hero_slides: Array.isArray(s.hero_slides) ? s.hero_slides : [],
         show_all_sections: s.show_all_sections ?? true,
         show_focus_areas: s.show_focus_areas ?? true,
         show_projects: s.show_projects ?? true,
@@ -69,6 +70,7 @@ function HomepagePage() {
         visitor_count_start: Number(s.visitor_count_start ?? 0) || 0,
         social_links: s.social_links ?? {},
         hero_image: root.hero_image || null,
+        hero_slides: Array.isArray(root.hero_slides) ? root.hero_slides.filter((u: string) => !!u) : [],
         show_all_sections: root.show_all_sections ?? true,
         show_focus_areas: root.show_focus_areas ?? true,
         show_projects: root.show_projects ?? true,
@@ -95,15 +97,62 @@ function HomepagePage() {
       <div className="max-w-3xl space-y-6">
         <Section title="Hero (البطل)">
           <p className="text-xs text-muted-foreground">
-            The hero image is used as the full-width background. Title, description and short quote appear overlaid on top.
+            The hero image is used as the full-width background. Title, description and short quote appear overlaid on top. Add additional slides below to rotate them as a slideshow.
           </p>
           <ImageUpload
-            label="Hero background image"
+            label="Hero background image (slide 1)"
             value={root.hero_image}
             onChange={(v) => setRoot({ ...root, hero_image: v })}
             folder="hero"
             help="Landscape works best (e.g. 1920×1080). It will be darkened for text legibility."
           />
+
+          <div className="space-y-3 pt-2 border-t border-border/60">
+            <div className="flex items-center justify-between">
+              <Label>Additional slides (slideshow)</Label>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setRoot({ ...root, hero_slides: [...(root.hero_slides ?? []), ""] })}
+              >
+                + Add slide
+              </Button>
+            </div>
+            {(root.hero_slides ?? []).length === 0 && (
+              <p className="text-xs text-muted-foreground">No extra slides. The hero shows only the image above.</p>
+            )}
+            {(root.hero_slides ?? []).map((url: string, idx: number) => (
+              <div key={idx} className="rounded-md border border-border/60 p-3 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium">Slide {idx + 2}</span>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      const next = [...(root.hero_slides ?? [])];
+                      next.splice(idx, 1);
+                      setRoot({ ...root, hero_slides: next });
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+                <ImageUpload
+                  label=""
+                  value={url}
+                  onChange={(v) => {
+                    const next = [...(root.hero_slides ?? [])];
+                    next[idx] = v ?? "";
+                    setRoot({ ...root, hero_slides: next });
+                  }}
+                  folder="hero"
+                />
+              </div>
+            ))}
+          </div>
+
           <Tabs defaultValue="ar">
             <TabsList>
               <TabsTrigger value="ar">العربية</TabsTrigger>

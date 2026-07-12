@@ -6,6 +6,7 @@ import { useI18n, pickI18n } from "@/lib/i18n";
 import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Quote, Target } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import heroEducation from "@/assets/hero-education.jpg";
 import focusBg from "@/assets/hero-community.jpg";
 
@@ -44,19 +45,50 @@ function HomeBody() {
   const show = (key: string) => showAll && s[key] !== false;
   const Arrow = dir === "rtl" ? ArrowLeft : ArrowRight;
 
-  const heroImg = (s.hero_image as string | null) || heroEducation;
+  const heroSlides = useMemo(() => {
+    const primary = (s.hero_image as string | null) || "";
+    const extra: string[] = Array.isArray(s.hero_slides) ? s.hero_slides.filter((u: any) => typeof u === "string" && u.trim()) : [];
+    const all = [primary, ...extra].filter(Boolean);
+    return all.length > 0 ? all : [heroEducation];
+  }, [s.hero_image, s.hero_slides]);
+
+  const [slideIdx, setSlideIdx] = useState(0);
+  useEffect(() => {
+    if (heroSlides.length <= 1) return;
+    const id = window.setInterval(() => {
+      setSlideIdx((i) => (i + 1) % heroSlides.length);
+    }, 5000);
+    return () => window.clearInterval(id);
+  }, [heroSlides.length]);
+  useEffect(() => { setSlideIdx(0); }, [heroSlides.length]);
 
   return (
     <>
-      {/* HERO — full-bleed background image with overlaid centered text */}
+      {/* HERO — full-bleed background image(s) with overlaid centered text */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={heroImg}
-            alt=""
-            className="h-full w-full object-cover"
-          />
+          {heroSlides.map((src, i) => (
+            <img
+              key={src + i}
+              src={src}
+              alt=""
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out ${i === slideIdx ? "opacity-100" : "opacity-0"}`}
+            />
+          ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/40" />
+          {heroSlides.length > 1 && (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+              {heroSlides.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Slide ${i + 1}`}
+                  onClick={() => setSlideIdx(i)}
+                  className={`h-2 rounded-full transition-all ${i === slideIdx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Corner quote — top-right for AR, top-left for EN */}
@@ -149,7 +181,7 @@ function HomeBody() {
               {/* Image column — naturally sits right in LTR, left in RTL */}
               <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
                 <img
-                  src={heroImg}
+                  src={heroSlides[0]}
                   alt=""
                   className="h-full w-full object-cover"
                 />
