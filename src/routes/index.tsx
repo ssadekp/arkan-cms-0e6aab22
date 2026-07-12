@@ -181,7 +181,7 @@ function HomeBody() {
               {/* Image column — naturally sits right in LTR, left in RTL */}
               <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
                 <img
-                  src={heroImg}
+                  src={heroSlides[0]}
                   alt=""
                   className="h-full w-full object-cover"
                 />
