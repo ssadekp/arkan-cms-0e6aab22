@@ -76,6 +76,7 @@ const settingsSchema = z.object({
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),
   hero_image: z.string().nullable().optional(),
+  hero_slides: z.array(z.string()).optional().default([]),
   map_embed_url: z
     .string()
     .nullable()
