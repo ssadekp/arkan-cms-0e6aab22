@@ -10,6 +10,7 @@ export const Route = createFileRoute("/_authenticated/admin/focus-areas")({
         title="Focus Areas"
         rootFields={[
           { key: "slug", label: "Slug" },
+          { key: "icon", label: "Homepage icon (small)", type: "image" },
           { key: "hero_image", label: "Hero image", type: "image" },
           { key: "gallery", label: "Gallery", type: "gallery" },
           { key: "sort_order", label: "Sort order", type: "number" },
