@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Play, Quote, Target } from "lucide-react";
+import { ArrowLeft, ArrowRight, Quote, Target } from "lucide-react";
 import heroEducation from "@/assets/hero-education.jpg";
 import focusBg from "@/assets/hero-community.jpg";
 
@@ -119,32 +119,18 @@ function HomeBody() {
 
 
 
-      {/* ABOUT — intro card with laptop image + CTA */}
+      {/* ABOUT — image on one side, text + CTA on the other */}
       {(settingsI18n?.about_title || settingsI18n?.about_short) && (
         <section className="container-narrow py-16">
-          <div className="relative rounded-3xl bg-surface/60 border border-border/60 p-6 md:p-10 shadow-soft overflow-hidden">
-            <div className="grid md:grid-cols-2 gap-8 items-start">
-              {/* Text column — title on top with play badge, short paragraph */}
-              <div className={`order-2 ${dir === "rtl" ? "md:order-2 md:text-right" : "md:order-2 md:text-left"}`}>
-                <div className={`flex items-center gap-3 mb-4 ${dir === "rtl" ? "flex-row-reverse justify-end" : ""}`}>
-                  <button
-                    type="button"
-                    aria-label="Play"
-                    className="grid place-items-center h-10 w-10 rounded-full bg-primary text-primary-foreground shadow-md hover:scale-105 transition"
-                  >
-                    <Play className="h-4 w-4 fill-current" />
-                  </button>
-                  <span className="h-px flex-1 bg-border/70" />
-                </div>
+          <div className="rounded-3xl bg-surface/60 border border-border/60 p-6 md:p-10 shadow-soft overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+              {/* Text column — title, description, CTA */}
+              <div className={`space-y-5 ${dir === "rtl" ? "md:text-right" : "md:text-left"}`}>
                 {settingsI18n?.about_title && (
-                  <h2 className="text-2xl md:text-3xl font-bold leading-snug tracking-tight text-foreground">
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug tracking-tight text-foreground">
                     {settingsI18n.about_title}
                   </h2>
                 )}
-              </div>
-
-              {/* Summary + CTA + image */}
-              <div className="order-1 md:order-1 space-y-5">
                 {settingsI18n?.about_short && (
                   <div
                     className="prose prose-sm max-w-none text-muted-foreground leading-relaxed"
@@ -154,17 +140,19 @@ function HomeBody() {
                 <div className={`flex ${dir === "rtl" ? "justify-start" : "justify-end"}`}>
                   <Link to="/about">
                     <Button size="lg" className="rounded-full bg-ink text-white hover:bg-ink/90 px-6 gap-2">
-                      {t("nav.about")} <Arrow className="h-4 w-4" />
+                      {t("common.moreDetails") ?? t("nav.about")} <Arrow className="h-4 w-4" />
                     </Button>
                   </Link>
                 </div>
-                <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[16/9] bg-muted">
-                  <img
-                    src={heroImg}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                </div>
+              </div>
+
+              {/* Image column — naturally sits right in LTR, left in RTL */}
+              <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
+                <img
+                  src={heroImg}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
           </div>
