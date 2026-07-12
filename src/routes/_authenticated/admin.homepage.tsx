@@ -33,6 +33,7 @@ function HomepagePage() {
     if (s) {
       setRoot({
         hero_image: s.hero_image ?? "",
+        hero_slides: Array.isArray(s.hero_slides) ? s.hero_slides : [],
         show_all_sections: s.show_all_sections ?? true,
         show_focus_areas: s.show_focus_areas ?? true,
         show_projects: s.show_projects ?? true,
