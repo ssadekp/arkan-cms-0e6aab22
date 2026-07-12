@@ -19,6 +19,7 @@ const dict: Dict = {
   "nav.signout": { ar: "تسجيل الخروج", en: "Sign out" },
   "lang.toggle": { ar: "EN", en: "عربي" },
   "common.readMore": { ar: "اقرأ المزيد", en: "Read more" },
+  "common.moreDetails": { ar: "المزيد من التفاصيل", en: "More details" },
   "common.viewAll": { ar: "عرض الكل", en: "View all" },
   "common.loading": { ar: "جار التحميل...", en: "Loading..." },
   "common.save": { ar: "حفظ", en: "Save" },
