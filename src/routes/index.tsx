@@ -187,7 +187,7 @@ function HomeBody() {
       {/* ABOUT — image on one side, text + CTA on the other */}
       {(settingsI18n?.about_title || settingsI18n?.about_short) && (
         <section className="container-narrow py-16">
-          <div className="rounded-3xl bg-surface/60 border border-border/60 p-6 md:p-10 shadow-soft overflow-hidden">
+          <div className="rounded-none border-0 border-b border-border/60 bg-surface/60 p-6 md:p-10 overflow-hidden">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               {/* Text column — title, description, CTA */}
               <div className={`space-y-5 ${dir === "rtl" ? "md:text-right" : "md:text-left"}`}>
