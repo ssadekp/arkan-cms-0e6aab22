@@ -184,33 +184,43 @@ function HomeBody() {
 
 
 
-      {/* ABOUT — styled like a project card */}
+      {/* ABOUT — image on one side, text + CTA on the other */}
       {(settingsI18n?.about_title || settingsI18n?.about_short) && (
-        <section className="container-narrow py-16">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="text-2xl font-semibold">{t("nav.about")}</h2>
-            <Link to="/about" className="text-sm text-primary hover:underline">{t("common.moreDetails")}</Link>
-          </div>
-          <Link to="/about" className="group block rounded-xl overflow-hidden border border-border/60 bg-card hover:border-primary/60 transition shadow-soft">
-            <div className="aspect-video bg-muted overflow-hidden">
-              <img
-                src={heroSlides[0]}
-                alt=""
-                className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <div className="p-5 md:p-6">
-              {settingsI18n?.about_title && (
-                <h3 className="font-semibold text-lg md:text-xl">{settingsI18n.about_title}</h3>
-              )}
-              {settingsI18n?.about_short && (
-                <div
-                  className="mt-2 text-sm text-muted-foreground line-clamp-3 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: settingsI18n.about_short }}
+        <section className="container-narrow py-16 p-6 md:p-10 border-b border-border/60 bg-surface/60">
+          <div className="overflow-hidden">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+              {/* Text column — title, description, CTA */}
+              <div className={`space-y-5 ${dir === "rtl" ? "md:text-right" : "md:text-left"}`}>
+                {settingsI18n?.about_title && (
+                  <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug tracking-tight text-foreground">
+                    {settingsI18n.about_title}
+                  </h2>
+                )}
+                {settingsI18n?.about_short && (
+                  <div
+                    className="prose prose-sm max-w-none text-muted-foreground leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: settingsI18n.about_short }}
+                  />
+                )}
+                <div className={`flex ${dir === "rtl" ? "justify-start" : "justify-end"}`}>
+                  <Link to="/about">
+                    <Button size="lg" className="rounded-full bg-ink text-white hover:bg-ink/90 px-6 gap-2">
+                      {t("common.moreDetails") ?? t("nav.about")} <Arrow className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Image column — naturally sits right in LTR, left in RTL */}
+              <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
+                <img
+                  src={heroSlides[0]}
+                  alt=""
+                  className="h-full w-full object-cover"
                 />
-              )}
+              </div>
             </div>
-          </Link>
+          </div>
         </section>
       )}
 
