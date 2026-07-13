@@ -53,14 +53,21 @@ function HomeBody() {
   }, [s.hero_image, s.hero_slides]);
 
   const [slideIdx, setSlideIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   useEffect(() => {
-    if (heroSlides.length <= 1) return;
+    if (heroSlides.length <= 1 || isPaused) return;
     const id = window.setInterval(() => {
       setSlideIdx((i) => (i + 1) % heroSlides.length);
     }, 5000);
     return () => window.clearInterval(id);
-  }, [heroSlides.length]);
+  }, [heroSlides.length, isPaused]);
   useEffect(() => { setSlideIdx(0); }, [heroSlides.length]);
+
+  const goPrev = () => setSlideIdx((i) => (i - 1 + heroSlides.length) % heroSlides.length);
+  const goNext = () => setSlideIdx((i) => (i + 1) % heroSlides.length);
+  // Visual prev/next depending on language (in RTL, "previous" sits on the right)
+  const PrevIcon = dir === "rtl" ? ChevronRight : ChevronLeft;
+  const NextIcon = dir === "rtl" ? ChevronLeft : ChevronRight;
 
   return (
     <>
@@ -77,16 +84,42 @@ function HomeBody() {
           ))}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/40" />
           {heroSlides.length > 1 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
-              {heroSlides.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Slide ${i + 1}`}
-                  onClick={() => setSlideIdx(i)}
-                  className={`h-2 rounded-full transition-all ${i === slideIdx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
-                />
-              ))}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3">
+              <button
+                type="button"
+                aria-label="Previous slide"
+                onClick={goPrev}
+                className="grid place-items-center h-8 w-8 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white hover:bg-white/30 transition"
+              >
+                <PrevIcon className="h-4 w-4" />
+              </button>
+              <div className="flex gap-2">
+                {heroSlides.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    aria-label={`Slide ${i + 1}`}
+                    onClick={() => setSlideIdx(i)}
+                    className={`h-2 rounded-full transition-all ${i === slideIdx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
+                  />
+                ))}
+              </div>
+              <button
+                type="button"
+                aria-label={isPaused ? "Play slideshow" : "Pause slideshow"}
+                onClick={() => setIsPaused((p) => !p)}
+                className="grid place-items-center h-8 w-8 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white hover:bg-white/30 transition"
+              >
+                {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+              </button>
+              <button
+                type="button"
+                aria-label="Next slide"
+                onClick={goNext}
+                className="grid place-items-center h-8 w-8 rounded-full bg-white/15 backdrop-blur border border-white/25 text-white hover:bg-white/30 transition"
+              >
+                <NextIcon className="h-4 w-4" />
+              </button>
             </div>
           )}
         </div>
