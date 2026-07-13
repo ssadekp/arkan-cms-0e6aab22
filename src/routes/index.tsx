@@ -268,7 +268,20 @@ function HomeBody() {
                       <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl group-hover:bg-primary/40 transition" />
                       <div className="relative grid place-items-center h-20 w-20 rounded-full border border-white/20 bg-white/5 backdrop-blur group-hover:border-primary/60 group-hover:bg-primary/10 transition">
                         {(f as any).icon ? (
-                          <img src={(f as any).icon} alt="" className="h-10 w-10 object-contain" />
+                          <span
+                            aria-hidden
+                            className="block h-10 w-10 bg-primary group-hover:bg-white transition-colors"
+                            style={{
+                              WebkitMaskImage: `url(${(f as any).icon})`,
+                              maskImage: `url(${(f as any).icon})`,
+                              WebkitMaskRepeat: "no-repeat",
+                              maskRepeat: "no-repeat",
+                              WebkitMaskPosition: "center",
+                              maskPosition: "center",
+                              WebkitMaskSize: "contain",
+                              maskSize: "contain",
+                            }}
+                          />
                         ) : (
                           <Target className="h-9 w-9 text-primary" />
                         )}
