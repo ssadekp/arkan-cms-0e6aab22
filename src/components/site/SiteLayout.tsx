@@ -63,6 +63,7 @@ function Inner({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <ThemeInjector />
       <Header
         siteName={siteName}
         logoUrl={settings?.logo_url}
