@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, type ReactNode } from "react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { ThemeInjector } from "./ThemeInjector";
 import { I18nProvider, pickI18n, useI18n } from "@/lib/i18n";
 import { getSiteData } from "@/lib/content.functions";
 
