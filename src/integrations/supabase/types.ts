@@ -1001,6 +1001,57 @@ export type Database = {
           },
         ]
       }
+      theme_tokens: {
+        Row: {
+          accent_hex: string
+          background_hex: string
+          border_hex: string
+          destructive_hex: string
+          font_arabic: string
+          font_body: string
+          font_display: string
+          foreground_hex: string
+          id: number
+          ink_hex: string
+          primary_hex: string
+          radius_rem: number
+          surface_hex: string
+          updated_at: string
+        }
+        Insert: {
+          accent_hex?: string
+          background_hex?: string
+          border_hex?: string
+          destructive_hex?: string
+          font_arabic?: string
+          font_body?: string
+          font_display?: string
+          foreground_hex?: string
+          id?: number
+          ink_hex?: string
+          primary_hex?: string
+          radius_rem?: number
+          surface_hex?: string
+          updated_at?: string
+        }
+        Update: {
+          accent_hex?: string
+          background_hex?: string
+          border_hex?: string
+          destructive_hex?: string
+          font_arabic?: string
+          font_body?: string
+          font_display?: string
+          foreground_hex?: string
+          id?: number
+          ink_hex?: string
+          primary_hex?: string
+          radius_rem?: number
+          surface_hex?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
