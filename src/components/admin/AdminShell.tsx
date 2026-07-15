@@ -7,9 +7,10 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home } from "lucide-react";
+import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home, Palette } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
+import { ThemeInjector } from "@/components/site/ThemeInjector";
 import { useI18n } from "@/lib/i18n";
 
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
@@ -32,6 +33,7 @@ export function AdminShell({ title, children }: { title: string; children: React
   const topItems = [
     { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
     { to: "/admin/settings", label: t("admin.settings"), icon: Settings },
+    { to: "/admin/branding", label: lang === "ar" ? "الهوية البصرية" : "Branding", icon: Palette },
   ];
   const pagesItems = [
     { to: "/admin/homepage", label: lang === "ar" ? "الصفحة الرئيسية" : "Homepage", icon: Home },
@@ -78,6 +80,7 @@ export function AdminShell({ title, children }: { title: string; children: React
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background" dir={dir}>
+        <ThemeInjector />
         <Sidebar collapsible="icon" side={dir === "rtl" ? "right" : "left"}>
           <SidebarContent>
             <SidebarGroup>
