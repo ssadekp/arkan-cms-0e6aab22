@@ -33,6 +33,7 @@ export function AdminShell({ title, children }: { title: string; children: React
   const topItems = [
     { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
     { to: "/admin/settings", label: t("admin.settings"), icon: Settings },
+    { to: "/admin/branding", label: lang === "ar" ? "الهوية البصرية" : "Branding", icon: Palette },
   ];
   const pagesItems = [
     { to: "/admin/homepage", label: lang === "ar" ? "الصفحة الرئيسية" : "Homepage", icon: Home },
