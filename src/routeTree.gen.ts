@@ -39,6 +39,7 @@ import { Route as AuthenticatedAdminFormsRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
+import { Route as AuthenticatedAdminBrandingRouteImport } from './routes/_authenticated/admin.branding'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
@@ -200,6 +201,12 @@ const AuthenticatedAdminContactRoute =
     path: '/admin/contact',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminBrandingRoute =
+  AuthenticatedAdminBrandingRouteImport.update({
+    id: '/admin/branding',
+    path: '/admin/branding',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   id: '/admin/about',
   path: '/admin/about',
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
@@ -275,6 +283,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
@@ -311,6 +320,7 @@ export interface FileRoutesById {
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/_authenticated/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/projects/'
     | '/admin/about'
+    | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/projects'
     | '/admin/about'
+    | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
     | '/admin/focus-areas'
@@ -418,6 +430,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/projects/'
     | '/_authenticated/admin/about'
+    | '/_authenticated/admin/branding'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
     | '/_authenticated/admin/focus-areas'
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminContactRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/branding': {
+      id: '/_authenticated/admin/branding'
+      path: '/admin/branding'
+      fullPath: '/admin/branding'
+      preLoaderRoute: typeof AuthenticatedAdminBrandingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/about': {
       id: '/_authenticated/admin/about'
       path: '/admin/about'
@@ -720,6 +740,7 @@ const AuthenticatedAdminFormsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
+  AuthenticatedAdminBrandingRoute: typeof AuthenticatedAdminBrandingRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
@@ -739,6 +760,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
+  AuthenticatedAdminBrandingRoute: AuthenticatedAdminBrandingRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
