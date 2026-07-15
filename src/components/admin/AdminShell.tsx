@@ -80,6 +80,7 @@ export function AdminShell({ title, children }: { title: string; children: React
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background" dir={dir}>
+        <ThemeInjector />
         <Sidebar collapsible="icon" side={dir === "rtl" ? "right" : "left"}>
           <SidebarContent>
             <SidebarGroup>
