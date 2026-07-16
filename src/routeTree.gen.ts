@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResourcesRouteImport } from './routes/resources'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -48,6 +49,11 @@ import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './rout
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnersRoute = PartnersRouteImport.update({
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/partners': typeof PartnersRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -348,6 +357,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/reset-password'
     | '/resources'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -384,6 +394,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/reset-password'
     | '/resources'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -420,6 +431,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/partners'
+    | '/reset-password'
     | '/resources'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -458,6 +470,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   PartnersRoute: typeof PartnersRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
@@ -476,6 +489,13 @@ declare module '@tanstack/react-router' {
       path: '/resources'
       fullPath: '/resources'
       preLoaderRoute: typeof ResourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partners': {
@@ -789,6 +809,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   PartnersRoute: PartnersRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
