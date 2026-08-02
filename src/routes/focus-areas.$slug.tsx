@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getFocusArea } from "@/lib/content.functions";
+import { stripHtml } from "@/lib/sanitize";
 import { LightboxGallery } from "@/components/site/Lightbox";
 
 export const Route = createFileRoute("/focus-areas/$slug")({
@@ -29,7 +30,7 @@ function Body() {
       </div>
       <div className="container-narrow py-12">
         <h1 className="text-4xl font-bold">{i18n?.title}</h1>
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed whitespace-pre-line">{i18n?.description}</p>
+        <p className="mt-6 text-lg text-muted-foreground leading-relaxed whitespace-pre-line">{stripHtml(i18n?.description)}</p>
 
         {gallery.length > 0 && (
           <LightboxGallery

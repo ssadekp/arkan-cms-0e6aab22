@@ -33,6 +33,7 @@ function HomepagePage() {
     if (s) {
       setRoot({
         hero_image: s.hero_image ?? "",
+        home_about_image: s.home_about_image ?? "",
         hero_slides: Array.isArray(s.hero_slides) ? s.hero_slides : [],
         show_all_sections: s.show_all_sections ?? true,
         show_focus_areas: s.show_focus_areas ?? true,
@@ -70,6 +71,7 @@ function HomepagePage() {
         visitor_count_start: Number(s.visitor_count_start ?? 0) || 0,
         social_links: s.social_links ?? {},
         hero_image: root.hero_image || null,
+        home_about_image: root.home_about_image || null,
         hero_slides: Array.isArray(root.hero_slides) ? root.hero_slides.filter((u: string) => !!u) : [],
         show_all_sections: root.show_all_sections ?? true,
         show_focus_areas: root.show_focus_areas ?? true,
