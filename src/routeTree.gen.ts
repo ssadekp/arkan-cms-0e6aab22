@@ -21,11 +21,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as NewsIndexRouteImport } from './routes/news.index'
 import { Route as FocusAreasIndexRouteImport } from './routes/focus-areas.index'
+import { Route as AlbumsIndexRouteImport } from './routes/albums.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as FormsSlugRouteImport } from './routes/forms.$slug'
 import { Route as FocusAreasSlugRouteImport } from './routes/focus-areas.$slug'
+import { Route as AlbumsSlugRouteImport } from './routes/albums.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminTagsRouteImport } from './routes/_authenticated/admin.tags'
@@ -42,6 +44,7 @@ import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminBrandingRouteImport } from './routes/_authenticated/admin.branding'
+import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
@@ -106,6 +109,11 @@ const FocusAreasIndexRoute = FocusAreasIndexRouteImport.update({
   path: '/focus-areas/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AlbumsIndexRoute = AlbumsIndexRouteImport.update({
+  id: '/albums/',
+  path: '/albums/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   id: '/projects/$slug',
   path: '/projects/$slug',
@@ -129,6 +137,11 @@ const FormsSlugRoute = FormsSlugRouteImport.update({
 const FocusAreasSlugRoute = FocusAreasSlugRouteImport.update({
   id: '/focus-areas/$slug',
   path: '/focus-areas/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlbumsSlugRoute = AlbumsSlugRouteImport.update({
+  id: '/albums/$slug',
+  path: '/albums/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -219,6 +232,12 @@ const AuthenticatedAdminBrandingRoute =
     path: '/admin/branding',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminAlbumsRoute =
+  AuthenticatedAdminAlbumsRouteImport.update({
+    id: '/admin/albums',
+    path: '/admin/albums',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   id: '/admin/about',
   path: '/admin/about',
@@ -252,15 +271,18 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/albums/': typeof AlbumsIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -290,15 +312,18 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/albums': typeof AlbumsIndexRoute
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -329,15 +354,18 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/albums/': typeof AlbumsIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/_authenticated/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/_authenticated/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -369,15 +397,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/albums/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
     | '/admin/about'
+    | '/admin/albums'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -407,15 +438,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/albums'
     | '/focus-areas'
     | '/news'
     | '/projects'
     | '/admin/about'
+    | '/admin/albums'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -445,15 +479,18 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/albums/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
     | '/_authenticated/admin/about'
+    | '/_authenticated/admin/albums'
     | '/_authenticated/admin/branding'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
@@ -485,11 +522,13 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   SetupRoute: typeof SetupRoute
+  AlbumsSlugRoute: typeof AlbumsSlugRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
   PSlugRoute: typeof PSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
+  AlbumsIndexRoute: typeof AlbumsIndexRoute
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
@@ -581,6 +620,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FocusAreasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/albums/': {
+      id: '/albums/'
+      path: '/albums'
+      fullPath: '/albums/'
+      preLoaderRoute: typeof AlbumsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/$slug': {
       id: '/projects/$slug'
       path: '/projects/$slug'
@@ -614,6 +660,13 @@ declare module '@tanstack/react-router' {
       path: '/focus-areas/$slug'
       fullPath: '/focus-areas/$slug'
       preLoaderRoute: typeof FocusAreasSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/albums/$slug': {
+      id: '/albums/$slug'
+      path: '/albums/$slug'
+      fullPath: '/albums/$slug'
+      preLoaderRoute: typeof AlbumsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -728,6 +781,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBrandingRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/albums': {
+      id: '/_authenticated/admin/albums'
+      path: '/admin/albums'
+      fullPath: '/admin/albums'
+      preLoaderRoute: typeof AuthenticatedAdminAlbumsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/about': {
       id: '/_authenticated/admin/about'
       path: '/admin/about'
@@ -780,6 +840,7 @@ const AuthenticatedAdminFormsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
+  AuthenticatedAdminAlbumsRoute: typeof AuthenticatedAdminAlbumsRoute
   AuthenticatedAdminBrandingRoute: typeof AuthenticatedAdminBrandingRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
@@ -800,6 +861,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
+  AuthenticatedAdminAlbumsRoute: AuthenticatedAdminAlbumsRoute,
   AuthenticatedAdminBrandingRoute: AuthenticatedAdminBrandingRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
@@ -832,11 +894,13 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   SetupRoute: SetupRoute,
+  AlbumsSlugRoute: AlbumsSlugRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
   PSlugRoute: PSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
+  AlbumsIndexRoute: AlbumsIndexRoute,
   FocusAreasIndexRoute: FocusAreasIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,

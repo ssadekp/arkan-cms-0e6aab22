@@ -33,6 +33,7 @@ function HomepagePage() {
     if (s) {
       setRoot({
         hero_image: s.hero_image ?? "",
+        home_about_image: s.home_about_image ?? "",
         hero_slides: Array.isArray(s.hero_slides) ? s.hero_slides : [],
         show_all_sections: s.show_all_sections ?? true,
         show_focus_areas: s.show_focus_areas ?? true,
@@ -70,6 +71,7 @@ function HomepagePage() {
         visitor_count_start: Number(s.visitor_count_start ?? 0) || 0,
         social_links: s.social_links ?? {},
         hero_image: root.hero_image || null,
+        home_about_image: root.home_about_image || null,
         hero_slides: Array.isArray(root.hero_slides) ? root.hero_slides.filter((u: string) => !!u) : [],
         show_all_sections: root.show_all_sections ?? true,
         show_focus_areas: root.show_focus_areas ?? true,
@@ -187,6 +189,40 @@ function HomepagePage() {
           </Tabs>
         </Section>
 
+        <Section title="About Us section (قسم من نحن على الصفحة الرئيسية)">
+          <p className="text-xs text-muted-foreground">
+            This section is completely separate from the hero banner above and from the public About Us page — editing it never changes either of them.
+          </p>
+          <ImageUpload
+            label="Section image"
+            value={root.home_about_image}
+            onChange={(v) => setRoot({ ...root, home_about_image: v })}
+            folder="about"
+            help="Shown beside the About Us text on the homepage."
+          />
+          <Tabs defaultValue="ar">
+            <TabsList>
+              <TabsTrigger value="ar">العربية</TabsTrigger>
+              <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            {(["ar", "en"] as const).map((l) => (
+              <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field
+                  label={l === "ar" ? "عنوان القسم" : "Section title"}
+                  value={i18n[l].home_about_title}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], home_about_title: v } })}
+                />
+                <Field
+                  label={l === "ar" ? "نص القسم" : "Section text"}
+                  textarea
+                  value={i18n[l].home_about_text}
+                  onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], home_about_text: v } })}
+                />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </Section>
+
         <Section title="Homepage sections (إظهار / إخفاء الأقسام)">
           <p className="text-xs text-muted-foreground">
             Master toggle hides every section (only the hero remains). Or hide individual sections below.
@@ -241,5 +277,5 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { hero_tagline: "", hero_title: "", hero_description: "", hero_quote: "" };
+  return { hero_tagline: "", hero_title: "", hero_description: "", hero_quote: "", home_about_title: "", home_about_text: "" };
 }

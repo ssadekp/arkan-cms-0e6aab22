@@ -22,6 +22,15 @@ function AboutBody() {
     <div className="container-narrow py-16">
       <h1 className="text-4xl font-bold">{i18n?.about_title || i18n?.site_name}</h1>
       <p className="mt-2 text-lg text-primary">{i18n?.tagline}</p>
+      {(site?.settings as any)?.about_image && (
+        <div className="mt-8 overflow-hidden rounded-2xl border border-border/60 aspect-[16/9] bg-muted">
+          <img
+            src={(site!.settings as any).about_image}
+            alt={i18n?.about_title || i18n?.site_name || "About us"}
+            className="h-full w-full object-cover"
+          />
+        </div>
+      )}
       {i18n?.about_short && (
         <div className="mt-8 prose prose-neutral dark:prose-invert max-w-3xl" dangerouslySetInnerHTML={{ __html: sanitizeHtml(i18n.about_short) }} />
       )}

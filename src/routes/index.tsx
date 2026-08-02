@@ -7,6 +7,7 @@ import { getHomeData, getSiteData } from "@/lib/content.functions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Quote, Target } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 import heroEducation from "@/assets/hero-education.jpg";
 import focusBg from "@/assets/hero-community.jpg";
 
@@ -185,21 +186,21 @@ function HomeBody() {
 
 
       {/* ABOUT — image on one side, text + CTA on the other */}
-      {(settingsI18n?.about_title || settingsI18n?.about_short) && (
+      {(settingsI18n?.home_about_title || settingsI18n?.home_about_text) && (
         <section className="container-narrow py-16 p-6 md:p-10 border-b border-border/60 bg-surface/60">
           <div className="overflow-hidden">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               {/* Text column — title, description, CTA */}
               <div className={`space-y-5 ${dir === "rtl" ? "md:text-right" : "md:text-left"}`}>
-                {settingsI18n?.about_title && (
+                {settingsI18n?.home_about_title && (
                   <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold leading-snug tracking-tight text-foreground">
-                    {settingsI18n.about_title}
+                    {settingsI18n.home_about_title}
                   </h2>
                 )}
-                {settingsI18n?.about_short && (
+                {settingsI18n?.home_about_text && (
                   <div
                     className="prose prose-sm max-w-none text-muted-foreground leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: settingsI18n.about_short }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(settingsI18n.home_about_text) }}
                   />
                 )}
                 <div className={`flex ${dir === "rtl" ? "justify-start" : "justify-end"}`}>
@@ -214,7 +215,7 @@ function HomeBody() {
               {/* Image column — naturally sits right in LTR, left in RTL */}
               <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
                 <img
-                  src={heroSlides[0]}
+                  src={s.home_about_image || heroSlides[0]}
                   alt=""
                   className="h-full w-full object-cover"
                 />
@@ -322,7 +323,7 @@ function HomeBody() {
                   </div>
                   <div className="p-5">
                     <h3 className="font-semibold">{i18n?.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{i18n?.description}</p>
+                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3">{stripHtml(i18n?.description)}</p>
                   </div>
                 </Link>
               );
@@ -351,7 +352,7 @@ function HomeBody() {
                   <div className="p-5">
                     <div className="text-xs text-muted-foreground">{new Date(n.published_at).toLocaleDateString(lang === "ar" ? "ar-EG" : "en-US")}</div>
                     <h3 className="mt-1 font-semibold">{i18n?.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{i18n?.description}</p>
+                    <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{stripHtml(i18n?.description)}</p>
                   </div>
                 </Link>
               );

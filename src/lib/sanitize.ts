@@ -8,3 +8,18 @@ export function sanitizeHtml(input: string | null | undefined): string {
     FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur", "onchange", "onsubmit", "style"],
   });
 }
+
+/** Plain-text version of rich HTML — used in card summaries and listings. */
+export function stripHtml(input: string | null | undefined): string {
+  if (!input) return "";
+  return sanitizeHtml(input)
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}

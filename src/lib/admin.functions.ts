@@ -27,7 +27,7 @@ export const adminListAll = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners] = await Promise.all([
+    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners, albums, albumsI18n] = await Promise.all([
       sb.from("pages").select("*").order("nav_order"),
       sb.from("pages_i18n").select("*"),
       sb.from("focus_areas").select("*").order("sort_order"),
@@ -47,6 +47,8 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("project_tags").select("*"),
       sb.from("project_partners").select("*"),
       sb.from("focus_area_partners" as any).select("*"),
+      sb.from("albums" as any).select("*").order("published_at", { ascending: false }),
+      sb.from("albums_i18n" as any).select("*"),
     ]);
     return {
       pages: pages.data ?? [], pagesI18n: pagesI18n.data ?? [],
@@ -60,6 +62,7 @@ export const adminListAll = createServerFn({ method: "GET" })
       projectTags: projectTags.data ?? [],
       projectPartners: (projectPartners.data as any[]) ?? [],
       focusAreaPartners: (focusAreaPartners.data as any[]) ?? [],
+      albums: (albums.data as any[]) ?? [], albumsI18n: (albumsI18n.data as any[]) ?? [],
     };
   });
 
@@ -77,6 +80,8 @@ const settingsSchema = z.object({
   seo_og_image: z.string().nullable().optional(),
   hero_image: z.string().nullable().optional(),
   hero_slides: z.array(z.string()).optional().default([]),
+  about_image: z.string().nullable().optional(),
+  home_about_image: z.string().nullable().optional(),
   map_embed_url: z
     .string()
     .nullable()
@@ -125,6 +130,8 @@ const settingsSchema = z.object({
     hero_title: z.string().optional().default(""),
     hero_description: z.string().optional().default(""),
     hero_tagline: z.string().optional().default(""),
+    home_about_title: z.string().optional().default(""),
+    home_about_text: z.string().optional().default(""),
   })),
 
 });
@@ -147,7 +154,7 @@ export const saveSiteSettings = createServerFn({ method: "POST" })
 /* ---------- GENERIC CRUD ---------- */
 
 const resourceSchema = z.object({
-  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats"]),
+  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
   id: z.string().uuid().nullable(),
   values: z.record(z.string(), z.any()),
   i18n: z.array(z.object({ lang: z.enum(["ar", "en"]) }).passthrough()).optional(),
@@ -158,6 +165,7 @@ const i18nKeyMap: Record<string, { table: string; fk: string }> = {
   focus_areas: { table: "focus_areas_i18n", fk: "focus_area_id" },
   projects: { table: "projects_i18n", fk: "project_id" },
   news: { table: "news_i18n", fk: "news_id" },
+  albums: { table: "albums_i18n", fk: "album_id" },
   homepage_stats: { table: "homepage_stats_i18n", fk: "stat_id" },
   partners: { table: "partners_i18n", fk: "partner_id" },
 };
@@ -194,7 +202,7 @@ export const deleteResource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats"]),
+      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
       id: z.string().uuid(),
     }).parse(d),
   )

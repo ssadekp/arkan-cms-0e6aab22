@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { RichEditor } from "@/components/admin/RichEditor";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import { ResourceManager } from "@/components/admin/ResourceManager";
 import { toast } from "sonner";
 import { mergeAboutI18n } from "@/lib/settings-merge";
@@ -24,6 +25,7 @@ function AboutAdmin() {
   const { data } = useQuery({ queryKey: ["admin-all"], queryFn: () => fn() });
 
   const [i18n, setI18n] = useState<any>(null);
+  const [aboutImage, setAboutImage] = useState<string>("");
 
   useEffect(() => {
     if (!data?.settings) return;
@@ -33,6 +35,7 @@ function AboutAdmin() {
       return { about_title: r.about_title ?? "", tagline: r.tagline ?? "", about_short: r.about_short ?? "", about_body: r.about_body ?? "" };
     };
     setI18n({ ar: pick("ar"), en: pick("en") });
+    setAboutImage(((data.settings as any).about_image as string) ?? "");
   }, [data]);
 
   const mut = useMutation({
@@ -51,6 +54,7 @@ function AboutAdmin() {
         contact_email: s.contact_email ?? null,
         contact_phone: s.contact_phone ?? null,
         map_embed_url: s.map_embed_url ?? null,
+        about_image: aboutImage || null,
         i18n: [merge("ar"), merge("en")],
       } });
     },
@@ -88,6 +92,16 @@ function AboutAdmin() {
               </TabsContent>
             ))}
           </Tabs>
+        </Section>
+
+        <Section title="About page image">
+          <ImageUpload
+            label="Image"
+            value={aboutImage}
+            onChange={setAboutImage}
+            folder="about"
+            help="Shown at the top of the public About Us page. This is separate from the homepage banner and the homepage About section."
+          />
         </Section>
 
         <Section title="Homepage statistics">

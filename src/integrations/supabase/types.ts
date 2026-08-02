@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      albums: {
+        Row: {
+          cover_image: string | null
+          created_at: string
+          gallery: Json
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string
+          gallery?: Json
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string
+          gallery?: Json
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      albums_i18n: {
+        Row: {
+          album_id: string
+          description: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title: string
+        }
+        Insert: {
+          album_id: string
+          description?: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Update: {
+          album_id?: string
+          description?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "albums_i18n_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_form_fields: {
         Row: {
           created_at: string
@@ -777,6 +839,7 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          about_image: string | null
           accent_color: string
           contact_email: string | null
           contact_phone: string | null
@@ -785,6 +848,7 @@ export type Database = {
           head_scripts: string | null
           hero_image: string | null
           hero_slides: Json
+          home_about_image: string | null
           id: number
           logo_url: string | null
           map_embed_url: string | null
@@ -805,6 +869,7 @@ export type Database = {
           visitor_hits: number
         }
         Insert: {
+          about_image?: string | null
           accent_color?: string
           contact_email?: string | null
           contact_phone?: string | null
@@ -813,6 +878,7 @@ export type Database = {
           head_scripts?: string | null
           hero_image?: string | null
           hero_slides?: Json
+          home_about_image?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -833,6 +899,7 @@ export type Database = {
           visitor_hits?: number
         }
         Update: {
+          about_image?: string | null
           accent_color?: string
           contact_email?: string | null
           contact_phone?: string | null
@@ -841,6 +908,7 @@ export type Database = {
           head_scripts?: string | null
           hero_image?: string | null
           hero_slides?: Json
+          home_about_image?: string | null
           id?: number
           logo_url?: string | null
           map_embed_url?: string | null
@@ -874,6 +942,8 @@ export type Database = {
           hero_quote: string
           hero_tagline: string
           hero_title: string
+          home_about_text: string
+          home_about_title: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description: string
           seo_title: string
@@ -893,6 +963,8 @@ export type Database = {
           hero_quote?: string
           hero_tagline?: string
           hero_title?: string
+          home_about_text?: string
+          home_about_title?: string
           lang: Database["public"]["Enums"]["app_language"]
           seo_description?: string
           seo_title?: string
@@ -912,6 +984,8 @@ export type Database = {
           hero_quote?: string
           hero_tagline?: string
           hero_title?: string
+          home_about_text?: string
+          home_about_title?: string
           lang?: Database["public"]["Enums"]["app_language"]
           seo_description?: string
           seo_title?: string
