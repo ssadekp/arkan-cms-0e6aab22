@@ -74,6 +74,8 @@ function Inner({ children }: { children: ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer
         siteName={siteName}
+        logoUrl={settings?.logo_url}
+
         footerText={footerText}
         contact={{ email: settings?.contact_email, phone: settings?.contact_phone, address }}
         sponsorshipText={(settingsI18n as any)?.sponsorship_text ?? ""}
