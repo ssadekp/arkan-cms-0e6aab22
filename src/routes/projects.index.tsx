@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getProjectsListing } from "@/lib/content.functions";
+import { stripHtml } from "@/lib/sanitize";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -153,7 +154,7 @@ function Body() {
                     </div>
                     <div className="p-5 flex-1 flex flex-col">
                       <h3 className="font-semibold">{i?.title}</h3>
-                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2 flex-1">{i?.description}</p>
+                      <p className="mt-2 text-sm text-muted-foreground line-clamp-2 flex-1">{stripHtml(i?.description)}</p>
                       {p.status && (
                         <Badge variant="secondary" className="mt-3 self-start">
                           {STATUS_LABELS[p.status]?.[lang] ?? p.status}

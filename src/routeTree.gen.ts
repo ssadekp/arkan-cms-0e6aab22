@@ -44,6 +44,7 @@ import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminBrandingRouteImport } from './routes/_authenticated/admin.branding'
+import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
@@ -231,6 +232,12 @@ const AuthenticatedAdminBrandingRoute =
     path: '/admin/branding',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminAlbumsRoute =
+  AuthenticatedAdminAlbumsRouteImport.update({
+    id: '/admin/albums',
+    path: '/admin/albums',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminAboutRoute = AuthenticatedAdminAboutRouteImport.update({
   id: '/admin/about',
   path: '/admin/about',
@@ -275,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -315,6 +323,7 @@ export interface FileRoutesByTo {
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -356,6 +365,7 @@ export interface FileRoutesById {
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
+  '/_authenticated/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/_authenticated/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -398,6 +408,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/projects/'
     | '/admin/about'
+    | '/admin/albums'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -438,6 +449,7 @@ export interface FileRouteTypes {
     | '/news'
     | '/projects'
     | '/admin/about'
+    | '/admin/albums'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -478,6 +490,7 @@ export interface FileRouteTypes {
     | '/news/'
     | '/projects/'
     | '/_authenticated/admin/about'
+    | '/_authenticated/admin/albums'
     | '/_authenticated/admin/branding'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
@@ -768,6 +781,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBrandingRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/albums': {
+      id: '/_authenticated/admin/albums'
+      path: '/admin/albums'
+      fullPath: '/admin/albums'
+      preLoaderRoute: typeof AuthenticatedAdminAlbumsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/about': {
       id: '/_authenticated/admin/about'
       path: '/admin/about'
@@ -820,6 +840,7 @@ const AuthenticatedAdminFormsRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
+  AuthenticatedAdminAlbumsRoute: typeof AuthenticatedAdminAlbumsRoute
   AuthenticatedAdminBrandingRoute: typeof AuthenticatedAdminBrandingRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
@@ -840,6 +861,7 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
+  AuthenticatedAdminAlbumsRoute: AuthenticatedAdminAlbumsRoute,
   AuthenticatedAdminBrandingRoute: AuthenticatedAdminBrandingRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,

@@ -7,7 +7,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home, Palette } from "lucide-react";
+import { LayoutDashboard, Images, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home, Palette } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
@@ -50,6 +50,7 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/tags", label: t("admin.tags"), icon: Tag },
     { to: "/admin/partners", label: t("admin.partners"), icon: Users },
     { to: "/admin/news", label: t("admin.news"), icon: Newspaper },
+    { to: "/admin/albums", label: t("admin.albums"), icon: Images },
     { to: "/admin/documents", label: t("admin.documents"), icon: FileArchive },
   ];
   const managementItems = [

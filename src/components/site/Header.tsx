@@ -55,6 +55,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
       { label: t("nav.projects"), url: "/projects" },
       { label: t("nav.partners"), url: "/partners" },
       { label: t("nav.news"), url: "/news" },
+      { label: t("nav.albums"), url: "/albums" },
       { label: t("nav.resources"), url: "/resources" },
       { label: t("nav.contact"), url: "/contact" },
     ];
@@ -70,7 +71,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
       <div className="container-narrow flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           {logoUrl ? (
-            <img src={logoUrl} alt={siteName} className="h-9 w-9 rounded-md object-cover" />
+            <img src={logoUrl} alt={siteName} className="h-11 w-auto max-w-[200px] object-contain" />
           ) : (
             <span className="grid h-9 w-9 place-items-center rounded-md bg-primary text-primary-foreground">
               <Sprout className="h-5 w-5" />
