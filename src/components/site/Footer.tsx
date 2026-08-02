@@ -9,12 +9,14 @@ import { Button } from "@/components/ui/button";
 
 interface Props {
   siteName: string;
+  logoUrl?: string | null;
   footerText: string;
   contact: { email?: string | null; phone?: string | null; address?: string | null };
   sponsorshipText?: string;
   sponsorshipUrl?: string;
   visitorCounterEnabled?: boolean;
 }
+
 
 const SESSION_KEYS = { counted: "vc-counted", total: "vc-total" } as const;
 
