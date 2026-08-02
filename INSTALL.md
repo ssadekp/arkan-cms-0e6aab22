@@ -81,11 +81,33 @@ PORT=3000
 
 ## 5. Bootstrap the instance
 
+You have two options.
+
+### Option A — the browser setup wizard (recommended)
+
+Start the app (`bun run dev`, `docker compose up -d`, or your Node build) and open
+**`/setup`**. The wizard walks you through, with no terminal:
+
+1. Create the administrator account (it is granted `admin` + `super_admin` and signed in immediately).
+2. Site identity — bilingual site name and tagline, contact email/phone, default language.
+3. Branding — logo, favicon, and brand color.
+4. Finish, and jump straight into `/admin`.
+
+`/setup` can only create the *first* administrator: once any admin exists the
+account step refuses to run, and the page just points you at `/auth`.
+
+> Storage buckets are created by `bun run install:bootstrap` (Option B) or by
+> your Supabase migrations. If logo/favicon upload fails in the wizard, run
+> `bun run install:bootstrap` once to create the buckets, then retry.
+
+### Option B — the CLI script
+
 Run once, from the project root, with the `.env` loaded:
 
 ```bash
 bun run install:bootstrap
 ```
+
 
 This will:
 
