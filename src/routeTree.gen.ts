@@ -27,6 +27,7 @@ import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as FormsSlugRouteImport } from './routes/forms.$slug'
 import { Route as FocusAreasSlugRouteImport } from './routes/focus-areas.$slug'
+import { Route as AlbumsSlugRouteImport } from './routes/albums.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminTagsRouteImport } from './routes/_authenticated/admin.tags'
@@ -135,6 +136,11 @@ const FormsSlugRoute = FormsSlugRouteImport.update({
 const FocusAreasSlugRoute = FocusAreasSlugRouteImport.update({
   id: '/focus-areas/$slug',
   path: '/focus-areas/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AlbumsSlugRoute = AlbumsSlugRouteImport.update({
+  id: '/albums/$slug',
+  path: '/albums/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -297,6 +304,7 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -337,6 +345,7 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
+  '/albums/$slug': typeof AlbumsSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -378,6 +387,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -417,6 +427,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -456,6 +467,7 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/resources'
     | '/setup'
+    | '/albums/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -497,6 +509,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
   SetupRoute: typeof SetupRoute
+  AlbumsSlugRoute: typeof AlbumsSlugRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -634,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/focus-areas/$slug'
       fullPath: '/focus-areas/$slug'
       preLoaderRoute: typeof FocusAreasSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/albums/$slug': {
+      id: '/albums/$slug'
+      path: '/albums/$slug'
+      fullPath: '/albums/$slug'
+      preLoaderRoute: typeof AlbumsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -852,6 +872,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
   SetupRoute: SetupRoute,
+  AlbumsSlugRoute: AlbumsSlugRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
