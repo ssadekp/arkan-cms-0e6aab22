@@ -168,6 +168,26 @@ export const getNewsArticle = createServerFn({ method: "GET" })
     return { article: article.data, i18n: i18n.data ?? [] };
   });
 
+export const getAlbumsList = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await admin();
+  const [albums, albumsI18n] = await Promise.all([
+    (sb.from("albums" as any) as any).select("*").eq("published", true).order("published_at", { ascending: false }),
+    (sb.from("albums_i18n" as any) as any).select("*"),
+  ]);
+  return { albums: (albums.data as any[]) ?? [], albumsI18n: (albumsI18n.data as any[]) ?? [] };
+});
+
+export const getAlbum = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const album = await (sb.from("albums" as any) as any)
+      .select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
+    if (!album.data) return null;
+    const i18n = await (sb.from("albums_i18n" as any) as any).select("*").eq("album_id", album.data.id);
+    return { album: album.data, i18n: (i18n.data as any[]) ?? [] };
+  });
+
 export const getPartners = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
   const [r, i] = await Promise.all([
