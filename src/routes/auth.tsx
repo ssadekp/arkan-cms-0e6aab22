@@ -94,6 +94,13 @@ function AuthPage() {
         <p className="mt-4 text-xs text-muted-foreground text-center">
           Need access? Contact your administrator.
         </p>
+        <p className="mt-1 text-xs text-muted-foreground text-center">
+          Fresh installation?{" "}
+          <a href="/setup" className="text-primary hover:underline">
+            Run first-time setup
+          </a>
+        </p>
+
       </Card>
     </div>
   );
