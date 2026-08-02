@@ -76,7 +76,11 @@ export function Footer({ siteName, logoUrl, footerText, contact, sponsorshipText
       <div className="container-narrow py-16 grid gap-12 md:grid-cols-4">
         {/* Brand + newsletter */}
         <div className="md:col-span-2">
-          <h3 className="text-xl font-semibold text-white">{siteName}</h3>
+          <div className="flex items-center gap-3">
+            {logoUrl && <img src={logoUrl} alt={siteName} className="h-9 w-9 rounded-md object-contain" />}
+            <h3 className="text-xl font-semibold text-white">{siteName}</h3>
+          </div>
+
           <p className="mt-3 text-sm text-white/60 max-w-md leading-relaxed">{footerText}</p>
 
           <form
