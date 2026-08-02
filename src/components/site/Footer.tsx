@@ -50,7 +50,7 @@ function useVisitorCount(enabled: boolean) {
   return count;
 }
 
-export function Footer({ siteName, footerText, contact, sponsorshipText, sponsorshipUrl, visitorCounterEnabled = true }: Props) {
+export function Footer({ siteName, logoUrl, footerText, contact, sponsorshipText, sponsorshipUrl, visitorCounterEnabled = true }: Props) {
   const { t, lang, dir } = useI18n();
 
   const { data: socialLinks } = useQuery({
