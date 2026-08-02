@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PartnersRouteImport } from './routes/partners'
@@ -46,6 +47,11 @@ import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_auth
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
 import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
 
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesRoute = ResourcesRouteImport.update({
   id: '/resources',
   path: '/resources',
@@ -245,6 +251,7 @@ export interface FileRoutesByFullPath {
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/setup': typeof SetupRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -282,6 +289,7 @@ export interface FileRoutesByTo {
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/setup': typeof SetupRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -320,6 +328,7 @@ export interface FileRoutesById {
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
+  '/setup': typeof SetupRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -359,6 +368,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/reset-password'
     | '/resources'
+    | '/setup'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/reset-password'
     | '/resources'
+    | '/setup'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/partners'
     | '/reset-password'
     | '/resources'
+    | '/setup'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -472,6 +484,7 @@ export interface RootRouteChildren {
   PartnersRoute: typeof PartnersRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
+  SetupRoute: typeof SetupRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -484,6 +497,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources': {
       id: '/resources'
       path: '/resources'
@@ -811,6 +831,7 @@ const rootRouteChildren: RootRouteChildren = {
   PartnersRoute: PartnersRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,
+  SetupRoute: SetupRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
@@ -823,13 +844,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
