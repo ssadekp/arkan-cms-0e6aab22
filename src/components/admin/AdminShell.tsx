@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
 import { useI18n } from "@/lib/i18n";
+import { isAdminPathHidden } from "@/lib/modules";
+
 
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
