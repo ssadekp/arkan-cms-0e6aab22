@@ -41,6 +41,9 @@ function SettingsPage() {
         primary_color: s.primary_color,
         accent_color: s.accent_color,
         default_language: s.default_language,
+        language_mode: (s as any).language_mode ?? "dual",
+        hidden_modules: ((s as any).hidden_modules ?? []) as string[],
+
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
         seo_og_image: s.seo_og_image ?? "",
@@ -80,7 +83,10 @@ function SettingsPage() {
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
         head_scripts: root.head_scripts || null,
+        language_mode: root.language_mode ?? "dual",
+        hidden_modules: root.hidden_modules ?? [],
         show_all_sections: root.show_all_sections ?? true,
+
         show_focus_areas: root.show_focus_areas ?? true,
         show_projects: root.show_projects ?? true,
         show_news: root.show_news ?? true,
