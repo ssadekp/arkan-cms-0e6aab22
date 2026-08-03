@@ -143,16 +143,19 @@ export function AdminShell({ title, children }: { title: string; children: React
             <SidebarTrigger />
             <h1 className="text-base font-semibold">{title}</h1>
             <div className="ms-auto">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-                aria-label="Toggle language"
-              >
-                <Languages className="h-4 w-4" />
-                <span className="ms-1">{lang === "ar" ? "English" : "العربية"}</span>
-              </Button>
+              {!singleLanguage && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+                  aria-label="Toggle language"
+                >
+                  <Languages className="h-4 w-4" />
+                  <span className="ms-1">{lang === "ar" ? "English" : "العربية"}</span>
+                </Button>
+              )}
             </div>
+
           </header>
           <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>
