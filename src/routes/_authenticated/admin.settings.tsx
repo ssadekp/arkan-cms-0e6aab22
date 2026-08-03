@@ -17,6 +17,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SOCIAL_PLATFORMS, SocialIcon, type SocialPlatform } from "@/components/site/SocialIcon";
 import { Trash2, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { SITE_MODULES } from "@/lib/modules";
+
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: SettingsPage,
