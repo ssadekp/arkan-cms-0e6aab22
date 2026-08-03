@@ -77,9 +77,17 @@ export function Footer({ siteName, logoUrl, footerText, contact, sponsorshipText
         {/* Brand + newsletter */}
         <div className="md:col-span-2">
           <div className="flex items-center gap-3">
-            {logoUrl && <img src={logoUrl} alt={siteName} className="h-12 w-auto max-w-[220px] object-contain" />}
-            <h3 className="text-xl font-semibold text-white">{siteName}</h3>
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={siteName}
+                className="h-12 w-auto max-w-[240px] object-contain brightness-0 invert"
+              />
+            ) : (
+              <h3 className="text-xl font-semibold text-white">{siteName}</h3>
+            )}
           </div>
+
 
           <p className="mt-3 text-sm text-white/60 max-w-md leading-relaxed">{footerText}</p>
 
