@@ -17,6 +17,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { SOCIAL_PLATFORMS, SocialIcon, type SocialPlatform } from "@/components/site/SocialIcon";
 import { Trash2, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { SITE_MODULES } from "@/lib/modules";
+
 
 export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: SettingsPage,
@@ -31,6 +33,11 @@ function SettingsPage() {
   const [root, setRoot] = useState<any>({});
   const [i18n, setI18n] = useState<any>({ ar: blank(), en: blank() });
 
+  const hidden: string[] = root.hidden_modules ?? [];
+  const setHidden = (next: string[]) => setRoot({ ...root, hidden_modules: next });
+
+
+
   useEffect(() => {
     if (!data) return;
     const s = data.settings;
@@ -41,6 +48,9 @@ function SettingsPage() {
         primary_color: s.primary_color,
         accent_color: s.accent_color,
         default_language: s.default_language,
+        language_mode: (s as any).language_mode ?? "dual",
+        hidden_modules: ((s as any).hidden_modules ?? []) as string[],
+
         contact_email: s.contact_email ?? "",
         contact_phone: s.contact_phone ?? "",
         seo_og_image: s.seo_og_image ?? "",
@@ -80,7 +90,10 @@ function SettingsPage() {
         map_embed_url: root.map_embed_url || null,
         sponsorship_url: root.sponsorship_url || null,
         head_scripts: root.head_scripts || null,
+        language_mode: root.language_mode ?? "dual",
+        hidden_modules: root.hidden_modules ?? [],
         show_all_sections: root.show_all_sections ?? true,
+
         show_focus_areas: root.show_focus_areas ?? true,
         show_projects: root.show_projects ?? true,
         show_news: root.show_news ?? true,
@@ -124,9 +137,25 @@ function SettingsPage() {
             accept="image/png,image/x-icon,image/svg+xml,image/jpeg,image/webp"
             help="Browser tab icon. Square PNG, ICO, or SVG works best."
           />
-          <div className="grid grid-cols-2 gap-3">
-            <Field label="Primary color" value={root.primary_color} onChange={(v) => setRoot({ ...root, primary_color: v })} />
-            <Field label="Accent color" value={root.accent_color} onChange={(v) => setRoot({ ...root, accent_color: v })} />
+          <p className="text-xs text-muted-foreground">
+            Colors, fonts and radii are managed under <span className="font-medium">Admin → Branding</span>.
+          </p>
+        </Section>
+
+        <Section title="Languages">
+          <div className="space-y-1.5">
+            <Label>Website languages</Label>
+            <select
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={root.language_mode ?? "dual"}
+              onChange={(e) => setRoot({ ...root, language_mode: e.target.value })}
+            >
+              <option value="dual">Two languages (Arabic + English)</option>
+              <option value="single">One language only</option>
+            </select>
+            <p className="text-xs text-muted-foreground">
+              In single-language mode the language switcher is hidden and the site always uses the default language below.
+            </p>
           </div>
           <div className="space-y-1.5">
             <Label>Default language</Label>
@@ -137,6 +166,34 @@ function SettingsPage() {
             </select>
           </div>
         </Section>
+
+        <Section title="Sections visibility (site + admin)">
+          <p className="text-xs text-muted-foreground">
+            Hidden sections disappear from the public navigation and from this admin panel's sidebar.
+          </p>
+          <ToggleRow
+            label="Show all sections"
+            checked={!hidden.includes("all")}
+            onChange={(v) => setHidden(v ? hidden.filter((k) => k !== "all") : Array.from(new Set([...hidden, "all"])))}
+          />
+          <div className="space-y-2 opacity-100">
+            {SITE_MODULES.map((m) => (
+              <ToggleRow
+                key={m.key}
+                label={`${m.en} (${m.ar})`}
+                checked={!hidden.includes("all") && !hidden.includes(m.key)}
+                onChange={(v) =>
+                  setHidden(
+                    v
+                      ? hidden.filter((k) => k !== m.key && k !== "all")
+                      : Array.from(new Set([...hidden, m.key])),
+                  )
+                }
+              />
+            ))}
+          </div>
+        </Section>
+
 
         <Section title="Sponsorship line (Footer)">
           <p className="text-xs text-muted-foreground">

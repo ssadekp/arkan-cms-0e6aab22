@@ -75,6 +75,9 @@ const settingsSchema = z.object({
   primary_color: z.string().min(1),
   accent_color: z.string().min(1),
   default_language: z.enum(["ar", "en"]),
+  language_mode: z.enum(["single", "dual"]).optional(),
+  hidden_modules: z.array(z.string().max(40)).max(50).optional(),
+
   contact_email: z.string().nullable().optional(),
   contact_phone: z.string().nullable().optional(),
   seo_og_image: z.string().nullable().optional(),

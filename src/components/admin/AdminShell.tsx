@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
 import { useI18n } from "@/lib/i18n";
+import { isAdminPathHidden } from "@/lib/modules";
+
 
 export function AdminShell({ title, children }: { title: string; children: ReactNode }) {
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -29,6 +31,12 @@ export function AdminShell({ title, children }: { title: string; children: React
     currentRow.site_name ||
     fallbackRow.site_name ||
     "CMS";
+
+  const settings = (data as any)?.settings ?? {};
+  const hiddenModules = (settings.hidden_modules ?? []) as string[];
+  const singleLanguage = (settings.language_mode ?? "dual") === "single";
+
+
 
   const topItems = [
     { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
@@ -64,8 +72,11 @@ export function AdminShell({ title, children }: { title: string; children: React
   }
 
   const renderItems = (items: { to: string; label: string; icon: any; exact?: boolean }[]) =>
-    items.map((it) => {
+    items
+      .filter((it) => !isAdminPathHidden(hiddenModules, it.to))
+      .map((it) => {
       const active = it.exact ? path === it.to : path.startsWith(it.to);
+
       return (
         <SidebarMenuItem key={it.to}>
           <SidebarMenuButton asChild isActive={active}>
@@ -132,16 +143,19 @@ export function AdminShell({ title, children }: { title: string; children: React
             <SidebarTrigger />
             <h1 className="text-base font-semibold">{title}</h1>
             <div className="ms-auto">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setLang(lang === "ar" ? "en" : "ar")}
-                aria-label="Toggle language"
-              >
-                <Languages className="h-4 w-4" />
-                <span className="ms-1">{lang === "ar" ? "English" : "العربية"}</span>
-              </Button>
+              {!singleLanguage && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setLang(lang === "ar" ? "en" : "ar")}
+                  aria-label="Toggle language"
+                >
+                  <Languages className="h-4 w-4" />
+                  <span className="ms-1">{lang === "ar" ? "English" : "العربية"}</span>
+                </Button>
+              )}
             </div>
+
           </header>
           <main className="flex-1 p-6 overflow-auto">{children}</main>
         </div>

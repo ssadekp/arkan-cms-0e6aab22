@@ -848,8 +848,10 @@ export type Database = {
           head_scripts: string | null
           hero_image: string | null
           hero_slides: Json
+          hidden_modules: string[]
           home_about_image: string | null
           id: number
+          language_mode: string
           logo_url: string | null
           map_embed_url: string | null
           primary_color: string
@@ -878,8 +880,10 @@ export type Database = {
           head_scripts?: string | null
           hero_image?: string | null
           hero_slides?: Json
+          hidden_modules?: string[]
           home_about_image?: string | null
           id?: number
+          language_mode?: string
           logo_url?: string | null
           map_embed_url?: string | null
           primary_color?: string
@@ -908,8 +912,10 @@ export type Database = {
           head_scripts?: string | null
           hero_image?: string | null
           hero_slides?: Json
+          hidden_modules?: string[]
           home_about_image?: string | null
           id?: number
+          language_mode?: string
           logo_url?: string | null
           map_embed_url?: string | null
           primary_color?: string

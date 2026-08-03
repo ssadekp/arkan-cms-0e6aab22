@@ -24,17 +24,25 @@ function applyFavicon(url: string | null | undefined) {
 function Inner({ children }: { children: ReactNode }) {
   const fn = useServerFn(getSiteData);
   const { data } = useQuery({ queryKey: siteQueryKey, queryFn: () => fn(), staleTime: 60_000 });
-  const { lang } = useI18n();
+  const { lang, setLang } = useI18n();
 
   const settings = data?.settings;
   const settingsI18n = pickI18n(data?.settingsI18n, lang);
   const siteName = settingsI18n?.site_name ?? "Lam7et Khair";
   const footerText = settingsI18n?.footer_text ?? "";
   const address = (settingsI18n as any)?.address ?? "";
+  const singleLanguage = ((settings as any)?.language_mode ?? "dual") === "single";
+  const defaultLang = ((settings as any)?.default_language ?? "ar") as "ar" | "en";
+  const hiddenModules = ((settings as any)?.hidden_modules ?? []) as string[];
+
+  useEffect(() => {
+    if (singleLanguage && lang !== defaultLang) setLang(defaultLang);
+  }, [singleLanguage, defaultLang, lang]);
 
   useEffect(() => {
     applyFavicon((settings as any)?.favicon_url);
   }, [settings]);
+
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -70,7 +78,10 @@ function Inner({ children }: { children: ReactNode }) {
         navPages={data?.navPages ?? []}
         navPagesI18n={data?.navPagesI18n ?? []}
         menuItems={(data as any)?.menuItems ?? []}
+        hiddenModules={hiddenModules}
+        showLanguageSwitch={!singleLanguage}
       />
+
       <main className="flex-1">{children}</main>
       <Footer
         siteName={siteName}
