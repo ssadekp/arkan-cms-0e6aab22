@@ -3,6 +3,8 @@ import { useI18n, pickI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Globe, Sprout, Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { isNavUrlHidden } from "@/lib/modules";
+
 
 interface NavPage { id: string; slug: string; }
 interface NavPageI18n { page_id: string; lang: string; title: string; }
@@ -23,13 +25,16 @@ interface Props {
   navPages: NavPage[];
   navPagesI18n: NavPageI18n[];
   menuItems?: MenuItem[];
+  hiddenModules?: string[];
+  showLanguageSwitch?: boolean;
 }
 
 interface RenderLink { label: string; url: string; target?: string; children?: RenderLink[] }
 
-export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [] }: Props) {
+export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [], hiddenModules = [], showLanguageSwitch = true }: Props) {
   const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
+
 
   let links: RenderLink[];
   if (menuItems.length > 0) {
