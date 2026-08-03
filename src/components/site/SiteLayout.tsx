@@ -78,7 +78,10 @@ function Inner({ children }: { children: ReactNode }) {
         navPages={data?.navPages ?? []}
         navPagesI18n={data?.navPagesI18n ?? []}
         menuItems={(data as any)?.menuItems ?? []}
+        hiddenModules={hiddenModules}
+        showLanguageSwitch={!singleLanguage}
       />
+
       <main className="flex-1">{children}</main>
       <Footer
         siteName={siteName}
