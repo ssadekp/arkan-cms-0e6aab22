@@ -32,6 +32,12 @@ export function AdminShell({ title, children }: { title: string; children: React
     fallbackRow.site_name ||
     "CMS";
 
+  const settings = (data as any)?.settings ?? {};
+  const hiddenModules = (settings.hidden_modules ?? []) as string[];
+  const singleLanguage = (settings.language_mode ?? "dual") === "single";
+
+
+
   const topItems = [
     { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
     { to: "/admin/settings", label: t("admin.settings"), icon: Settings },
