@@ -33,6 +33,11 @@ function SettingsPage() {
   const [root, setRoot] = useState<any>({});
   const [i18n, setI18n] = useState<any>({ ar: blank(), en: blank() });
 
+  const hidden: string[] = root.hidden_modules ?? [];
+  const setHidden = (next: string[]) => setRoot({ ...root, hidden_modules: next });
+
+
+
   useEffect(() => {
     if (!data) return;
     const s = data.settings;
