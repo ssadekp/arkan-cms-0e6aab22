@@ -72,8 +72,11 @@ export function AdminShell({ title, children }: { title: string; children: React
   }
 
   const renderItems = (items: { to: string; label: string; icon: any; exact?: boolean }[]) =>
-    items.map((it) => {
+    items
+      .filter((it) => !isAdminPathHidden(hiddenModules, it.to))
+      .map((it) => {
       const active = it.exact ? path === it.to : path.startsWith(it.to);
+
       return (
         <SidebarMenuItem key={it.to}>
           <SidebarMenuButton asChild isActive={active}>
