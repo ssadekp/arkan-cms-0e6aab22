@@ -164,7 +164,7 @@ export const saveSiteSettings = createServerFn({ method: "POST" })
 /* ---------- GENERIC CRUD ---------- */
 
 const resourceSchema = z.object({
-  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
+  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums", "about_values", "team_members"]),
   id: z.string().uuid().nullable(),
   values: z.record(z.string(), z.any()),
   i18n: z.array(z.object({ lang: z.enum(["ar", "en"]) }).passthrough()).optional(),
@@ -178,6 +178,8 @@ const i18nKeyMap: Record<string, { table: string; fk: string }> = {
   albums: { table: "albums_i18n", fk: "album_id" },
   homepage_stats: { table: "homepage_stats_i18n", fk: "stat_id" },
   partners: { table: "partners_i18n", fk: "partner_id" },
+  about_values: { table: "about_values_i18n", fk: "value_id" },
+  team_members: { table: "team_members_i18n", fk: "member_id" },
 };
 
 
@@ -212,7 +214,7 @@ export const deleteResource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
+      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums", "about_values", "team_members"]),
       id: z.string().uuid(),
     }).parse(d),
   )
