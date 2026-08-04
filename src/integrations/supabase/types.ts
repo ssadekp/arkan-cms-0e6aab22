@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      about_values: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: string
+          image: string | null
+          published: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: string
+          image?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      about_values_i18n: {
+        Row: {
+          description: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title: string
+          value_id: string
+        }
+        Insert: {
+          description?: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title?: string
+          value_id: string
+        }
+        Update: {
+          description?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          title?: string
+          value_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "about_values_i18n_value_id_fkey"
+            columns: ["value_id"]
+            isOneToOne: false
+            referencedRelation: "about_values"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       albums: {
         Row: {
           cover_image: string | null
@@ -1077,6 +1136,62 @@ export type Database = {
             columns: ["tag_id"]
             isOneToOne: false
             referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          id: string
+          photo: string | null
+          published: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          photo?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          photo?: string | null
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      team_members_i18n: {
+        Row: {
+          description: string
+          lang: Database["public"]["Enums"]["app_language"]
+          member_id: string
+          name: string
+        }
+        Insert: {
+          description?: string
+          lang: Database["public"]["Enums"]["app_language"]
+          member_id: string
+          name?: string
+        }
+        Update: {
+          description?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          member_id?: string
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_members_i18n_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
             referencedColumns: ["id"]
           },
         ]
