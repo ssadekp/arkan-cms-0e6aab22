@@ -197,6 +197,23 @@ export const getPartners = createServerFn({ method: "GET" }).handler(async () =>
   return { partners: r.data ?? [], partnersI18n: (i.data as any[]) ?? [] };
 });
 
+export const getAboutExtras = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await admin();
+  const [values, valuesI18n, team, teamI18n] = await Promise.all([
+    (sb.from("about_values" as any) as any).select("*").eq("published", true).order("sort_order"),
+    (sb.from("about_values_i18n" as any) as any).select("*"),
+    (sb.from("team_members" as any) as any).select("*").eq("published", true).order("sort_order"),
+    (sb.from("team_members_i18n" as any) as any).select("*"),
+  ]);
+  return {
+    values: (values.data as any[]) ?? [],
+    valuesI18n: (valuesI18n.data as any[]) ?? [],
+    team: (team.data as any[]) ?? [],
+    teamI18n: (teamI18n.data as any[]) ?? [],
+  };
+});
+
+
 
 export const getPage = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))

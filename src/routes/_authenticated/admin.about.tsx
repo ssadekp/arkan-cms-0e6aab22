@@ -104,6 +104,49 @@ function AboutAdmin() {
           />
         </Section>
 
+        <Section title="Mission, Vision & Values">
+          <ResourceManager
+            table="about_values"
+            title="Mission / Vision / Values"
+            rootFields={[
+              { key: "icon", label: "Icon name (lucide) — e.g. target, eye, heart" },
+              { key: "image", label: "Image or icon file (optional)", type: "image" },
+              { key: "sort_order", label: "Sort order", type: "number" },
+              { key: "published", label: "Published", type: "boolean" },
+            ]}
+            i18nFields={[
+              { key: "title", label: "Title" },
+              { key: "description", label: "Description", type: "textarea" },
+            ]}
+            listLabel={(row, i18n) =>
+              i18n.find((x: any) => x.value_id === row.id && x.lang === "ar")?.title ||
+              i18n.find((x: any) => x.value_id === row.id && x.lang === "en")?.title ||
+              "Untitled"
+            }
+          />
+        </Section>
+
+        <Section title="Team members">
+          <ResourceManager
+            table="team_members"
+            title="Team Members"
+            rootFields={[
+              { key: "photo", label: "Photo", type: "image" },
+              { key: "sort_order", label: "Sort order", type: "number" },
+              { key: "published", label: "Published", type: "boolean" },
+            ]}
+            i18nFields={[
+              { key: "name", label: "Name" },
+              { key: "description", label: "Description / role", type: "textarea" },
+            ]}
+            listLabel={(row, i18n) =>
+              i18n.find((x: any) => x.member_id === row.id && x.lang === "ar")?.name ||
+              i18n.find((x: any) => x.member_id === row.id && x.lang === "en")?.name ||
+              "Unnamed"
+            }
+          />
+        </Section>
+
         <Section title="Homepage statistics">
           <ResourceManager
             table="homepage_stats"
@@ -118,6 +161,7 @@ function AboutAdmin() {
             listLabel={(row, i18n) => `${row.value} — ${i18n.find((x: any) => x.stat_id === row.id && x.lang === "ar")?.label ?? ""}`}
           />
         </Section>
+
 
         <Button onClick={() => mut.mutate()} disabled={mut.isPending} size="lg">
           {mut.isPending ? "Saving..." : "Save"}
