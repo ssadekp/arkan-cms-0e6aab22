@@ -90,7 +90,10 @@ const dict: Dict = {
   "users.passwordTooShort": { ar: "يجب أن لا تقل كلمة المرور عن 8 أحرف", en: "Password must be at least 8 characters" },
   "users.passwordMismatch": { ar: "كلمتا المرور غير متطابقتين", en: "Passwords do not match" },
   "users.passwordUpdated": { ar: "تم تحديث كلمة المرور", en: "Password updated" },
+  "about.values": { ar: "رسالتنا ورؤيتنا وقيمنا", en: "Mission, Vision & Values" },
+  "about.team": { ar: "فريق العمل", en: "Our Team" },
 };
+
 
 interface I18nCtx {
   lang: Lang;

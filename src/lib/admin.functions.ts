@@ -27,7 +27,7 @@ export const adminListAll = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertStaff(context.userId);
     const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
-    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners, albums, albumsI18n] = await Promise.all([
+    const [pages, pagesI18n, focus, focusI18n, projects, projectsI18n, news, newsI18n, partners, partnersI18n, settings, settingsI18n, stats, statsI18n, tags, tagsI18n, projectTags, projectPartners, focusAreaPartners, albums, albumsI18n, aboutValues, aboutValuesI18n, team, teamI18n] = await Promise.all([
       sb.from("pages").select("*").order("nav_order"),
       sb.from("pages_i18n").select("*"),
       sb.from("focus_areas").select("*").order("sort_order"),
@@ -49,6 +49,10 @@ export const adminListAll = createServerFn({ method: "GET" })
       sb.from("focus_area_partners" as any).select("*"),
       sb.from("albums" as any).select("*").order("published_at", { ascending: false }),
       sb.from("albums_i18n" as any).select("*"),
+      sb.from("about_values" as any).select("*").order("sort_order"),
+      sb.from("about_values_i18n" as any).select("*"),
+      sb.from("team_members" as any).select("*").order("sort_order"),
+      sb.from("team_members_i18n" as any).select("*"),
     ]);
     return {
       pages: pages.data ?? [], pagesI18n: pagesI18n.data ?? [],
@@ -63,8 +67,11 @@ export const adminListAll = createServerFn({ method: "GET" })
       projectPartners: (projectPartners.data as any[]) ?? [],
       focusAreaPartners: (focusAreaPartners.data as any[]) ?? [],
       albums: (albums.data as any[]) ?? [], albumsI18n: (albumsI18n.data as any[]) ?? [],
+      about_values: (aboutValues.data as any[]) ?? [], about_valuesI18n: (aboutValuesI18n.data as any[]) ?? [],
+      team_members: (team.data as any[]) ?? [], team_membersI18n: (teamI18n.data as any[]) ?? [],
     };
   });
+
 
 
 /* ---------- SETTINGS ---------- */
@@ -157,7 +164,7 @@ export const saveSiteSettings = createServerFn({ method: "POST" })
 /* ---------- GENERIC CRUD ---------- */
 
 const resourceSchema = z.object({
-  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
+  table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums", "about_values", "team_members"]),
   id: z.string().uuid().nullable(),
   values: z.record(z.string(), z.any()),
   i18n: z.array(z.object({ lang: z.enum(["ar", "en"]) }).passthrough()).optional(),
@@ -171,6 +178,8 @@ const i18nKeyMap: Record<string, { table: string; fk: string }> = {
   albums: { table: "albums_i18n", fk: "album_id" },
   homepage_stats: { table: "homepage_stats_i18n", fk: "stat_id" },
   partners: { table: "partners_i18n", fk: "partner_id" },
+  about_values: { table: "about_values_i18n", fk: "value_id" },
+  team_members: { table: "team_members_i18n", fk: "member_id" },
 };
 
 
@@ -205,7 +214,7 @@ export const deleteResource = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) =>
     z.object({
-      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums"]),
+      table: z.enum(["pages", "focus_areas", "projects", "news", "partners", "homepage_stats", "albums", "about_values", "team_members"]),
       id: z.string().uuid(),
     }).parse(d),
   )
