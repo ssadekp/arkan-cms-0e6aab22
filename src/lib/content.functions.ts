@@ -64,13 +64,15 @@ export const getFocusArea = createServerFn({ method: "GET" })
     const sb = await admin();
     const focus = await sb.from("focus_areas").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!focus.data) return null;
-    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n] = await Promise.all([
+    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n, allFocus, allFocusI18n] = await Promise.all([
       sb.from("focus_areas_i18n").select("*").eq("focus_area_id", focus.data.id),
       sb.from("projects").select("*").eq("focus_area_id", focus.data.id).eq("published", true).order("published_at", { ascending: false }),
       sb.from("projects_i18n").select("*"),
       (sb.from("focus_area_partners" as any) as any).select("partner_id").eq("focus_area_id", focus.data.id),
       sb.from("partners").select("*"),
       (sb.from("partners_i18n" as any) as any).select("*"),
+      sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
+      sb.from("focus_areas_i18n").select("*"),
     ]);
     const partnerIds = new Set(((partnerLinks.data ?? []) as any[]).map((p: any) => p.partner_id));
     return {
@@ -80,8 +82,11 @@ export const getFocusArea = createServerFn({ method: "GET" })
       projectsI18n: projectsI18n.data ?? [],
       partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
       partnersI18n: (partnersI18n.data as any[]) ?? [],
+      allFocus: (allFocus.data ?? []).filter((f) => f.id !== focus.data!.id),
+      allFocusI18n: allFocusI18n.data ?? [],
     };
   });
+
 
 export const getProject = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
@@ -89,7 +94,7 @@ export const getProject = createServerFn({ method: "GET" })
     const sb = await admin();
     const project = await sb.from("projects").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!project.data) return null;
-    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n, focus, focusI18n] = await Promise.all([
+    const [i18n, partnerLinks, partners, partnersI18n, tagLinks, tags, tagsI18n, focus, focusI18n, allFocus, allFocusI18n, related, relatedI18n] = await Promise.all([
       sb.from("projects_i18n").select("*").eq("project_id", project.data.id),
       sb.from("project_partners").select("partner_id").eq("project_id", project.data.id),
       sb.from("partners").select("*"),
@@ -103,6 +108,12 @@ export const getProject = createServerFn({ method: "GET" })
       project.data.focus_area_id
         ? sb.from("focus_areas_i18n").select("*").eq("focus_area_id", project.data.focus_area_id)
         : Promise.resolve({ data: [] } as any),
+      sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
+      sb.from("focus_areas_i18n").select("*"),
+      project.data.focus_area_id
+        ? sb.from("projects").select("*").eq("published", true).eq("focus_area_id", project.data.focus_area_id).order("published_at", { ascending: false, nullsFirst: false }).limit(7)
+        : sb.from("projects").select("*").eq("published", true).order("published_at", { ascending: false, nullsFirst: false }).limit(7),
+      sb.from("projects_i18n").select("*"),
     ]);
     const partnerIds = new Set((partnerLinks.data ?? []).map((p) => p.partner_id));
     const tagIds = new Set((tagLinks.data ?? []).map((t) => t.tag_id));
@@ -115,8 +126,13 @@ export const getProject = createServerFn({ method: "GET" })
       tagsI18n: tagsI18n.data ?? [],
       focus: (focus as any).data ?? null,
       focusI18n: ((focusI18n as any).data ?? []) as any[],
+      allFocus: allFocus.data ?? [],
+      allFocusI18n: allFocusI18n.data ?? [],
+      related: (related.data ?? []).filter((p) => p.id !== project.data!.id).slice(0, 6),
+      relatedI18n: relatedI18n.data ?? [],
     };
   });
+
 
 export const getProjectsListing = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
@@ -164,9 +180,30 @@ export const getNewsArticle = createServerFn({ method: "GET" })
     const sb = await admin();
     const article = await sb.from("news").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!article.data) return null;
-    const i18n = await sb.from("news_i18n").select("*").eq("news_id", article.data.id);
-    return { article: article.data, i18n: i18n.data ?? [] };
+    const [i18n, latest, latestI18n] = await Promise.all([
+      sb.from("news_i18n").select("*").eq("news_id", article.data.id),
+      sb.from("news").select("*").eq("published", true).order("published_at", { ascending: false }).limit(30),
+      sb.from("news_i18n").select("*"),
+    ]);
+    return {
+      article: article.data,
+      i18n: i18n.data ?? [],
+      latest: (latest.data ?? []).filter((n) => n.id !== article.data!.id),
+      latestI18n: latestI18n.data ?? [],
+    };
   });
+
+export const getTeamMember = createServerFn({ method: "GET" })
+  .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const member = await (sb.from("team_members" as any) as any)
+      .select("*").eq("id", data.id).eq("published", true).maybeSingle();
+    if (!member.data) return null;
+    const i18n = await (sb.from("team_members_i18n" as any) as any).select("*").eq("member_id", data.id);
+    return { member: member.data as any, i18n: (i18n.data as any[]) ?? [] };
+  });
+
 
 export const getAlbumsList = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
