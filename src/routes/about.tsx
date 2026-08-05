@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import * as Lucide from "lucide-react";
@@ -29,7 +29,7 @@ function LucideIcon({ name, className }: { name?: string | null; className?: str
     .map((p) => p[0]!.toUpperCase() + p.slice(1))
     .join("");
   const Cmp = (Lucide as any)[key] ?? (Lucide as any)[name];
-  if (typeof Cmp !== "function") return null;
+  if (!Cmp) return null;
   return <Cmp className={className} aria-hidden="true" />;
 }
 
@@ -96,7 +96,12 @@ function AboutBody() {
             {extras!.team.map((m: any) => {
               const tr = pickI18n(extras!.teamI18n.filter((x: any) => x.member_id === m.id), lang) as any;
               return (
-                <article key={m.id} className="overflow-hidden rounded-2xl border border-border/60 bg-card text-center">
+                <Link
+                  key={m.id}
+                  to="/team/$id"
+                  params={{ id: m.id }}
+                  className="block overflow-hidden rounded-2xl border border-border/60 bg-card text-center transition hover:border-primary/60 hover:shadow-lg"
+                >
                   <div className="aspect-square w-full bg-muted">
                     {m.photo && (
                       <img src={m.photo} alt={tr?.name || "Team member"} loading="lazy" className="h-full w-full object-cover" />
@@ -105,10 +110,13 @@ function AboutBody() {
                   <div className="p-5">
                     <h3 className="font-semibold">{tr?.name}</h3>
                     {tr?.description && (
-                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground whitespace-pre-line">{tr.description}</p>
+                      <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-3">{tr.description}</p>
                     )}
+                    <span className="mt-3 inline-block text-xs font-semibold text-primary">
+                      {lang === "ar" ? "عرض الملف" : "View profile"}
+                    </span>
                   </div>
-                </article>
+                </Link>
               );
             })}
           </div>

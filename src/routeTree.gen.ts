@@ -28,6 +28,7 @@ import { Route as NewsSlugRouteImport } from './routes/news.$slug'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
+import { Route as TeamIdRouteImport } from './routes/team.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
@@ -142,6 +143,11 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
 const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
   id: '/projects/$slug',
   path: '/projects/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamIdRoute = TeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -277,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/albums/': typeof AlbumsIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
@@ -318,6 +325,7 @@ export interface FileRoutesByTo {
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/albums': typeof AlbumsIndexRoute
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
@@ -360,6 +368,7 @@ export interface FileRoutesById {
   '/news/$slug': typeof NewsSlugRoute
   '/p/$slug': typeof PSlugRoute
   '/projects/$slug': typeof ProjectsSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/albums/': typeof AlbumsIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
@@ -403,6 +412,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/team/$id'
     | '/albums/'
     | '/focus-areas/'
     | '/news/'
@@ -444,6 +454,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/team/$id'
     | '/albums'
     | '/focus-areas'
     | '/news'
@@ -485,6 +496,7 @@ export interface FileRouteTypes {
     | '/news/$slug'
     | '/p/$slug'
     | '/projects/$slug'
+    | '/team/$id'
     | '/albums/'
     | '/focus-areas/'
     | '/news/'
@@ -528,6 +540,7 @@ export interface RootRouteChildren {
   NewsSlugRoute: typeof NewsSlugRoute
   PSlugRoute: typeof PSlugRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
+  TeamIdRoute: typeof TeamIdRoute
   AlbumsIndexRoute: typeof AlbumsIndexRoute
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
@@ -667,6 +680,13 @@ declare module '@tanstack/react-router' {
       path: '/projects/$slug'
       fullPath: '/projects/$slug'
       preLoaderRoute: typeof ProjectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team/$id': {
+      id: '/team/$id'
+      path: '/team/$id'
+      fullPath: '/team/$id'
+      preLoaderRoute: typeof TeamIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -900,6 +920,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewsSlugRoute: NewsSlugRoute,
   PSlugRoute: PSlugRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
+  TeamIdRoute: TeamIdRoute,
   AlbumsIndexRoute: AlbumsIndexRoute,
   FocusAreasIndexRoute: FocusAreasIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
