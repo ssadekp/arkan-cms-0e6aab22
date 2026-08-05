@@ -180,9 +180,30 @@ export const getNewsArticle = createServerFn({ method: "GET" })
     const sb = await admin();
     const article = await sb.from("news").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!article.data) return null;
-    const i18n = await sb.from("news_i18n").select("*").eq("news_id", article.data.id);
-    return { article: article.data, i18n: i18n.data ?? [] };
+    const [i18n, latest, latestI18n] = await Promise.all([
+      sb.from("news_i18n").select("*").eq("news_id", article.data.id),
+      sb.from("news").select("*").eq("published", true).order("published_at", { ascending: false }).limit(30),
+      sb.from("news_i18n").select("*"),
+    ]);
+    return {
+      article: article.data,
+      i18n: i18n.data ?? [],
+      latest: (latest.data ?? []).filter((n) => n.id !== article.data!.id),
+      latestI18n: latestI18n.data ?? [],
+    };
   });
+
+export const getTeamMember = createServerFn({ method: "GET" })
+  .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const member = await (sb.from("team_members" as any) as any)
+      .select("*").eq("id", data.id).eq("published", true).maybeSingle();
+    if (!member.data) return null;
+    const i18n = await (sb.from("team_members_i18n" as any) as any).select("*").eq("member_id", data.id);
+    return { member: member.data as any, i18n: (i18n.data as any[]) ?? [] };
+  });
+
 
 export const getAlbumsList = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await admin();
