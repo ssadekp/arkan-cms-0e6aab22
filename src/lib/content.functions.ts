@@ -64,13 +64,15 @@ export const getFocusArea = createServerFn({ method: "GET" })
     const sb = await admin();
     const focus = await sb.from("focus_areas").select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
     if (!focus.data) return null;
-    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n] = await Promise.all([
+    const [i18n, projects, projectsI18n, partnerLinks, partners, partnersI18n, allFocus, allFocusI18n] = await Promise.all([
       sb.from("focus_areas_i18n").select("*").eq("focus_area_id", focus.data.id),
       sb.from("projects").select("*").eq("focus_area_id", focus.data.id).eq("published", true).order("published_at", { ascending: false }),
       sb.from("projects_i18n").select("*"),
       (sb.from("focus_area_partners" as any) as any).select("partner_id").eq("focus_area_id", focus.data.id),
       sb.from("partners").select("*"),
       (sb.from("partners_i18n" as any) as any).select("*"),
+      sb.from("focus_areas").select("*").eq("published", true).order("sort_order"),
+      sb.from("focus_areas_i18n").select("*"),
     ]);
     const partnerIds = new Set(((partnerLinks.data ?? []) as any[]).map((p: any) => p.partner_id));
     return {
@@ -80,8 +82,11 @@ export const getFocusArea = createServerFn({ method: "GET" })
       projectsI18n: projectsI18n.data ?? [],
       partners: (partners.data ?? []).filter((p) => partnerIds.has(p.id)),
       partnersI18n: (partnersI18n.data as any[]) ?? [],
+      allFocus: (allFocus.data ?? []).filter((f) => f.id !== focus.data!.id),
+      allFocusI18n: allFocusI18n.data ?? [],
     };
   });
+
 
 export const getProject = createServerFn({ method: "GET" })
   .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
