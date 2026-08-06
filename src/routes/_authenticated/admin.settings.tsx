@@ -481,11 +481,12 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { site_name: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "" };
+  return { site_name: "", site_title: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "" };
 }
 function stripI18n(r: any) {
   return {
     site_name: r.site_name ?? "",
+    site_title: r.site_title ?? "",
     admin_sidebar_name: r.admin_sidebar_name ?? "",
     about_title: r.about_title ?? "",
     tagline: r.tagline ?? "",

@@ -109,6 +109,9 @@ function AboutBody() {
                   </div>
                   <div className="p-5">
                     <h3 className="font-semibold">{tr?.name}</h3>
+                    {tr?.position && (
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">{tr.position}</p>
+                    )}
                     {tr?.description && (
                       <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-3">{tr.description}</p>
                     )}
