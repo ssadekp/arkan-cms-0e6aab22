@@ -8,6 +8,7 @@ export type Lang = "ar" | "en";
 export type SettingsI18nRow = {
   lang: Lang;
   site_name: string;
+  site_title: string;
   admin_sidebar_name: string;
   about_title: string;
   tagline: string;
@@ -28,6 +29,7 @@ export type SettingsI18nRow = {
 
 const EMPTY: Omit<SettingsI18nRow, "lang"> = {
   site_name: "",
+  site_title: "",
   admin_sidebar_name: "",
   about_title: "",
   tagline: "",

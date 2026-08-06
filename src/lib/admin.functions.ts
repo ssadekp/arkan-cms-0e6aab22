@@ -126,6 +126,7 @@ const settingsSchema = z.object({
   i18n: z.array(z.object({
     lang: z.enum(["ar", "en"]),
     site_name: z.string(),
+    site_title: z.string().optional().default(""),
     admin_sidebar_name: z.string().optional().default(""),
     about_title: z.string().optional().default(""),
     tagline: z.string(),

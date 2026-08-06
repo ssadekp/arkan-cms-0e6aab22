@@ -54,6 +54,9 @@ function Body() {
         </div>
         <div>
           <h1 className="text-3xl md:text-4xl font-bold">{tr?.name}</h1>
+          {tr?.position && (
+            <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-primary">{tr.position}</p>
+          )}
           {tr?.description && (
             <p className="mt-5 text-base leading-relaxed text-muted-foreground whitespace-pre-line">{tr.description}</p>
           )}

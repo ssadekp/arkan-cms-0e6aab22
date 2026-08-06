@@ -1014,6 +1014,7 @@ export type Database = {
           seo_title: string
           setting_id: number
           site_name: string
+          site_title: string
           sponsorship_text: string | null
           tagline: string
         }
@@ -1035,6 +1036,7 @@ export type Database = {
           seo_title?: string
           setting_id: number
           site_name?: string
+          site_title?: string
           sponsorship_text?: string | null
           tagline?: string
         }
@@ -1056,6 +1058,7 @@ export type Database = {
           seo_title?: string
           setting_id?: number
           site_name?: string
+          site_title?: string
           sponsorship_text?: string | null
           tagline?: string
         }
@@ -1173,18 +1176,21 @@ export type Database = {
           lang: Database["public"]["Enums"]["app_language"]
           member_id: string
           name: string
+          position: string
         }
         Insert: {
           description?: string
           lang: Database["public"]["Enums"]["app_language"]
           member_id: string
           name?: string
+          position?: string
         }
         Update: {
           description?: string
           lang?: Database["public"]["Enums"]["app_language"]
           member_id?: string
           name?: string
+          position?: string
         }
         Relationships: [
           {

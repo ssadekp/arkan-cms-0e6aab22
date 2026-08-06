@@ -137,6 +137,7 @@ function AboutAdmin() {
             ]}
             i18nFields={[
               { key: "name", label: "Name" },
+              { key: "position", label: "Position / job title" },
               { key: "description", label: "Description / role", type: "textarea" },
             ]}
             listLabel={(row, i18n) =>
