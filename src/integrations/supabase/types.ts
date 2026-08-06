@@ -1177,6 +1177,7 @@ export type Database = {
           member_id: string
           name: string
           position: string
+          role: string
         }
         Insert: {
           description?: string
@@ -1184,6 +1185,7 @@ export type Database = {
           member_id: string
           name?: string
           position?: string
+          role?: string
         }
         Update: {
           description?: string
@@ -1191,6 +1193,7 @@ export type Database = {
           member_id?: string
           name?: string
           position?: string
+          role?: string
         }
         Relationships: [
           {

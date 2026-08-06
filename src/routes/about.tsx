@@ -112,6 +112,10 @@ function AboutBody() {
                     {tr?.position && (
                       <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-primary">{tr.position}</p>
                     )}
+                    {tr?.role && (
+                      <p className="mt-1 text-xs font-medium text-foreground/70">{tr.role}</p>
+                    )}
+
                     {tr?.description && (
                       <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground line-clamp-3">{tr.description}</p>
                     )}

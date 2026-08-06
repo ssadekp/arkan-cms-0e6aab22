@@ -1,0 +1,1 @@
+ALTER TABLE public.team_members_i18n ADD COLUMN IF NOT EXISTS role text NOT NULL DEFAULT '';
