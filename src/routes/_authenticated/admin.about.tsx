@@ -138,7 +138,9 @@ function AboutAdmin() {
             i18nFields={[
               { key: "name", label: "Name" },
               { key: "position", label: "Position / job title" },
-              { key: "description", label: "Description / role", type: "textarea" },
+              { key: "role", label: "Role" },
+              { key: "description", label: "Description", type: "textarea" },
+
             ]}
             listLabel={(row, i18n) =>
               i18n.find((x: any) => x.member_id === row.id && x.lang === "ar")?.name ||
