@@ -40,6 +40,12 @@ function Inner({ children }: { children: ReactNode }) {
   }, [singleLanguage, defaultLang, lang]);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+    const title = (settingsI18n as any)?.site_title;
+    if (title) document.title = title;
+  }, [settingsI18n]);
+
+  useEffect(() => {
     applyFavicon((settings as any)?.favicon_url);
   }, [settings]);
 
