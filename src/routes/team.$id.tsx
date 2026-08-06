@@ -57,6 +57,10 @@ function Body() {
           {tr?.position && (
             <p className="mt-2 text-sm font-semibold uppercase tracking-wide text-primary">{tr.position}</p>
           )}
+          {tr?.role && (
+            <p className="mt-1 text-sm font-medium text-foreground/70">{tr.role}</p>
+          )}
+
           {tr?.description && (
             <p className="mt-5 text-base leading-relaxed text-muted-foreground whitespace-pre-line">{tr.description}</p>
           )}
