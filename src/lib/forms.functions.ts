@@ -28,16 +28,33 @@ export const getForm = createServerFn({ method: "GET" })
     return { form, fields: (fields as any[]) ?? [] };
   });
 
+const SUPABASE_HOST = (() => {
+  try {
+    return new URL(process.env.SUPABASE_URL ?? "").host;
+  } catch {
+    return "";
+  }
+})();
+
+const safeStorageUrl = z.string().max(2000).refine((v) => {
+  try {
+    const u = new URL(v);
+    return u.protocol === "https:" && SUPABASE_HOST !== "" && u.host === SUPABASE_HOST;
+  } catch {
+    return false;
+  }
+}, "Invalid file URL");
+
 export const submitForm = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({
     form_id: z.string().uuid(),
     data: z.record(z.string(), z.any()),
     files: z.array(z.object({
-      field_key: z.string(),
-      path: z.string(),
-      name: z.string(),
-      url: z.string().optional(),
-    })).default([]),
+      field_key: z.string().max(100),
+      path: z.string().max(500),
+      name: z.string().max(255),
+      url: safeStorageUrl.optional(),
+    })).max(20).default([]),
     user_agent: z.string().max(500).optional(),
     // spam protection
     hp: z.string().max(200).optional(), // honeypot: must be empty
