@@ -290,6 +290,7 @@ function SettingsPage() {
             {(["ar", "en"] as const).map((l) => (
               <TabsContent key={l} value={l} className="space-y-3 pt-3">
                 <Field label={l === "ar" ? "اسم الموقع (Site name)" : "Site name"} value={i18n[l].site_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_name: v } })} />
+                <Field label={l === "ar" ? "عنوان الموقع في المتصفح (Website title)" : "Website title (browser tab)"} value={i18n[l].site_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], site_title: v } })} />
                 <Field label={l === "ar" ? "اسم لوحة التحكم (Admin sidebar name)" : "Admin sidebar name"} value={i18n[l].admin_sidebar_name} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], admin_sidebar_name: v } })} />
               </TabsContent>
             ))}
