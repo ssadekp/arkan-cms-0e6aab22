@@ -10,6 +10,7 @@ import { sanitizeHtml } from "@/lib/sanitize";
 import { LightboxGallery } from "@/components/site/Lightbox";
 import { SidebarCard, SidebarList } from "@/components/site/DetailSidebar";
 import { Input } from "@/components/ui/input";
+import { ShareButtons } from "@/components/site/ShareButtons";
 
 export const Route = createFileRoute("/news/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
@@ -61,6 +62,8 @@ function Body() {
               dangerouslySetInnerHTML={{ __html: sanitizeHtml(i18n.body) }}
             />
           )}
+          <ShareButtons title={i18n?.title ?? ""} className="mt-8" />
+
           {gallery.length > 0 && (
             <LightboxGallery
               images={gallery}

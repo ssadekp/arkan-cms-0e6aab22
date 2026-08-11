@@ -7,6 +7,7 @@ import { getProject } from "@/lib/content.functions";
 import { sanitizeHtml } from "@/lib/sanitize";
 import { LightboxGallery } from "@/components/site/Lightbox";
 import { SidebarCard, SidebarList } from "@/components/site/DetailSidebar";
+import { ShareButtons } from "@/components/site/ShareButtons";
 
 export const Route = createFileRoute("/projects/$slug")({
   component: () => <SiteLayout><Body /></SiteLayout>,
@@ -85,6 +86,8 @@ function Body() {
             className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
             dangerouslySetInnerHTML={{ __html: sanitizeHtml((i18n as any)?.description ?? "") }}
           />
+
+          <ShareButtons title={i18n?.title ?? ""} className="mt-8" />
 
           {gallery.length > 0 && (
             <LightboxGallery
