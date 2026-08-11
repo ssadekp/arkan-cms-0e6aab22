@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ShareButtons } from "@/components/site/ShareButtons";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getAlbum } from "@/lib/content.functions";
@@ -41,6 +42,8 @@ function Body() {
         {i18n?.description && (
           <p className="mt-4 max-w-3xl text-muted-foreground leading-relaxed">{stripHtml(i18n.description)}</p>
         )}
+
+        <ShareButtons title={i18n?.title ?? data.album.slug} className="mt-6" />
 
         {images.length > 0 ? (
           <LightboxGallery images={images} className="mt-10 grid grid-cols-2 md:grid-cols-3 gap-3" />

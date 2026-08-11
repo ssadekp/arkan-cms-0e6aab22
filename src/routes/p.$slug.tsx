@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { ShareButtons } from "@/components/site/ShareButtons";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { getPage } from "@/lib/content.functions";
@@ -30,6 +31,7 @@ function Body() {
           className="prose prose-sm sm:prose-base max-w-none mt-6 text-muted-foreground dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: sanitizeHtml(i?.body ?? "") }}
         />
+        <ShareButtons title={i?.title ?? ""} className="mt-10" />
       </div>
     </article>
   );

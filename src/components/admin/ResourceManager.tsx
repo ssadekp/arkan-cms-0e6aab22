@@ -13,6 +13,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
 import { ImageUpload, GalleryUpload } from "./ImageUpload";
+import { slugFromTitles, slugify } from "@/lib/slug";
 
 
 type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats" | "albums" | "about_values" | "team_members";
@@ -119,6 +120,9 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
         if (f.type === "gallery") { try { v = JSON.parse(v || "[]"); } catch { v = []; } }
         values[f.key] = v === "" ? null : v;
       });
+      if ("slug" in values && !values.slug) {
+        values.slug = slugFromTitles((i18n as any).en?.title, (i18n as any).ar?.title) || `item-${Date.now()}`;
+      }
       const i18nArr = hasI18n ? (["ar", "en"] as const).map((l) => {
         const obj: any = { lang: l };
         i18nFields.forEach((f) => { obj[f.key] = (i18n as any)[l][f.key] ?? ""; });
@@ -213,6 +217,37 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
                     allPartners={allPartners}
                     allPartnersI18n={allPartnersI18n}
                   />
+                );
+              }
+              if (f.key === "slug") {
+                return (
+                  <div key={f.key} className="space-y-1.5">
+                    <Label>{f.label}</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        dir="ltr"
+                        value={form.slug ?? ""}
+                        placeholder="my-article-title"
+                        onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                        onBlur={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() =>
+                          setForm({
+                            ...form,
+                            slug: slugFromTitles((i18n as any).en?.title, (i18n as any).ar?.title),
+                          })
+                        }
+                      >
+                        From title
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Clean, readable link. Leave empty to generate it from the title automatically.
+                    </p>
+                  </div>
                 );
               }
               return (

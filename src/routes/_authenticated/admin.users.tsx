@@ -35,6 +35,30 @@ export const Route = createFileRoute("/_authenticated/admin/users")({
 const ROLES = ["super_admin", "admin", "editor", "author", "user"] as const;
 type Role = (typeof ROLES)[number];
 
+/** What each role is allowed to do in the control panel. */
+const ROLE_DEFINITIONS: Record<Role, { ar: string; en: string }> = {
+  super_admin: {
+    ar: "صلاحية كاملة: إدارة المستخدمين والأدوار وكلمات المرور وكل إعدادات الموقع والمحتوى.",
+    en: "Full access: manage users, roles, passwords, all site settings and content.",
+  },
+  admin: {
+    ar: "إدارة كل المحتوى والإعدادات وتفعيل/تعطيل المستخدمين وتغيير كلمات المرور، دون تغيير الأدوار.",
+    en: "Manage all content and settings, activate/deactivate users and reset passwords — cannot change roles.",
+  },
+  editor: {
+    ar: "إضافة وتعديل ونشر كل المحتوى (الأخبار، المشروعات، الصفحات، الألبومات) دون الوصول لإدارة المستخدمين.",
+    en: "Create, edit and publish all content (news, projects, pages, albums) — no user management.",
+  },
+  author: {
+    ar: "إنشاء وتحرير المحتوى الخاص به فقط ولا يستطيع تعديل الإعدادات العامة.",
+    en: "Create and edit their own content only; cannot change global settings.",
+  },
+  user: {
+    ar: "مستخدم عادي بدون أي صلاحيات على لوحة التحكم.",
+    en: "Regular account with no control-panel access.",
+  },
+};
+
 function UsersPage() {
   const { t, lang } = useI18n();
   const fn = useServerFn(listUsers);
@@ -105,6 +129,20 @@ function UsersPage() {
   return (
     <AdminShell title={t("users.title")}>
       <div className="space-y-4">
+        <section className="rounded-xl border border-border/60 bg-card p-4">
+          <h2 className="text-sm font-semibold mb-3">
+            {lang === "ar" ? "تعريف الأدوار والصلاحيات" : "User roles & permissions"}
+          </h2>
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {ROLES.map((r) => (
+              <li key={r} className="flex gap-2 text-sm">
+                <Badge variant="secondary" className="h-fit shrink-0">{t(`users.role.${r}`)}</Badge>
+                <span className="text-muted-foreground">{ROLE_DEFINITIONS[r][lang]}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <div className="flex flex-wrap items-center gap-3">
           <Input
             placeholder={t("users.search")}

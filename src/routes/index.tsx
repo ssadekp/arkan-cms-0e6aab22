@@ -372,9 +372,10 @@ function HomeBody() {
                 || p.name;
               return (
                 <a key={p.id} href={p.website_url ?? "#"} target="_blank" rel="noreferrer"
-                   className="flex flex-col items-center gap-3 px-6 py-5 rounded-xl border border-border/60 bg-card hover:border-primary/60 transition">
-                  {p.logo_url && <img src={p.logo_url} alt={name} className="h-24 w-40 object-contain" />}
-                  <span className="text-sm font-medium text-center">{name}</span>
+                   className="flex items-center justify-center px-6 py-5 rounded-xl border border-border/60 bg-card hover:border-primary/60 transition">
+                  {p.logo_url
+                    ? <img src={p.logo_url} alt={name} className="h-24 w-40 object-contain" />
+                    : <span className="text-sm font-medium text-center">{name}</span>}
                 </a>
               );
             })}
