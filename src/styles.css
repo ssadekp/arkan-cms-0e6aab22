@@ -137,3 +137,11 @@
     @apply bg-[var(--ink)] text-[var(--ink-foreground)] hover:bg-[var(--ink)]/90;
   }
 }
+
+/* --- Rich text editor (Tiptap) --- */
+.ProseMirror table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ProseMirror th, .ProseMirror td { border: 1px solid hsl(var(--border)); padding: 0.4rem 0.6rem; vertical-align: top; }
+.ProseMirror th { background: hsl(var(--muted)); font-weight: 600; }
+.ProseMirror img { max-width: 100%; height: auto; }
+.ProseMirror .selectedCell:after { content: ""; position: absolute; inset: 0; background: hsl(var(--primary) / 0.12); pointer-events: none; }
+.ProseMirror td, .ProseMirror th { position: relative; }
