@@ -68,7 +68,7 @@ function Body() {
       </header>
 
       <div className="flex justify-center mb-8">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as any)}>
+        <Tabs value={tab} onValueChange={(v) => setTab(v as any)} dir={lang === "ar" ? "rtl" : "ltr"}>
           <TabsList className="flex-wrap h-auto">
             {tabs.map((t) => (
               <TabsTrigger key={t.value} value={t.value} className="text-sm">
