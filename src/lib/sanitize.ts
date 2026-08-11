@@ -5,7 +5,9 @@ export function sanitizeHtml(input: string | null | undefined): string {
   return DOMPurify.sanitize(input, {
     USE_PROFILES: { html: true },
     FORBID_TAGS: ["script", "style", "iframe", "object", "embed", "form"],
-    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur", "onchange", "onsubmit", "style"],
+    // `style` stays allowed (DOMPurify sanitizes its CSS) so editor colours,
+    // highlights and text alignment survive on the public site.
+    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover", "onfocus", "onblur", "onchange", "onsubmit"],
   });
 }
 
