@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, type ReactNode } from "react";
 import { Header } from "./Header";
@@ -25,6 +26,7 @@ function Inner({ children }: { children: ReactNode }) {
   const fn = useServerFn(getSiteData);
   const { data } = useQuery({ queryKey: siteQueryKey, queryFn: () => fn(), staleTime: 60_000 });
   const { lang, setLang } = useI18n();
+  const href = useRouterState({ select: (st) => st.location.href });
 
   const settings = data?.settings;
   const settingsI18n = pickI18n(data?.settingsI18n, lang);
@@ -42,8 +44,12 @@ function Inner({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof document === "undefined") return;
     const title = (settingsI18n as any)?.site_title;
-    if (title) document.title = title;
-  }, [settingsI18n]);
+    if (!title) return;
+    document.title = title;
+    // route-level head() tags can land after this effect; re-apply next tick
+    const id = window.setTimeout(() => { document.title = title; }, 0);
+    return () => window.clearTimeout(id);
+  }, [settingsI18n, href]);
 
   useEffect(() => {
     applyFavicon((settings as any)?.favicon_url);
