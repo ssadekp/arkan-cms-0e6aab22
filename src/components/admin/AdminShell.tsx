@@ -36,7 +36,12 @@ export function AdminShell({ title, children }: { title: string; children: React
   const hiddenModules = (settings.hidden_modules ?? []) as string[];
   const singleLanguage = (settings.language_mode ?? "dual") === "single";
 
-
+  const siteTitle = currentRow.site_title || fallbackRow.site_title || sidebarName;
+  useEffect(() => {
+    const prev = document.title;
+    document.title = `${title} | ${siteTitle}`;
+    return () => { document.title = prev; };
+  }, [title, siteTitle]);
 
   const topItems = [
     { to: "/admin", label: t("admin.dashboard"), icon: LayoutDashboard, exact: true },
