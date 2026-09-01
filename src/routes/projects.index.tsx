@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({ meta: [{ title: "Projects — Lam7et Khair" }] }),
