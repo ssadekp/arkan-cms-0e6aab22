@@ -51,6 +51,7 @@ function Projects() {
         ]}
         i18nFields={[
           { key: "title", label: "Title" },
+          { key: "city", label: "City / governorate" },
           { key: "description", label: "Description", type: "rich" },
         ]}
         listLabel={(row, i18n) => {
