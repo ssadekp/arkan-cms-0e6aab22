@@ -77,7 +77,10 @@ export default function ProjectsMapCanvas({
 
     for (const p of points) {
       const marker = L.marker([p.lat, p.lng], { icon: pinIcon(p.status), title: p.title });
-      const meta = [p.city, p.focusLabel, p.statusLabel].filter(Boolean).map(esc).join(" · ");
+      const meta = [p.city, p.focusLabel, p.statusLabel]
+        .filter((v): v is string => Boolean(v))
+        .map(esc)
+        .join(" · ");
       const html = `
         <div dir="${lang === "ar" ? "rtl" : "ltr"}" style="width:200px">
           ${p.image ? `<img src="${esc(p.image)}" alt="" style="width:100%;height:96px;object-fit:cover;border-radius:8px;margin-bottom:8px" />` : ""}
