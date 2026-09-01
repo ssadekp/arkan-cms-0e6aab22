@@ -108,6 +108,12 @@ function Body() {
     <div className="container-narrow py-16">
       <div className="flex items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">{t("nav.projects")}</h1>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/projects/map">
+            <MapPin className="h-4 w-4 mr-1" />
+            {lang === "ar" ? "الخريطة" : "Map view"}
+          </Link>
+        </Button>
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
