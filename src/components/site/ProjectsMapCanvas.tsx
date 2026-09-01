@@ -26,8 +26,10 @@ function pinIcon(status: string) {
   const color = STATUS_COLOR[status] ?? "#10b981";
   return L.divIcon({
     className: "",
-    html = "",
-    iconSize: [24, 24],
+    html: `<span style="display:block;width:20px;height:20px;border-radius:9999px;background:${color};box-shadow:0 0 0 4px ${color}33,0 2px 6px rgba(0,0,0,.35);border:2px solid #fff"></span>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -12],
   });
 }
 
