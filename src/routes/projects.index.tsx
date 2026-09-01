@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SlidersHorizontal, X, MapPin } from "lucide-react";
 
 export const Route = createFileRoute("/projects/")({
   head: () => ({ meta: [{ title: "Projects — Lam7et Khair" }] }),
@@ -108,6 +108,12 @@ function Body() {
     <div className="container-narrow py-16">
       <div className="flex items-center justify-between gap-4 mb-8">
         <h1 className="text-3xl font-bold">{t("nav.projects")}</h1>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/projects/map">
+            <MapPin className="h-4 w-4 mr-1" />
+            {lang === "ar" ? "الخريطة" : "Map view"}
+          </Link>
+        </Button>
         <div className="lg:hidden">
           <Sheet>
             <SheetTrigger asChild>
