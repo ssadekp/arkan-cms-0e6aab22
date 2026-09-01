@@ -824,6 +824,8 @@ export type Database = {
           gallery: Json
           hero_image: string | null
           id: string
+          latitude: number | null
+          longitude: number | null
           published: boolean
           published_at: string | null
           slug: string
@@ -837,6 +839,8 @@ export type Database = {
           gallery?: Json
           hero_image?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           published?: boolean
           published_at?: string | null
           slug: string
@@ -850,6 +854,8 @@ export type Database = {
           gallery?: Json
           hero_image?: string | null
           id?: string
+          latitude?: number | null
+          longitude?: number | null
           published?: boolean
           published_at?: string | null
           slug?: string
@@ -869,18 +875,21 @@ export type Database = {
       }
       projects_i18n: {
         Row: {
+          city: string
           description: string
           lang: Database["public"]["Enums"]["app_language"]
           project_id: string
           title: string
         }
         Insert: {
+          city?: string
           description?: string
           lang: Database["public"]["Enums"]["app_language"]
           project_id: string
           title?: string
         }
         Update: {
+          city?: string
           description?: string
           lang?: Database["public"]["Enums"]["app_language"]
           project_id?: string
