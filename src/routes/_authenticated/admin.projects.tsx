@@ -44,6 +44,8 @@ function Projects() {
           { key: "tags", label: "Tags", type: "tags" },
           { key: "partners", label: "Partners", type: "partners" },
 
+          { key: "latitude", label: "Latitude (e.g. 30.0444)", type: "number" },
+          { key: "longitude", label: "Longitude (e.g. 31.2357)", type: "number" },
           { key: "sort_order", label: "Sort order", type: "number" },
           { key: "published", label: "Published", type: "boolean" },
         ]}
