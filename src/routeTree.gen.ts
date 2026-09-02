@@ -20,6 +20,8 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AlbumsIndexRouteImport } from './routes/albums.index'
 import { Route as AlbumsSlugRouteImport } from './routes/albums.$slug'
+import { Route as ArticlesIndexRouteImport } from './routes/articles.index'
+import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 import { Route as FocusAreasIndexRouteImport } from './routes/focus-areas.index'
 import { Route as FocusAreasSlugRouteImport } from './routes/focus-areas.$slug'
 import { Route as FormsSlugRouteImport } from './routes/forms.$slug'
@@ -33,6 +35,7 @@ import { Route as TeamIdRouteImport } from './routes/team.$id'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
+import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
 import { Route as AuthenticatedAdminBrandingRouteImport } from './routes/_authenticated/admin.branding'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
@@ -106,6 +109,16 @@ const AlbumsSlugRoute = AlbumsSlugRouteImport.update({
   path: '/albums/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
+  id: '/articles/',
+  path: '/articles/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FocusAreasIndexRoute = FocusAreasIndexRouteImport.update({
   id: '/focus-areas/',
   path: '/focus-areas/',
@@ -170,6 +183,12 @@ const AuthenticatedAdminAlbumsRoute =
   AuthenticatedAdminAlbumsRouteImport.update({
     id: '/admin/albums',
     path: '/admin/albums',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminArticlesRoute =
+  AuthenticatedAdminArticlesRouteImport.update({
+    id: '/admin/articles',
+    path: '/admin/articles',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedAdminBrandingRoute =
@@ -284,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -292,11 +312,13 @@ export interface FileRoutesByFullPath {
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
   '/albums/': typeof AlbumsIndexRoute
+  '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
+  '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -327,6 +349,7 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -335,11 +358,13 @@ export interface FileRoutesByTo {
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
   '/albums': typeof AlbumsIndexRoute
+  '/articles': typeof ArticlesIndexRoute
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
+  '/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -371,6 +396,7 @@ export interface FileRoutesById {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
   '/news/$slug': typeof NewsSlugRoute
@@ -379,11 +405,13 @@ export interface FileRoutesById {
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
   '/albums/': typeof AlbumsIndexRoute
+  '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/albums': typeof AuthenticatedAdminAlbumsRoute
+  '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
   '/_authenticated/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
@@ -416,6 +444,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -424,11 +453,13 @@ export interface FileRouteTypes {
     | '/projects/map'
     | '/team/$id'
     | '/albums/'
+    | '/articles/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
     | '/admin/about'
     | '/admin/albums'
+    | '/admin/articles'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -459,6 +490,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -467,11 +499,13 @@ export interface FileRouteTypes {
     | '/projects/map'
     | '/team/$id'
     | '/albums'
+    | '/articles'
     | '/focus-areas'
     | '/news'
     | '/projects'
     | '/admin/about'
     | '/admin/albums'
+    | '/admin/articles'
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
@@ -502,6 +536,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
     | '/news/$slug'
@@ -510,11 +545,13 @@ export interface FileRouteTypes {
     | '/projects/map'
     | '/team/$id'
     | '/albums/'
+    | '/articles/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/albums'
+    | '/_authenticated/admin/articles'
     | '/_authenticated/admin/branding'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
@@ -547,6 +584,7 @@ export interface RootRouteChildren {
   ResourcesRoute: typeof ResourcesRoute
   SetupRoute: typeof SetupRoute
   AlbumsSlugRoute: typeof AlbumsSlugRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
   NewsSlugRoute: typeof NewsSlugRoute
@@ -555,6 +593,7 @@ export interface RootRouteChildren {
   ProjectsMapRoute: typeof ProjectsMapRoute
   TeamIdRoute: typeof TeamIdRoute
   AlbumsIndexRoute: typeof AlbumsIndexRoute
+  ArticlesIndexRoute: typeof ArticlesIndexRoute
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
@@ -637,6 +676,20 @@ declare module '@tanstack/react-router' {
       path: '/albums/$slug'
       fullPath: '/albums/$slug'
       preLoaderRoute: typeof AlbumsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/': {
+      id: '/articles/'
+      path: '/articles'
+      fullPath: '/articles/'
+      preLoaderRoute: typeof ArticlesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/focus-areas/': {
@@ -728,6 +781,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/albums'
       fullPath: '/admin/albums'
       preLoaderRoute: typeof AuthenticatedAdminAlbumsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/articles': {
+      id: '/_authenticated/admin/articles'
+      path: '/admin/articles'
+      fullPath: '/admin/articles'
+      preLoaderRoute: typeof AuthenticatedAdminArticlesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin/branding': {
@@ -881,6 +941,7 @@ const AuthenticatedAdminFormsRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminAboutRoute: typeof AuthenticatedAdminAboutRoute
   AuthenticatedAdminAlbumsRoute: typeof AuthenticatedAdminAlbumsRoute
+  AuthenticatedAdminArticlesRoute: typeof AuthenticatedAdminArticlesRoute
   AuthenticatedAdminBrandingRoute: typeof AuthenticatedAdminBrandingRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
@@ -902,6 +963,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminAboutRoute: AuthenticatedAdminAboutRoute,
   AuthenticatedAdminAlbumsRoute: AuthenticatedAdminAlbumsRoute,
+  AuthenticatedAdminArticlesRoute: AuthenticatedAdminArticlesRoute,
   AuthenticatedAdminBrandingRoute: AuthenticatedAdminBrandingRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
@@ -935,6 +997,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesRoute: ResourcesRoute,
   SetupRoute: SetupRoute,
   AlbumsSlugRoute: AlbumsSlugRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
   NewsSlugRoute: NewsSlugRoute,
@@ -943,6 +1006,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsMapRoute: ProjectsMapRoute,
   TeamIdRoute: TeamIdRoute,
   AlbumsIndexRoute: AlbumsIndexRoute,
+  ArticlesIndexRoute: ArticlesIndexRoute,
   FocusAreasIndexRoute: FocusAreasIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,

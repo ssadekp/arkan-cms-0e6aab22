@@ -63,6 +63,7 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/tags", label: t("admin.tags"), icon: Tag },
     { to: "/admin/partners", label: t("admin.partners"), icon: Users },
     { to: "/admin/news", label: t("admin.news"), icon: Newspaper },
+    { to: "/admin/articles", label: t("admin.articles"), icon: Newspaper },
     { to: "/admin/albums", label: t("admin.albums"), icon: Images },
     { to: "/admin/documents", label: t("admin.documents"), icon: FileArchive },
   ];
