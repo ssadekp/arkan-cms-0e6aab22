@@ -60,6 +60,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
       { label: t("nav.projects"), url: "/projects" },
       { label: t("nav.partners"), url: "/partners" },
       { label: t("nav.news"), url: "/news" },
+      { label: t("nav.articles"), url: "/articles" },
       { label: t("nav.albums"), url: "/albums" },
       { label: t("nav.resources"), url: "/resources" },
       { label: t("nav.contact"), url: "/contact" },

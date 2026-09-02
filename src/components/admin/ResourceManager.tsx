@@ -16,7 +16,7 @@ import { ImageUpload, GalleryUpload } from "./ImageUpload";
 import { slugFromTitles, slugify } from "@/lib/slug";
 
 
-type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats" | "albums" | "about_values" | "team_members";
+type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats" | "albums" | "about_values" | "team_members" | "articles";
 
 export interface FieldSpec {
   key: string;
@@ -395,7 +395,7 @@ function i18nKey(t: Table) {
     : `${t}I18n`;
 }
 function fkOf(t: Table): string {
-  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id", albums: "album_id", about_values: "value_id", team_members: "member_id" } as const)[t];
+  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id", albums: "album_id", about_values: "value_id", team_members: "member_id", articles: "article_id" } as const)[t];
 }
 function emptyI18n(fields: FieldSpec[]) { const o: any = {}; fields.forEach((f) => (o[f.key] = "")); return o; }
 

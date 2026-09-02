@@ -278,3 +278,32 @@ export const submitContactMessage = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const getArticlesList = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await admin();
+  const [articles, articlesI18n] = await Promise.all([
+    (sb.from("articles" as any) as any).select("*").eq("published", true).order("published_at", { ascending: false }),
+    (sb.from("articles_i18n" as any) as any).select("*"),
+  ]);
+  return { articles: (articles.data as any[]) ?? [], articlesI18n: (articlesI18n.data as any[]) ?? [] };
+});
+
+export const getArticle = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const article = await (sb.from("articles" as any) as any)
+      .select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
+    if (!article.data) return null;
+    const [i18n, latest, latestI18n] = await Promise.all([
+      (sb.from("articles_i18n" as any) as any).select("*").eq("article_id", article.data.id),
+      (sb.from("articles" as any) as any).select("*").eq("published", true).order("published_at", { ascending: false }).limit(30),
+      (sb.from("articles_i18n" as any) as any).select("*"),
+    ]);
+    return {
+      article: article.data as any,
+      i18n: (i18n.data as any[]) ?? [],
+      latest: ((latest.data as any[]) ?? []).filter((n: any) => n.id !== article.data.id),
+      latestI18n: (latestI18n.data as any[]) ?? [],
+    };
+  });
