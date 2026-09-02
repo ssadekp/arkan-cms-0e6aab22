@@ -135,6 +135,71 @@ export type Database = {
           },
         ]
       }
+      articles: {
+        Row: {
+          created_at: string
+          gallery: Json
+          hero_image: string | null
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          gallery?: Json
+          hero_image?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          gallery?: Json
+          hero_image?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      articles_i18n: {
+        Row: {
+          article_id: string
+          body: string
+          description: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title: string
+        }
+        Insert: {
+          article_id: string
+          body?: string
+          description?: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Update: {
+          article_id?: string
+          body?: string
+          description?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_i18n_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_form_fields: {
         Row: {
           created_at: string
