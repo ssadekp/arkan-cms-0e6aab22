@@ -1351,6 +1351,68 @@ export type Database = {
         }
         Relationships: []
       }
+      video_albums: {
+        Row: {
+          cover_image: string | null
+          created_at: string
+          id: string
+          published: boolean
+          published_at: string
+          slug: string
+          updated_at: string
+          videos: Json
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug: string
+          updated_at?: string
+          videos?: Json
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string
+          id?: string
+          published?: boolean
+          published_at?: string
+          slug?: string
+          updated_at?: string
+          videos?: Json
+        }
+        Relationships: []
+      }
+      video_albums_i18n: {
+        Row: {
+          album_id: string
+          description: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title: string
+        }
+        Insert: {
+          album_id: string
+          description?: string
+          lang: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Update: {
+          album_id?: string
+          description?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "video_albums_i18n_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "video_albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
