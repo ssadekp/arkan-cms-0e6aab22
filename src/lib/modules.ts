@@ -19,6 +19,7 @@ export const SITE_MODULES: SiteModule[] = [
   { key: "news", en: "News", ar: "الأخبار", url: "/news", admin: ["/admin/news"] },
   { key: "articles", en: "Articles", ar: "المقالات", url: "/articles", admin: ["/admin/articles"] },
   { key: "albums", en: "Photo Albums", ar: "ألبوم الصور", url: "/albums", admin: ["/admin/albums"] },
+  { key: "video_albums", en: "Video Albums", ar: "ألبوم الفيديو", url: "/video-albums", admin: ["/admin/video-albums"] },
   { key: "documents", en: "Documents", ar: "الوثائق والتقارير", url: "/resources", admin: ["/admin/documents"] },
   { key: "contact", en: "Contact", ar: "تواصل معنا", url: "/contact", admin: ["/admin/contact", "/admin/forms"] },
 ];

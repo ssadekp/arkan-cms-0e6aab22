@@ -32,6 +32,8 @@ import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ProjectsMapRouteImport } from './routes/projects.map'
 import { Route as TeamIdRouteImport } from './routes/team.$id'
+import { Route as VideoAlbumsIndexRouteImport } from './routes/video-albums.index'
+import { Route as VideoAlbumsSlugRouteImport } from './routes/video-albums.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
@@ -51,6 +53,7 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
 import { Route as AuthenticatedAdminTagsRouteImport } from './routes/_authenticated/admin.tags'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedAdminVideoAlbumsRouteImport } from './routes/_authenticated/admin.video-albums'
 import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
 import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
@@ -169,6 +172,16 @@ const TeamIdRoute = TeamIdRouteImport.update({
   path: '/team/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VideoAlbumsIndexRoute = VideoAlbumsIndexRouteImport.update({
+  id: '/video-albums/',
+  path: '/video-albums/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideoAlbumsSlugRoute = VideoAlbumsSlugRouteImport.update({
+  id: '/video-albums/$slug',
+  path: '/video-albums/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -274,6 +287,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminVideoAlbumsRoute =
+  AuthenticatedAdminVideoAlbumsRouteImport.update({
+    id: '/admin/video-albums',
+    path: '/admin/video-albums',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminFormsIndexRoute =
   AuthenticatedAdminFormsIndexRouteImport.update({
     id: '/',
@@ -311,11 +330,13 @@ export interface FileRoutesByFullPath {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums/': typeof AlbumsIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/video-albums/': typeof VideoAlbumsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -334,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -357,11 +379,13 @@ export interface FileRoutesByTo {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums': typeof AlbumsIndexRoute
   '/articles': typeof ArticlesIndexRoute
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/video-albums': typeof VideoAlbumsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -379,6 +403,7 @@ export interface FileRoutesByTo {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/forms': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -404,11 +429,13 @@ export interface FileRoutesById {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums/': typeof AlbumsIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/video-albums/': typeof VideoAlbumsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -427,6 +454,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/_authenticated/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -452,11 +480,13 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums/'
     | '/articles/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/video-albums/'
     | '/admin/about'
     | '/admin/albums'
     | '/admin/articles'
@@ -475,6 +505,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
+    | '/admin/video-albums'
     | '/admin/'
     | '/admin/forms/'
     | '/admin/forms/$id/submissions'
@@ -498,11 +529,13 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums'
     | '/articles'
     | '/focus-areas'
     | '/news'
     | '/projects'
+    | '/video-albums'
     | '/admin/about'
     | '/admin/albums'
     | '/admin/articles'
@@ -520,6 +553,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
+    | '/admin/video-albums'
     | '/admin'
     | '/admin/forms'
     | '/admin/forms/$id/submissions'
@@ -544,11 +578,13 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums/'
     | '/articles/'
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/video-albums/'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/albums'
     | '/_authenticated/admin/articles'
@@ -567,6 +603,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
+    | '/_authenticated/admin/video-albums'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/forms/'
     | '/_authenticated/admin/forms/$id/submissions'
@@ -592,11 +629,13 @@ export interface RootRouteChildren {
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   ProjectsMapRoute: typeof ProjectsMapRoute
   TeamIdRoute: typeof TeamIdRoute
+  VideoAlbumsSlugRoute: typeof VideoAlbumsSlugRoute
   AlbumsIndexRoute: typeof AlbumsIndexRoute
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  VideoAlbumsIndexRoute: typeof VideoAlbumsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -762,6 +801,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/video-albums/': {
+      id: '/video-albums/'
+      path: '/video-albums'
+      fullPath: '/video-albums/'
+      preLoaderRoute: typeof VideoAlbumsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/video-albums/$slug': {
+      id: '/video-albums/$slug'
+      path: '/video-albums/$slug'
+      fullPath: '/video-albums/$slug'
+      preLoaderRoute: typeof VideoAlbumsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -895,6 +948,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/video-albums': {
+      id: '/_authenticated/admin/video-albums'
+      path: '/admin/video-albums'
+      fullPath: '/admin/video-albums'
+      preLoaderRoute: typeof AuthenticatedAdminVideoAlbumsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/forms/': {
       id: '/_authenticated/admin/forms/'
       path: '/'
@@ -957,6 +1017,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
   AuthenticatedAdminTagsRoute: typeof AuthenticatedAdminTagsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminVideoAlbumsRoute: typeof AuthenticatedAdminVideoAlbumsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -979,6 +1040,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminTagsRoute: AuthenticatedAdminTagsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminVideoAlbumsRoute: AuthenticatedAdminVideoAlbumsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
@@ -1005,11 +1067,13 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsSlugRoute: ProjectsSlugRoute,
   ProjectsMapRoute: ProjectsMapRoute,
   TeamIdRoute: TeamIdRoute,
+  VideoAlbumsSlugRoute: VideoAlbumsSlugRoute,
   AlbumsIndexRoute: AlbumsIndexRoute,
   ArticlesIndexRoute: ArticlesIndexRoute,
   FocusAreasIndexRoute: FocusAreasIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  VideoAlbumsIndexRoute: VideoAlbumsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
