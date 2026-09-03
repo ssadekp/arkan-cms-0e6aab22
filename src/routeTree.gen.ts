@@ -32,6 +32,7 @@ import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ProjectsMapRouteImport } from './routes/projects.map'
 import { Route as TeamIdRouteImport } from './routes/team.$id'
+import { Route as VideoAlbumsIndexRouteImport } from './routes/video-albums.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
@@ -168,6 +169,11 @@ const ProjectsMapRoute = ProjectsMapRouteImport.update({
 const TeamIdRoute = TeamIdRouteImport.update({
   id: '/team/$id',
   path: '/team/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideoAlbumsIndexRoute = VideoAlbumsIndexRouteImport.update({
+  id: '/video-albums/',
+  path: '/video-albums/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -323,6 +329,7 @@ export interface FileRoutesByFullPath {
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/video-albums/': typeof VideoAlbumsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -370,6 +377,7 @@ export interface FileRoutesByTo {
   '/focus-areas': typeof FocusAreasIndexRoute
   '/news': typeof NewsIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/video-albums': typeof VideoAlbumsIndexRoute
   '/admin/about': typeof AuthenticatedAdminAboutRoute
   '/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -418,6 +426,7 @@ export interface FileRoutesById {
   '/focus-areas/': typeof FocusAreasIndexRoute
   '/news/': typeof NewsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/video-albums/': typeof VideoAlbumsIndexRoute
   '/_authenticated/admin/about': typeof AuthenticatedAdminAboutRoute
   '/_authenticated/admin/albums': typeof AuthenticatedAdminAlbumsRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -467,6 +476,7 @@ export interface FileRouteTypes {
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/video-albums/'
     | '/admin/about'
     | '/admin/albums'
     | '/admin/articles'
@@ -514,6 +524,7 @@ export interface FileRouteTypes {
     | '/focus-areas'
     | '/news'
     | '/projects'
+    | '/video-albums'
     | '/admin/about'
     | '/admin/albums'
     | '/admin/articles'
@@ -561,6 +572,7 @@ export interface FileRouteTypes {
     | '/focus-areas/'
     | '/news/'
     | '/projects/'
+    | '/video-albums/'
     | '/_authenticated/admin/about'
     | '/_authenticated/admin/albums'
     | '/_authenticated/admin/articles'
@@ -610,6 +622,7 @@ export interface RootRouteChildren {
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
   NewsIndexRoute: typeof NewsIndexRoute
   ProjectsIndexRoute: typeof ProjectsIndexRoute
+  VideoAlbumsIndexRoute: typeof VideoAlbumsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -773,6 +786,13 @@ declare module '@tanstack/react-router' {
       path: '/team/$id'
       fullPath: '/team/$id'
       preLoaderRoute: typeof TeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/video-albums/': {
+      id: '/video-albums/'
+      path: '/video-albums'
+      fullPath: '/video-albums/'
+      preLoaderRoute: typeof VideoAlbumsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1032,6 +1052,7 @@ const rootRouteChildren: RootRouteChildren = {
   FocusAreasIndexRoute: FocusAreasIndexRoute,
   NewsIndexRoute: NewsIndexRoute,
   ProjectsIndexRoute: ProjectsIndexRoute,
+  VideoAlbumsIndexRoute: VideoAlbumsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
