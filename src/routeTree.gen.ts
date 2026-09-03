@@ -33,6 +33,7 @@ import { Route as ProjectsSlugRouteImport } from './routes/projects.$slug'
 import { Route as ProjectsMapRouteImport } from './routes/projects.map'
 import { Route as TeamIdRouteImport } from './routes/team.$id'
 import { Route as VideoAlbumsIndexRouteImport } from './routes/video-albums.index'
+import { Route as VideoAlbumsSlugRouteImport } from './routes/video-albums.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAboutRouteImport } from './routes/_authenticated/admin.about'
 import { Route as AuthenticatedAdminAlbumsRouteImport } from './routes/_authenticated/admin.albums'
@@ -174,6 +175,11 @@ const TeamIdRoute = TeamIdRouteImport.update({
 const VideoAlbumsIndexRoute = VideoAlbumsIndexRouteImport.update({
   id: '/video-albums/',
   path: '/video-albums/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VideoAlbumsSlugRoute = VideoAlbumsSlugRouteImport.update({
+  id: '/video-albums/$slug',
+  path: '/video-albums/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -324,6 +330,7 @@ export interface FileRoutesByFullPath {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums/': typeof AlbumsIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
@@ -372,6 +379,7 @@ export interface FileRoutesByTo {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums': typeof AlbumsIndexRoute
   '/articles': typeof ArticlesIndexRoute
   '/focus-areas': typeof FocusAreasIndexRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   '/projects/$slug': typeof ProjectsSlugRoute
   '/projects/map': typeof ProjectsMapRoute
   '/team/$id': typeof TeamIdRoute
+  '/video-albums/$slug': typeof VideoAlbumsSlugRoute
   '/albums/': typeof AlbumsIndexRoute
   '/articles/': typeof ArticlesIndexRoute
   '/focus-areas/': typeof FocusAreasIndexRoute
@@ -471,6 +480,7 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums/'
     | '/articles/'
     | '/focus-areas/'
@@ -519,6 +529,7 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums'
     | '/articles'
     | '/focus-areas'
@@ -567,6 +578,7 @@ export interface FileRouteTypes {
     | '/projects/$slug'
     | '/projects/map'
     | '/team/$id'
+    | '/video-albums/$slug'
     | '/albums/'
     | '/articles/'
     | '/focus-areas/'
@@ -617,6 +629,7 @@ export interface RootRouteChildren {
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   ProjectsMapRoute: typeof ProjectsMapRoute
   TeamIdRoute: typeof TeamIdRoute
+  VideoAlbumsSlugRoute: typeof VideoAlbumsSlugRoute
   AlbumsIndexRoute: typeof AlbumsIndexRoute
   ArticlesIndexRoute: typeof ArticlesIndexRoute
   FocusAreasIndexRoute: typeof FocusAreasIndexRoute
@@ -793,6 +806,13 @@ declare module '@tanstack/react-router' {
       path: '/video-albums'
       fullPath: '/video-albums/'
       preLoaderRoute: typeof VideoAlbumsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/video-albums/$slug': {
+      id: '/video-albums/$slug'
+      path: '/video-albums/$slug'
+      fullPath: '/video-albums/$slug'
+      preLoaderRoute: typeof VideoAlbumsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1047,6 +1067,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProjectsSlugRoute: ProjectsSlugRoute,
   ProjectsMapRoute: ProjectsMapRoute,
   TeamIdRoute: TeamIdRoute,
+  VideoAlbumsSlugRoute: VideoAlbumsSlugRoute,
   AlbumsIndexRoute: AlbumsIndexRoute,
   ArticlesIndexRoute: ArticlesIndexRoute,
   FocusAreasIndexRoute: FocusAreasIndexRoute,

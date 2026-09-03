@@ -307,3 +307,23 @@ export const getArticle = createServerFn({ method: "GET" })
       latestI18n: (latestI18n.data as any[]) ?? [],
     };
   });
+
+export const getVideoAlbumsList = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await admin();
+  const [albums, albumsI18n] = await Promise.all([
+    (sb.from("video_albums" as any) as any).select("*").eq("published", true).order("published_at", { ascending: false }),
+    (sb.from("video_albums_i18n" as any) as any).select("*"),
+  ]);
+  return { albums: (albums.data as any[]) ?? [], albumsI18n: (albumsI18n.data as any[]) ?? [] };
+});
+
+export const getVideoAlbum = createServerFn({ method: "GET" })
+  .inputValidator((d: { slug: string }) => z.object({ slug: z.string() }).parse(d))
+  .handler(async ({ data }) => {
+    const sb = await admin();
+    const album = await (sb.from("video_albums" as any) as any)
+      .select("*").eq("slug", data.slug).eq("published", true).maybeSingle();
+    if (!album.data) return null;
+    const i18n = await (sb.from("video_albums_i18n" as any) as any).select("*").eq("album_id", album.data.id);
+    return { album: album.data as any, i18n: (i18n.data as any[]) ?? [] };
+  });

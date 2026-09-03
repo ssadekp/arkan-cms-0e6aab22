@@ -13,15 +13,16 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { RichEditor } from "./RichEditor";
 import { ImageUpload, GalleryUpload } from "./ImageUpload";
+import { VideoListEditor } from "./VideoListEditor";
 import { slugFromTitles, slugify } from "@/lib/slug";
 
 
-type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats" | "albums" | "about_values" | "team_members" | "articles";
+type Table = "pages" | "focus_areas" | "projects" | "news" | "partners" | "homepage_stats" | "albums" | "video_albums" | "about_values" | "team_members" | "articles";
 
 export interface FieldSpec {
   key: string;
   label: string;
-  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "select" | "enum" | "tags" | "partners";
+  type?: "text" | "textarea" | "rich" | "url" | "number" | "boolean" | "image" | "gallery" | "videos" | "select" | "enum" | "tags" | "partners";
   options?: { value: string; label: string }[];
   i18n?: boolean;
 }
@@ -64,7 +65,7 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
   function defaultFor(f: FieldSpec) {
     if (f.type === "boolean") return true;
     if (f.type === "number") return 0;
-    if (f.type === "gallery") return "[]";
+    if (f.type === "gallery" || f.type === "videos") return "[]";
     if (f.type === "enum") return f.options?.[0]?.value ?? "";
     return "";
   }
@@ -83,7 +84,7 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
     setEditing(row);
     const f: any = {};
     rootFields.forEach((fld) => {
-      if (fld.type === "gallery") {
+      if (fld.type === "gallery" || fld.type === "videos") {
         f[fld.key] = JSON.stringify(row[fld.key] ?? [], null, 2);
       } else if (fld.type === "boolean") {
         f[fld.key] = !!row[fld.key];
@@ -117,7 +118,7 @@ export function ResourceManager({ table, title, rootFields, i18nFields, hasI18n 
         let v = form[f.key];
         if (f.type === "number") v = Number(v) || 0;
         if (f.type === "boolean") v = !!v;
-        if (f.type === "gallery") { try { v = JSON.parse(v || "[]"); } catch { v = []; } }
+        if (f.type === "gallery" || f.type === "videos") { try { v = JSON.parse(v || "[]"); } catch { v = []; } }
         values[f.key] = v === "" ? null : v;
       });
       if ("slug" in values && !values.slug) {
@@ -327,6 +328,9 @@ function FieldInput({ field, value, onChange }: { field: FieldSpec; value: any; 
       </div>
     );
   }
+  if (field.type === "videos") {
+    return <VideoListEditor label={field.label} value={value ?? "[]"} onChange={onChange} />;
+  }
   if (field.type === "gallery") {
     return (
       <GalleryUpload label={field.label} value={value ?? "[]"} onChange={onChange} folder="gallery" />
@@ -386,16 +390,17 @@ function TagsPicker({
 }
 
 function tableKey(t: Table) {
-  return t === "focus_areas" ? "focus" : t === "homepage_stats" ? "stats" : t;
+  return t === "focus_areas" ? "focus" : t === "homepage_stats" ? "stats" : t === "video_albums" ? "videoAlbums" : t;
 }
 function i18nKey(t: Table) {
   return t === "focus_areas" ? "focusI18n"
     : t === "homepage_stats" ? "statsI18n"
     : t === "partners" ? "partnersI18n"
+    : t === "video_albums" ? "videoAlbumsI18n"
     : `${t}I18n`;
 }
 function fkOf(t: Table): string {
-  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id", albums: "album_id", about_values: "value_id", team_members: "member_id", articles: "article_id" } as const)[t];
+  return ({ pages: "page_id", focus_areas: "focus_area_id", projects: "project_id", news: "news_id", homepage_stats: "stat_id", partners: "partner_id", albums: "album_id", video_albums: "album_id", about_values: "value_id", team_members: "member_id", articles: "article_id" } as const)[t];
 }
 function emptyI18n(fields: FieldSpec[]) { const o: any = {}; fields.forEach((f) => (o[f.key] = "")); return o; }
 
