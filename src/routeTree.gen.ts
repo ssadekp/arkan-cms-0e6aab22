@@ -51,6 +51,7 @@ import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminStatsRouteImport } from './routes/_authenticated/admin.stats'
 import { Route as AuthenticatedAdminTagsRouteImport } from './routes/_authenticated/admin.tags'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedAdminVideoAlbumsRouteImport } from './routes/_authenticated/admin.video-albums'
 import { Route as AuthenticatedAdminFormsIndexRouteImport } from './routes/_authenticated/admin.forms.index'
 import { Route as AuthenticatedAdminFormsIdIndexRouteImport } from './routes/_authenticated/admin.forms.$id.index'
 import { Route as AuthenticatedAdminFormsIdSubmissionsRouteImport } from './routes/_authenticated/admin.forms.$id.submissions'
@@ -274,6 +275,12 @@ const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
   path: '/admin/users',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAdminVideoAlbumsRoute =
+  AuthenticatedAdminVideoAlbumsRouteImport.update({
+    id: '/admin/video-albums',
+    path: '/admin/video-albums',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminFormsIndexRoute =
   AuthenticatedAdminFormsIndexRouteImport.update({
     id: '/',
@@ -334,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -379,6 +387,7 @@ export interface FileRoutesByTo {
   '/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/forms': typeof AuthenticatedAdminFormsIndexRoute
   '/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -427,6 +436,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/stats': typeof AuthenticatedAdminStatsRoute
   '/_authenticated/admin/tags': typeof AuthenticatedAdminTagsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
+  '/_authenticated/admin/video-albums': typeof AuthenticatedAdminVideoAlbumsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/forms/': typeof AuthenticatedAdminFormsIndexRoute
   '/_authenticated/admin/forms/$id/submissions': typeof AuthenticatedAdminFormsIdSubmissionsRoute
@@ -475,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
+    | '/admin/video-albums'
     | '/admin/'
     | '/admin/forms/'
     | '/admin/forms/$id/submissions'
@@ -520,6 +531,7 @@ export interface FileRouteTypes {
     | '/admin/stats'
     | '/admin/tags'
     | '/admin/users'
+    | '/admin/video-albums'
     | '/admin'
     | '/admin/forms'
     | '/admin/forms/$id/submissions'
@@ -567,6 +579,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/stats'
     | '/_authenticated/admin/tags'
     | '/_authenticated/admin/users'
+    | '/_authenticated/admin/video-albums'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/forms/'
     | '/_authenticated/admin/forms/$id/submissions'
@@ -895,6 +908,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/video-albums': {
+      id: '/_authenticated/admin/video-albums'
+      path: '/admin/video-albums'
+      fullPath: '/admin/video-albums'
+      preLoaderRoute: typeof AuthenticatedAdminVideoAlbumsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/forms/': {
       id: '/_authenticated/admin/forms/'
       path: '/'
@@ -957,6 +977,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminStatsRoute: typeof AuthenticatedAdminStatsRoute
   AuthenticatedAdminTagsRoute: typeof AuthenticatedAdminTagsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminVideoAlbumsRoute: typeof AuthenticatedAdminVideoAlbumsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -979,6 +1000,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminStatsRoute: AuthenticatedAdminStatsRoute,
   AuthenticatedAdminTagsRoute: AuthenticatedAdminTagsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminVideoAlbumsRoute: AuthenticatedAdminVideoAlbumsRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
