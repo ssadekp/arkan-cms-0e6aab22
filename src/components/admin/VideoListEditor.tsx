@@ -19,7 +19,11 @@ export function VideoListEditor({
 }) {
   let items: VideoItem[] = [];
   try {
-    items = parseVideos(JSON.parse(value || "[]"));
+    const raw = JSON.parse(value || "[]");
+    // Keep rows with an empty url so freshly added (blank) entries stay editable.
+    items = Array.isArray(raw)
+      ? raw.map((v: any) => (typeof v === "string" ? { url: v } : { url: "", ...(v ?? {}) }))
+      : [];
   } catch {
     items = [];
   }
