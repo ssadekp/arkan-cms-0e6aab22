@@ -393,6 +393,101 @@ export type Database = {
         }
         Relationships: []
       }
+      donations: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          email: string | null
+          id: string
+          name: string
+          note: string | null
+          phone: string
+          status: string
+          updated_at: string
+          user_agent: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          name: string
+          note?: string | null
+          phone: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          email?: string | null
+          id?: string
+          name?: string
+          note?: string | null
+          phone?: string
+          status?: string
+          updated_at?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      faqs: {
+        Row: {
+          created_at: string
+          id: string
+          published: boolean
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          published?: boolean
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      faqs_i18n: {
+        Row: {
+          answer: string
+          faq_id: string
+          lang: Database["public"]["Enums"]["app_language"]
+          question: string
+        }
+        Insert: {
+          answer?: string
+          faq_id: string
+          lang: Database["public"]["Enums"]["app_language"]
+          question?: string
+        }
+        Update: {
+          answer?: string
+          faq_id?: string
+          lang?: Database["public"]["Enums"]["app_language"]
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faqs_i18n_faq_id_fkey"
+            columns: ["faq_id"]
+            isOneToOne: false
+            referencedRelation: "faqs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       focus_area_partners: {
         Row: {
           focus_area_id: string
@@ -977,6 +1072,9 @@ export type Database = {
           contact_email: string | null
           contact_phone: string | null
           default_language: Database["public"]["Enums"]["app_language"]
+          donation_amounts: Json
+          donation_currency: string
+          donation_enabled: boolean
           favicon_url: string | null
           head_scripts: string | null
           hero_image: string | null
@@ -1009,6 +1107,9 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
+          donation_amounts?: Json
+          donation_currency?: string
+          donation_enabled?: boolean
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
@@ -1041,6 +1142,9 @@ export type Database = {
           contact_email?: string | null
           contact_phone?: string | null
           default_language?: Database["public"]["Enums"]["app_language"]
+          donation_amounts?: Json
+          donation_currency?: string
+          donation_enabled?: boolean
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
@@ -1076,6 +1180,12 @@ export type Database = {
           about_title: string
           address: string
           admin_sidebar_name: string
+          donate_description: string
+          donate_payment_info: string
+          donate_thanks: string
+          donate_title: string
+          faq_description: string
+          faq_title: string
           footer_text: string
           hero_description: string
           hero_quote: string
@@ -1098,6 +1208,12 @@ export type Database = {
           about_title?: string
           address?: string
           admin_sidebar_name?: string
+          donate_description?: string
+          donate_payment_info?: string
+          donate_thanks?: string
+          donate_title?: string
+          faq_description?: string
+          faq_title?: string
           footer_text?: string
           hero_description?: string
           hero_quote?: string
@@ -1120,6 +1236,12 @@ export type Database = {
           about_title?: string
           address?: string
           admin_sidebar_name?: string
+          donate_description?: string
+          donate_payment_info?: string
+          donate_thanks?: string
+          donate_title?: string
+          faq_description?: string
+          faq_title?: string
           footer_text?: string
           hero_description?: string
           hero_quote?: string
