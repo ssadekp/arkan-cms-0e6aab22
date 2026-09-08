@@ -15,6 +15,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DonateRouteImport } from './routes/donate'
+import { Route as FaqRouteImport } from './routes/faq'
 import { Route as PartnersRouteImport } from './routes/partners'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ResourcesRouteImport } from './routes/resources'
@@ -42,6 +43,8 @@ import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminBrandingRouteImport } from './routes/_authenticated/admin.branding'
 import { Route as AuthenticatedAdminContactRouteImport } from './routes/_authenticated/admin.contact'
 import { Route as AuthenticatedAdminDocumentsRouteImport } from './routes/_authenticated/admin.documents'
+import { Route as AuthenticatedAdminDonationsRouteImport } from './routes/_authenticated/admin.donations'
+import { Route as AuthenticatedAdminFaqRouteImport } from './routes/_authenticated/admin.faq'
 import { Route as AuthenticatedAdminFocusAreasRouteImport } from './routes/_authenticated/admin.focus-areas'
 import { Route as AuthenticatedAdminFormsRouteImport } from './routes/_authenticated/admin.forms'
 import { Route as AuthenticatedAdminHomepageRouteImport } from './routes/_authenticated/admin.homepage'
@@ -86,6 +89,11 @@ const ContactRoute = ContactRouteImport.update({
 const DonateRoute = DonateRouteImport.update({
   id: '/donate',
   path: '/donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnersRoute = PartnersRouteImport.update({
@@ -228,6 +236,17 @@ const AuthenticatedAdminDocumentsRoute =
     path: '/admin/documents',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminDonationsRoute =
+  AuthenticatedAdminDonationsRouteImport.update({
+    id: '/admin/donations',
+    path: '/admin/donations',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAdminFaqRoute = AuthenticatedAdminFaqRouteImport.update({
+  id: '/admin/faq',
+  path: '/admin/faq',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedAdminFocusAreasRoute =
   AuthenticatedAdminFocusAreasRouteImport.update({
     id: '/admin/focus-areas',
@@ -324,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/faq': typeof FaqRoute
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
@@ -350,6 +370,8 @@ export interface FileRoutesByFullPath {
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/admin/donations': typeof AuthenticatedAdminDonationsRoute
+  '/admin/faq': typeof AuthenticatedAdminFaqRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/admin/homepage': typeof AuthenticatedAdminHomepageRoute
@@ -374,6 +396,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/faq': typeof FaqRoute
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
@@ -400,6 +423,8 @@ export interface FileRoutesByTo {
   '/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/admin/contact': typeof AuthenticatedAdminContactRoute
   '/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/admin/donations': typeof AuthenticatedAdminDonationsRoute
+  '/admin/faq': typeof AuthenticatedAdminFaqRoute
   '/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/admin/homepage': typeof AuthenticatedAdminHomepageRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
@@ -425,6 +450,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/contact': typeof ContactRoute
   '/donate': typeof DonateRoute
+  '/faq': typeof FaqRoute
   '/partners': typeof PartnersRoute
   '/reset-password': typeof ResetPasswordRoute
   '/resources': typeof ResourcesRoute
@@ -451,6 +477,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/branding': typeof AuthenticatedAdminBrandingRoute
   '/_authenticated/admin/contact': typeof AuthenticatedAdminContactRoute
   '/_authenticated/admin/documents': typeof AuthenticatedAdminDocumentsRoute
+  '/_authenticated/admin/donations': typeof AuthenticatedAdminDonationsRoute
+  '/_authenticated/admin/faq': typeof AuthenticatedAdminFaqRoute
   '/_authenticated/admin/focus-areas': typeof AuthenticatedAdminFocusAreasRoute
   '/_authenticated/admin/forms': typeof AuthenticatedAdminFormsRouteWithChildren
   '/_authenticated/admin/homepage': typeof AuthenticatedAdminHomepageRoute
@@ -477,6 +505,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/faq'
     | '/partners'
     | '/reset-password'
     | '/resources'
@@ -503,6 +532,8 @@ export interface FileRouteTypes {
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
+    | '/admin/donations'
+    | '/admin/faq'
     | '/admin/focus-areas'
     | '/admin/forms'
     | '/admin/homepage'
@@ -527,6 +558,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/faq'
     | '/partners'
     | '/reset-password'
     | '/resources'
@@ -553,6 +585,8 @@ export interface FileRouteTypes {
     | '/admin/branding'
     | '/admin/contact'
     | '/admin/documents'
+    | '/admin/donations'
+    | '/admin/faq'
     | '/admin/focus-areas'
     | '/admin/homepage'
     | '/admin/menu'
@@ -577,6 +611,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/contact'
     | '/donate'
+    | '/faq'
     | '/partners'
     | '/reset-password'
     | '/resources'
@@ -603,6 +638,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/branding'
     | '/_authenticated/admin/contact'
     | '/_authenticated/admin/documents'
+    | '/_authenticated/admin/donations'
+    | '/_authenticated/admin/faq'
     | '/_authenticated/admin/focus-areas'
     | '/_authenticated/admin/forms'
     | '/_authenticated/admin/homepage'
@@ -629,6 +666,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ContactRoute: typeof ContactRoute
   DonateRoute: typeof DonateRoute
+  FaqRoute: typeof FaqRoute
   PartnersRoute: typeof PartnersRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ResourcesRoute: typeof ResourcesRoute
@@ -693,6 +731,13 @@ declare module '@tanstack/react-router' {
       path: '/donate'
       fullPath: '/donate'
       preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partners': {
@@ -884,6 +929,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminDocumentsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin/donations': {
+      id: '/_authenticated/admin/donations'
+      path: '/admin/donations'
+      fullPath: '/admin/donations'
+      preLoaderRoute: typeof AuthenticatedAdminDonationsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/faq': {
+      id: '/_authenticated/admin/faq'
+      path: '/admin/faq'
+      fullPath: '/admin/faq'
+      preLoaderRoute: typeof AuthenticatedAdminFaqRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin/focus-areas': {
       id: '/_authenticated/admin/focus-areas'
       path: '/admin/focus-areas'
@@ -1025,6 +1084,8 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminBrandingRoute: typeof AuthenticatedAdminBrandingRoute
   AuthenticatedAdminContactRoute: typeof AuthenticatedAdminContactRoute
   AuthenticatedAdminDocumentsRoute: typeof AuthenticatedAdminDocumentsRoute
+  AuthenticatedAdminDonationsRoute: typeof AuthenticatedAdminDonationsRoute
+  AuthenticatedAdminFaqRoute: typeof AuthenticatedAdminFaqRoute
   AuthenticatedAdminFocusAreasRoute: typeof AuthenticatedAdminFocusAreasRoute
   AuthenticatedAdminFormsRoute: typeof AuthenticatedAdminFormsRouteWithChildren
   AuthenticatedAdminHomepageRoute: typeof AuthenticatedAdminHomepageRoute
@@ -1048,6 +1109,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminBrandingRoute: AuthenticatedAdminBrandingRoute,
   AuthenticatedAdminContactRoute: AuthenticatedAdminContactRoute,
   AuthenticatedAdminDocumentsRoute: AuthenticatedAdminDocumentsRoute,
+  AuthenticatedAdminDonationsRoute: AuthenticatedAdminDonationsRoute,
+  AuthenticatedAdminFaqRoute: AuthenticatedAdminFaqRoute,
   AuthenticatedAdminFocusAreasRoute: AuthenticatedAdminFocusAreasRoute,
   AuthenticatedAdminFormsRoute: AuthenticatedAdminFormsRouteWithChildren,
   AuthenticatedAdminHomepageRoute: AuthenticatedAdminHomepageRoute,
@@ -1075,6 +1138,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ContactRoute: ContactRoute,
   DonateRoute: DonateRoute,
+  FaqRoute: FaqRoute,
   PartnersRoute: PartnersRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ResourcesRoute: ResourcesRoute,

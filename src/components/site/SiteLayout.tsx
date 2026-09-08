@@ -92,6 +92,7 @@ function Inner({ children }: { children: ReactNode }) {
         menuItems={(data as any)?.menuItems ?? []}
         hiddenModules={hiddenModules}
         showLanguageSwitch={!singleLanguage}
+        showDonate={((settings as any)?.donation_enabled ?? true) !== false}
       />
 
       <main className="flex-1">{children}</main>

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Globe, Sprout, Menu, X, ChevronDown } from "lucide-react";
+import { Globe, Sprout, Menu, X, ChevronDown, Heart } from "lucide-react";
 import { useState } from "react";
 import { isNavUrlHidden } from "@/lib/modules";
 
@@ -27,13 +27,17 @@ interface Props {
   menuItems?: MenuItem[];
   hiddenModules?: string[];
   showLanguageSwitch?: boolean;
+  showDonate?: boolean;
 }
 
 interface RenderLink { label: string; url: string; target?: string; children?: RenderLink[] }
 
-export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [], hiddenModules = [], showLanguageSwitch = true }: Props) {
+export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [], hiddenModules = [], showLanguageSwitch = true, showDonate = true }: Props) {
   const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
+
+  const donateVisible = showDonate && !isNavUrlHidden(hiddenModules, "/donate");
+
 
 
   let links: RenderLink[];
@@ -65,6 +69,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
       { label: t("nav.videoAlbums"), url: "/video-albums" },
       { label: t("nav.resources"), url: "/resources" },
       { label: t("nav.contact"), url: "/contact" },
+      { label: t("nav.faq"), url: "/faq" },
     ];
     const custom: RenderLink[] = navPages.map((p) => {
       const i18n = pickI18n(navPagesI18n.filter((x) => x.page_id === p.id), lang);
@@ -98,6 +103,14 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
         </nav>
 
         <div className="flex items-center gap-2">
+          {donateVisible && (
+            <Button asChild size="sm" className="rounded-full px-4 font-semibold shadow-sm">
+              <Link to="/donate">
+                <Heart className="h-4 w-4 me-1" />
+                {t("nav.donate")}
+              </Link>
+            </Button>
+          )}
           {showLanguageSwitch && (
             <Button variant="ghost" size="sm" onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="gap-1.5">
               <Globe className="h-4 w-4" />
@@ -109,6 +122,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+
       </div>
 
       {open && (
