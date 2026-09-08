@@ -102,6 +102,14 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
         </nav>
 
         <div className="flex items-center gap-2">
+          {donateVisible && (
+            <Button asChild size="sm" className="rounded-full px-4 font-semibold shadow-sm">
+              <Link to="/donate">
+                <Heart className="h-4 w-4 me-1" />
+                {t("nav.donate")}
+              </Link>
+            </Button>
+          )}
           {showLanguageSwitch && (
             <Button variant="ghost" size="sm" onClick={() => setLang(lang === "ar" ? "en" : "ar")} className="gap-1.5">
               <Globe className="h-4 w-4" />
@@ -113,6 +121,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+
       </div>
 
       {open && (
