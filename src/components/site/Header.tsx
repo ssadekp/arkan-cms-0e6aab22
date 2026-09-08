@@ -27,13 +27,17 @@ interface Props {
   menuItems?: MenuItem[];
   hiddenModules?: string[];
   showLanguageSwitch?: boolean;
+  showDonate?: boolean;
 }
 
 interface RenderLink { label: string; url: string; target?: string; children?: RenderLink[] }
 
-export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [], hiddenModules = [], showLanguageSwitch = true }: Props) {
+export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = [], hiddenModules = [], showLanguageSwitch = true, showDonate = true }: Props) {
   const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
+
+  const donateVisible = showDonate && !isNavUrlHidden(hiddenModules, "/donate");
+
 
 
   let links: RenderLink[];
