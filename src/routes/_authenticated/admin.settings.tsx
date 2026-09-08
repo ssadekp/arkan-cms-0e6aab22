@@ -67,6 +67,9 @@ function SettingsPage() {
         show_stats: (s as any).show_stats ?? true,
         visitor_counter_enabled: (s as any).visitor_counter_enabled ?? true,
         visitor_count_start: (s as any).visitor_count_start ?? 0,
+        donation_enabled: (s as any).donation_enabled ?? true,
+        donation_currency: (s as any).donation_currency ?? "EGP",
+        donation_amounts: Array.isArray((s as any).donation_amounts) ? (s as any).donation_amounts : [100, 250, 500, 1000],
         social_links: s.social_links ?? {},
 
       });
@@ -102,6 +105,10 @@ function SettingsPage() {
         show_stats: root.show_stats ?? true,
         visitor_counter_enabled: root.visitor_counter_enabled ?? true,
         visitor_count_start: Number(root.visitor_count_start ?? 0) || 0,
+        donation_enabled: root.donation_enabled ?? true,
+        donation_currency: root.donation_currency || "EGP",
+        donation_amounts: String(root.donation_amounts ?? "")
+          .split(",").map((x: string) => Number(x.trim())).filter((n: number) => n > 0),
         social_links: root.social_links ?? {},
 
         i18n: [
@@ -249,6 +256,56 @@ function SettingsPage() {
 
 
 
+
+        <Section title="Donations (Donate Now page)">
+          <p className="text-xs text-muted-foreground">
+            Controls the <span className="font-medium">Donate Now</span> button in the header and the public /donate page.
+            Requests appear under <span className="font-medium">Admin → Donations</span>.
+          </p>
+          <ToggleRow
+            label="Enable donations"
+            checked={root.donation_enabled ?? true}
+            onChange={(v) => setRoot({ ...root, donation_enabled: v })}
+          />
+          <Field label="Currency code (e.g. EGP, USD)" value={root.donation_currency} onChange={(v) => setRoot({ ...root, donation_currency: v })} />
+          <Field
+            label="Suggested amounts (comma separated)"
+            value={Array.isArray(root.donation_amounts) ? root.donation_amounts.join(", ") : root.donation_amounts}
+            onChange={(v) => setRoot({ ...root, donation_amounts: v })}
+          />
+          <Tabs defaultValue="ar">
+            <TabsList>
+              <TabsTrigger value="ar">العربية</TabsTrigger>
+              <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            {(["ar", "en"] as const).map((l) => (
+              <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field label="Page title" value={i18n[l].donate_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], donate_title: v } })} />
+                <Field label="Intro text" textarea value={i18n[l].donate_description} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], donate_description: v } })} />
+                <Field label="Payment instructions (bank / wallet details)" textarea value={i18n[l].donate_payment_info} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], donate_payment_info: v } })} />
+                <Field label="Thank-you message" textarea value={i18n[l].donate_thanks} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], donate_thanks: v } })} />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </Section>
+
+        <Section title="FAQ page">
+          <p className="text-xs text-muted-foreground">
+            Questions and answers are managed under <span className="font-medium">Admin → FAQ</span>.
+          </p>
+          <Tabs defaultValue="ar">
+            <TabsList>
+              <TabsTrigger value="ar">العربية</TabsTrigger>
+              <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            {(["ar", "en"] as const).map((l) => (
+              <TabsContent key={l} value={l} className="space-y-3 pt-3">
+                <Field label="Page title" value={i18n[l].faq_title} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], faq_title: v } })} />
+                <Field label="Intro text" textarea value={i18n[l].faq_description} onChange={(v) => setI18n({ ...i18n, [l]: { ...i18n[l], faq_description: v } })} />
+              </TabsContent>
+            ))}
+          </Tabs>
+        </Section>
 
         <Section title="SEO">
           <ImageUpload
@@ -481,7 +538,7 @@ function ToggleRow({ label, checked, onChange }: { label: string; checked: boole
   );
 }
 function blank() {
-  return { site_name: "", site_title: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "" };
+  return { site_name: "", site_title: "", admin_sidebar_name: "", about_title: "", tagline: "", about_short: "", about_body: "", footer_text: "", seo_title: "", seo_description: "", address: "", sponsorship_text: "", hero_quote: "", hero_title: "", hero_description: "", donate_title: "", donate_description: "", donate_thanks: "", donate_payment_info: "", faq_title: "", faq_description: "" };
 }
 function stripI18n(r: any) {
   return {
@@ -500,5 +557,11 @@ function stripI18n(r: any) {
     hero_quote: r.hero_quote ?? "",
     hero_title: r.hero_title ?? "",
     hero_description: r.hero_description ?? "",
+    donate_title: r.donate_title ?? "",
+    donate_description: r.donate_description ?? "",
+    donate_thanks: r.donate_thanks ?? "",
+    donate_payment_info: r.donate_payment_info ?? "",
+    faq_title: r.faq_title ?? "",
+    faq_description: r.faq_description ?? "",
   };
 }
