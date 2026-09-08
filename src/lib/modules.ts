@@ -22,6 +22,8 @@ export const SITE_MODULES: SiteModule[] = [
   { key: "video_albums", en: "Video Albums", ar: "ألبوم الفيديو", url: "/video-albums", admin: ["/admin/video-albums"] },
   { key: "documents", en: "Documents", ar: "الوثائق والتقارير", url: "/resources", admin: ["/admin/documents"] },
   { key: "contact", en: "Contact", ar: "تواصل معنا", url: "/contact", admin: ["/admin/contact", "/admin/forms"] },
+  { key: "donate", en: "Donations", ar: "التبرعات", url: "/donate", admin: ["/admin/donations"] },
+  { key: "faq", en: "FAQ", ar: "الأسئلة الشائعة", url: "/faq", admin: ["/admin/faq"] },
 ];
 
 export const MODULE_KEYS = SITE_MODULES.map((m) => m.key);
