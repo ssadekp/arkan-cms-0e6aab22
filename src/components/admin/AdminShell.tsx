@@ -7,7 +7,7 @@ import {
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Images, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home, Palette, Video } from "lucide-react";
+import { LayoutDashboard, Images, Settings, FileText, Target, FolderKanban, Users, Newspaper, LogOut, ArrowLeft, Tag, Info, Mail, Languages, FileArchive, ListTree, MessageSquare, Home, Palette, Video, HeartHandshake, HelpCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { adminListAll } from "@/lib/admin.functions";
 import { ThemeInjector } from "@/components/site/ThemeInjector";
@@ -55,6 +55,7 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/about", label: t("admin.aboutUs"), icon: Info },
     { to: "/admin/contact", label: t("admin.contactUs"), icon: Mail },
     { to: "/admin/forms", label: lang === "ar" ? "نماذج التواصل" : "Contact Forms", icon: MessageSquare },
+    { to: "/admin/faq", label: t("admin.faq"), icon: HelpCircle },
   ];
 
   const contentItems = [
@@ -69,6 +70,7 @@ export function AdminShell({ title, children }: { title: string; children: React
     { to: "/admin/documents", label: t("admin.documents"), icon: FileArchive },
   ];
   const managementItems = [
+    { to: "/admin/donations", label: t("admin.donations"), icon: HeartHandshake },
     { to: "/admin/users", label: t("admin.users"), icon: Users },
   ];
 

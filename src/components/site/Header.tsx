@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n, pickI18n } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
-import { Globe, Sprout, Menu, X, ChevronDown } from "lucide-react";
+import { Globe, Sprout, Menu, X, ChevronDown, Heart } from "lucide-react";
 import { useState } from "react";
 import { isNavUrlHidden } from "@/lib/modules";
 
@@ -69,6 +69,7 @@ export function Header({ siteName, logoUrl, navPages, navPagesI18n, menuItems = 
       { label: t("nav.videoAlbums"), url: "/video-albums" },
       { label: t("nav.resources"), url: "/resources" },
       { label: t("nav.contact"), url: "/contact" },
+      { label: t("nav.faq"), url: "/faq" },
     ];
     const custom: RenderLink[] = navPages.map((p) => {
       const i18n = pickI18n(navPagesI18n.filter((x) => x.page_id === p.id), lang);

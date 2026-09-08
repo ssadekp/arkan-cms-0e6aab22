@@ -126,6 +126,9 @@ const settingsSchema = z.object({
   show_stats: z.boolean().optional(),
   visitor_counter_enabled: z.boolean().optional(),
   visitor_count_start: z.number().int().nonnegative().optional(),
+  donation_enabled: z.boolean().optional(),
+  donation_currency: z.string().max(10).optional(),
+  donation_amounts: z.array(z.number().positive()).max(8).optional(),
   social_links: z.record(z.string(), z.string()),
 
 
@@ -149,6 +152,12 @@ const settingsSchema = z.object({
     hero_tagline: z.string().optional().default(""),
     home_about_title: z.string().optional().default(""),
     home_about_text: z.string().optional().default(""),
+    donate_title: z.string().optional().default(""),
+    donate_description: z.string().optional().default(""),
+    donate_thanks: z.string().optional().default(""),
+    donate_payment_info: z.string().optional().default(""),
+    faq_title: z.string().optional().default(""),
+    faq_description: z.string().optional().default(""),
   })),
 
 });
