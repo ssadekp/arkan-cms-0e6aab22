@@ -8,6 +8,8 @@ import { ThemeInjector } from "./ThemeInjector";
 import { I18nProvider, pickI18n, useI18n } from "@/lib/i18n";
 import { getSiteData } from "@/lib/content.functions";
 
+type SiteData = Awaited<ReturnType<typeof getSiteData>>;
+
 export const siteQueryKey = ["site-data"] as const;
 
 function applyFavicon(url: string | null | undefined) {
@@ -22,15 +24,15 @@ function applyFavicon(url: string | null | undefined) {
   link.href = url;
 }
 
-function Inner({ children }: { children: ReactNode }) {
+function Inner({ children, initialData }: { children: ReactNode; initialData?: SiteData }) {
   const fn = useServerFn(getSiteData);
-  const { data } = useQuery({ queryKey: siteQueryKey, queryFn: () => fn(), staleTime: 60_000 });
+  const { data } = useQuery({ queryKey: siteQueryKey, queryFn: () => fn(), initialData, staleTime: 60_000 });
   const { lang, setLang } = useI18n();
   const href = useRouterState({ select: (st) => st.location.href });
 
   const settings = data?.settings;
   const settingsI18n = pickI18n(data?.settingsI18n, lang);
-  const siteName = settingsI18n?.site_name ?? "Lam7et Khair";
+  const siteName = settingsI18n?.site_name ?? "";
   const footerText = settingsI18n?.footer_text ?? "";
   const address = (settingsI18n as any)?.address ?? "";
   const singleLanguage = ((settings as any)?.language_mode ?? "dual") === "single";
@@ -112,10 +114,10 @@ function Inner({ children }: { children: ReactNode }) {
 }
 
 
-export function SiteLayout({ children }: { children: ReactNode }) {
+export function SiteLayout({ children, initialData }: { children: ReactNode; initialData?: SiteData }) {
   return (
     <I18nProvider>
-      <Inner>{children}</Inner>
+      <Inner initialData={initialData}>{children}</Inner>
     </I18nProvider>
   );
 }
