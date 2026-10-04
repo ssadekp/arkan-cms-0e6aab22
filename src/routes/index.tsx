@@ -8,26 +8,49 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, Pause, Play, Quote, Target } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
-import heroEducation from "@/assets/hero-education.jpg";
 import focusBg from "@/assets/hero-community.jpg";
 
 
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Lam7et Khair Foundation — مؤسسة لمحة خير" },
-      { name: "description", content: "Community development, healthcare, education, and rehabilitation projects across Egypt." },
-      { property: "og:title", content: "Lam7et Khair Foundation" },
-      { property: "og:description", content: "Community development, healthcare, education, and rehabilitation." },
-    ],
-  }),
+  loader: async () => {
+    const [site, home] = await Promise.all([getSiteData(), getHomeData()]);
+    return { site, home };
+  },
+  head: ({ loaderData }) => {
+    const site = loaderData?.site;
+    const defaultLanguage = site?.settings?.default_language ?? "ar";
+    const identity = site?.settingsI18n?.find((row) => row.lang === defaultLanguage)
+      ?? site?.settingsI18n?.[0];
+    const title = identity?.site_title?.trim() || identity?.seo_title?.trim() || identity?.site_name?.trim();
+    const description = identity?.seo_description?.trim() || identity?.tagline?.trim() || "";
+    const meta = [
+      ...(title ? [
+        { title },
+        { property: "og:title", content: title },
+        { name: "twitter:title", content: title },
+      ] : []),
+      ...(description ? [
+        { name: "description", content: description },
+        { property: "og:description", content: description },
+        { name: "twitter:description", content: description },
+      ] : []),
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://arkan-cms.lovable.app/" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ];
+    return {
+      meta,
+      links: [{ rel: "canonical", href: "https://arkan-cms.lovable.app/" }],
+    };
+  },
   component: Home,
 });
 
 function Home() {
+  const { site } = Route.useLoaderData();
   return (
-    <SiteLayout>
+    <SiteLayout initialData={site}>
       <HomeBody />
     </SiteLayout>
   );
@@ -35,10 +58,11 @@ function Home() {
 
 function HomeBody() {
   const { lang, t, dir } = useI18n();
+  const initial = Route.useLoaderData();
   const homeFn = useServerFn(getHomeData);
   const siteFn = useServerFn(getSiteData);
-  const { data: home } = useQuery({ queryKey: ["home-data"], queryFn: () => homeFn(), staleTime: 60_000 });
-  const { data: site } = useQuery({ queryKey: ["site-data"], queryFn: () => siteFn(), staleTime: 60_000 });
+  const { data: home } = useQuery({ queryKey: ["home-data"], queryFn: () => homeFn(), initialData: initial.home, staleTime: 60_000 });
+  const { data: site } = useQuery({ queryKey: ["site-data"], queryFn: () => siteFn(), initialData: initial.site, staleTime: 60_000 });
 
   const settingsI18n = pickI18n(site?.settingsI18n, lang);
   const s: any = site?.settings ?? {};
@@ -49,8 +73,7 @@ function HomeBody() {
   const heroSlides = useMemo(() => {
     const primary = (s.hero_image as string | null) || "";
     const extra: string[] = Array.isArray(s.hero_slides) ? s.hero_slides.filter((u: any) => typeof u === "string" && u.trim()) : [];
-    const all = [primary, ...extra].filter(Boolean);
-    return all.length > 0 ? all : [heroEducation];
+    return [primary, ...extra].filter(Boolean);
   }, [s.hero_image, s.hero_slides]);
 
   const [slideIdx, setSlideIdx] = useState(0);
@@ -73,7 +96,7 @@ function HomeBody() {
   return (
     <>
       {/* HERO — full-bleed background image(s) with overlaid centered text */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden bg-ink">
         <div className="absolute inset-0">
           {heroSlides.map((src, i) => (
             <img
@@ -213,13 +236,15 @@ function HomeBody() {
               </div>
 
               {/* Image column — naturally sits right in LTR, left in RTL */}
-              <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
-                <img
-                  src={s.home_about_image || heroSlides[0]}
-                  alt=""
-                  className="h-full w-full object-cover"
-                />
-              </div>
+              {(s.home_about_image || heroSlides[0]) && (
+                <div className="rounded-2xl overflow-hidden border border-border/60 aspect-[4/3] bg-muted">
+                  <img
+                    src={s.home_about_image || heroSlides[0]}
+                    alt=""
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
