@@ -24,8 +24,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { Upload, Loader2, Trash2, FileText, ExternalLink } from "lucide-react";
+import { Upload, Loader2, Trash2, FileText, Eye, Pencil } from "lucide-react";
 import { toast } from "sonner";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+import { DocumentReader, type ReadableDocument } from "@/components/site/DocumentReader";
 
 const BUCKET = "charity-docs";
 
@@ -38,6 +40,14 @@ const CATEGORY_LABELS: Record<Category, string> = {
 };
 
 export const Route = createFileRoute("/_authenticated/admin/documents")({
+  head: () => ({ meta: [
+    { title: "Document management | Arkan CMS" },
+    { name: "description", content: "Manage bilingual resource documents and cover images." },
+    { property: "og:title", content: "Document management | Arkan CMS" },
+    { property: "og:description", content: "Manage bilingual resource documents and cover images." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: () => (
     <AdminShell title="Documents">
       <DocumentsAdmin />
@@ -53,6 +63,15 @@ function DocumentsAdmin() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [imageUrl, setImageUrl] = useState("");
+  const [editing, setEditing] = useState<string | null>(null);
+  const [selected, setSelected] = useState<ReadableDocument | null>(null);
+
+  function resetForm() {
+    setTitleAr(""); setTitleEn(""); setCategory("regulation");
+    setFile(null); setImageUrl(""); setEditing(null);
+    if (fileRef.current) fileRef.current.value = "";
+  }
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-documents"],
@@ -70,32 +89,34 @@ function DocumentsAdmin() {
     e.preventDefault();
     if (!titleAr.trim()) return toast.error("Arabic title is required");
     if (!titleEn.trim()) return toast.error("English title is required");
-    if (!file) return toast.error("Please choose a PDF file");
-    if (file.type !== "application/pdf") return toast.error("Only PDF files are allowed");
+    if (!file && !editing) return toast.error("Please choose a PDF file");
+    if (file && file.type !== "application/pdf") return toast.error("Only PDF files are allowed");
 
     setBusy(true);
     try {
+      let fileUrl = data?.find((doc) => doc.id === editing)?.file_url ?? "";
+      if (file) {
       const path = `${category}/${crypto.randomUUID()}.pdf`;
       const { error: upErr } = await supabase.storage
         .from(BUCKET)
         .upload(path, file, { contentType: "application/pdf", upsert: false });
       if (upErr) throw new Error(upErr.message);
       const { data: urlData } = supabase.storage.from(BUCKET).getPublicUrl(path);
-      const { error: insErr } = await supabase
-        .from("documents")
-        .insert({
+      fileUrl = urlData.publicUrl;
+      }
+      const values = {
           title_ar: titleAr.trim(),
           title_en: titleEn.trim(),
           category,
-          file_url: urlData.publicUrl,
-        });
+          file_url: fileUrl,
+          image_url: imageUrl || null,
+        };
+      const { error: insErr } = editing
+        ? await supabase.from("documents").update(values).eq("id", editing)
+        : await supabase.from("documents").insert(values);
       if (insErr) throw new Error(insErr.message);
-      toast.success("Document uploaded");
-      setTitleAr("");
-      setTitleEn("");
-      setCategory("regulation");
-      setFile(null);
-      if (fileRef.current) fileRef.current.value = "";
+      toast.success(editing ? "Document updated" : "Document uploaded");
+      resetForm();
       qc.invalidateQueries({ queryKey: ["admin-documents"] });
       qc.invalidateQueries({ queryKey: ["public-documents"] });
     } catch (err: any) {
@@ -128,7 +149,7 @@ function DocumentsAdmin() {
     <div className="space-y-6 max-w-5xl">
       <Card>
         <CardHeader>
-          <CardTitle>Upload New Document</CardTitle>
+          <CardTitle>{editing ? "Edit Document" : "Upload New Document"}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={onSubmit} className="grid gap-4 md:grid-cols-2">
@@ -152,7 +173,7 @@ function DocumentsAdmin() {
               </Select>
             </div>
             <div className="space-y-1.5">
-              <Label>PDF File</Label>
+              <Label>{editing ? "Replace PDF (optional)" : "PDF File"}</Label>
               <Input
                 ref={fileRef}
                 type="file"
@@ -160,11 +181,13 @@ function DocumentsAdmin() {
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
               />
             </div>
+            <div className="md:col-span-2"><ImageUpload label="Cover image (optional)" value={imageUrl} onChange={setImageUrl} folder="document-covers" /></div>
             <div className="md:col-span-2">
               <Button type="submit" disabled={busy}>
                 {busy ? <Loader2 className="h-4 w-4 me-2 animate-spin" /> : <Upload className="h-4 w-4 me-2" />}
-                Upload Document
+                {editing ? "Save Changes" : "Upload Document"}
               </Button>
+              {editing && <Button type="button" variant="ghost" disabled={busy} onClick={resetForm} className="ms-2">Cancel</Button>}
             </div>
           </form>
         </CardContent>
@@ -195,7 +218,7 @@ function DocumentsAdmin() {
                   <TableRow key={doc.id}>
                     <TableCell className="font-medium" dir="rtl">
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                        {doc.image_url ? <img src={doc.image_url} alt="" className="h-12 w-12 rounded object-cover shrink-0" /> : <FileText className="h-4 w-4 text-muted-foreground shrink-0" />}
                         {doc.title_ar}
                       </div>
                     </TableCell>
@@ -204,13 +227,16 @@ function DocumentsAdmin() {
                       <Badge variant="secondary">{CATEGORY_LABELS[doc.category as Category]}</Badge>
                     </TableCell>
                     <TableCell>
-                      <a href={doc.file_url} target="_blank" rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-primary hover:underline text-sm">
-                        Open <ExternalLink className="h-3 w-3" />
-                      </a>
+                      <Button variant="ghost" size="sm" onClick={() => setSelected(doc)}>Open <Eye className="h-3 w-3 ms-1" /></Button>
                     </TableCell>
                     <TableCell>
-                      <Button variant="ghost" size="sm" onClick={() => onDelete(doc.id, doc.file_url)}>
+                      <Button variant="ghost" size="icon" aria-label="Edit document" disabled={busy} onClick={() => {
+                        setEditing(doc.id); setTitleAr(doc.title_ar); setTitleEn(doc.title_en);
+                        setCategory(doc.category as Category); setImageUrl(doc.image_url ?? "");
+                        setFile(null); if (fileRef.current) fileRef.current.value = "";
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="sm" aria-label="Delete document" onClick={() => onDelete(doc.id, doc.file_url)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>
@@ -221,6 +247,7 @@ function DocumentsAdmin() {
           )}
         </CardContent>
       </Card>
+      <DocumentReader document={selected} onClose={() => setSelected(null)} lang="en" />
     </div>
   );
 }
