@@ -8,7 +8,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { FileText, ExternalLink } from "lucide-react";
+import { FileText, Eye } from "lucide-react";
+import { DocumentReader, type ReadableDocument } from "@/components/site/DocumentReader";
 
 type Category = "regulation" | "form" | "achievement";
 
@@ -23,6 +24,10 @@ export const Route = createFileRoute("/resources")({
     meta: [
       { title: "الوثائق والتقارير — Documents" },
       { name: "description", content: "Charity organization documents, regulations, forms, and achievement reports." },
+      { property: "og:title", content: "الوثائق والتقارير — Documents & Reports" },
+      { property: "og:description", content: "Browse and read our regulations, forms, and achievement reports." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => <SiteLayout><Body /></SiteLayout>,
@@ -31,6 +36,7 @@ export const Route = createFileRoute("/resources")({
 function Body() {
   const { lang } = useI18n();
   const [tab, setTab] = useState<"all" | Category>("all");
+  const [selected, setSelected] = useState<ReadableDocument | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["public-documents"],
@@ -90,15 +96,12 @@ function Body() {
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((doc) => (
-            <a
+            <article
               key={doc.id}
-              href={doc.file_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group rounded-xl border border-border/60 bg-card hover:border-primary/60 hover:shadow-md transition-all p-6 flex flex-col"
+              className="group rounded-lg border border-border/60 bg-card hover:border-primary/60 hover:shadow-md transition-all p-6 flex flex-col"
             >
-              <div className="flex items-center justify-center h-24 mb-4 bg-primary/5 rounded-lg group-hover:bg-primary/10 transition-colors">
-                <FileText className="h-12 w-12 text-primary" strokeWidth={1.5} />
+              <div className="flex items-center justify-center aspect-[4/3] mb-4 bg-muted rounded-md overflow-hidden">
+                {doc.image_url ? <img src={doc.image_url} alt={lang === "ar" ? doc.title_ar : doc.title_en} className="h-full w-full object-cover" loading="lazy" /> : <FileText className="h-12 w-12 text-primary" strokeWidth={1.5} />}
               </div>
               <Badge variant="secondary" className="self-start mb-2">
                 {LABELS[doc.category as Category][lang]}
@@ -106,14 +109,15 @@ function Body() {
               <h3 className="font-semibold leading-snug flex-1" dir={lang === "ar" ? "rtl" : "ltr"}>
                 {lang === "ar" ? (doc.title_ar || doc.title_en) : (doc.title_en || doc.title_ar)}
               </h3>
-              <Button variant="ghost" size="sm" className="mt-4 self-start gap-1.5" tabIndex={-1}>
+              <Button variant="ghost" size="sm" className="mt-4 self-start gap-1.5" onClick={() => setSelected(doc)}>
                 {lang === "ar" ? "عرض الملف" : "View file"}
-                <ExternalLink className="h-3.5 w-3.5" />
+                <Eye className="h-3.5 w-3.5" />
               </Button>
-            </a>
+            </article>
           ))}
         </div>
       )}
+      <DocumentReader document={selected} onClose={() => setSelected(null)} lang={lang} />
     </div>
   );
 }
