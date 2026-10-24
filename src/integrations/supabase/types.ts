@@ -372,6 +372,7 @@ export type Database = {
           created_at: string
           file_url: string
           id: string
+          image_url: string | null
           title_ar: string
           title_en: string
         }
@@ -380,6 +381,7 @@ export type Database = {
           created_at?: string
           file_url: string
           id?: string
+          image_url?: string | null
           title_ar?: string
           title_en?: string
         }
@@ -388,6 +390,7 @@ export type Database = {
           created_at?: string
           file_url?: string
           id?: string
+          image_url?: string | null
           title_ar?: string
           title_en?: string
         }
