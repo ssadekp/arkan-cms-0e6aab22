@@ -1,0 +1,3 @@
+ALTER TABLE public.site_settings ADD COLUMN IF NOT EXISTS hero_layout text NOT NULL DEFAULT 'centered';
+ALTER TABLE public.site_settings ADD CONSTRAINT site_settings_hero_layout_valid CHECK (hero_layout IN ('centered', 'editorial', 'cinematic', 'compact'));
+COMMENT ON COLUMN public.site_settings.hero_layout IS 'Homepage banner preset; all layouts reuse the saved bilingual hero content and images.';

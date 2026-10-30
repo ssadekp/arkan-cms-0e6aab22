@@ -8,6 +8,13 @@
       "when": 1792850706771,
       "tag": "0000_document_cover_images",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793357683641,
+      "tag": "0001_add_homepage_hero_layout",
+      "breakpoints": true
     }
   ]
 }

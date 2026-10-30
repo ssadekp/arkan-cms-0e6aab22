@@ -1081,6 +1081,7 @@ export type Database = {
           favicon_url: string | null
           head_scripts: string | null
           hero_image: string | null
+          hero_layout: string
           hero_slides: Json
           hidden_modules: string[]
           home_about_image: string | null
@@ -1116,6 +1117,7 @@ export type Database = {
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
+          hero_layout?: string
           hero_slides?: Json
           hidden_modules?: string[]
           home_about_image?: string | null
@@ -1151,6 +1153,7 @@ export type Database = {
           favicon_url?: string | null
           head_scripts?: string | null
           hero_image?: string | null
+          hero_layout?: string
           hero_slides?: Json
           hidden_modules?: string[]
           home_about_image?: string | null
