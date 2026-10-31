@@ -68,6 +68,7 @@ export async function handleHeroAdvice(request: Request) {
   try {
     // Wait only for upstream headers / first event, never for the final answer.
     first = await iterator.next();
+    while (!first.done && first.value.type === "start") first = await iterator.next();
     if (!first.done && first.value.type === "error") return fail(upstreamMessage, upstreamStatus);
     if (upstreamStatus !== 500) return fail(upstreamMessage, upstreamStatus);
   } catch {
@@ -95,7 +96,7 @@ export async function handleHeroAdvice(request: Request) {
       } catch { if (!request.signal.aborted) emit({ type: "error", message: upstreamMessage, status: upstreamStatus }); }
       finally { controller.close(); }
     },
-    cancel() { return iterator.return?.(); },
+    async cancel() { await iterator.return?.(); },
   });
   return new Response(stream, { headers: getLovableAiGatewayResponseHeaders(upstreamHeaders, { "Content-Type": "application/x-ndjson", "Cache-Control": "no-cache, no-store, no-transform" }) });
 }
