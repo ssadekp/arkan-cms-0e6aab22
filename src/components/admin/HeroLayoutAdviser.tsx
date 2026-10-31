@@ -8,6 +8,7 @@ import { useI18n } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { canUseHeroAdvice, MAX_REFERENCE_BYTES } from "@/lib/hero-ai/input";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 export function HeroLayoutAdviser() {
   const { lang } = useI18n();
@@ -135,7 +136,13 @@ export function HeroLayoutAdviser() {
           <Button variant="ghost" size="icon" disabled={busy} title={ar ? "نسخ" : "Copy recommendation"} aria-label={ar ? "نسخ" : "Copy recommendation"} onClick={() => { void navigator.clipboard.writeText(result).then(() => toast.success(ar ? "تم النسخ" : "Copied"), () => toast.error(ar ? "تعذر النسخ" : "Could not copy")); }}><Copy className="size-4" /></Button>
           <Button variant="ghost" size="icon" disabled={busy} title={ar ? "تنزيل" : "Download recommendation"} aria-label={ar ? "تنزيل" : "Download recommendation"} onClick={() => { const url = URL.createObjectURL(new Blob([result], { type: "text/plain;charset=utf-8" })); const a = document.createElement("a"); a.href = url; a.download = "hero-layout-recommendation.txt"; a.click(); URL.revokeObjectURL(url); }}><Download className="size-4" /></Button>
         </div></div>
-        <div aria-live="polite" className="whitespace-pre-wrap break-words text-sm leading-7">{result}</div>
+        <div aria-live="polite" className="break-words text-sm leading-7"><ReactMarkdown skipHtml components={{
+          h3: ({ children }) => <h5 className="mt-5 mb-2 font-semibold text-base">{children}</h5>,
+          p: ({ children }) => <p className="mb-3">{children}</p>,
+          ul: ({ children }) => <ul className="list-disc ps-5 space-y-1 mb-3">{children}</ul>,
+          a: ({ children }) => <span>{children}</span>,
+          img: () => null,
+        }}>{result}</ReactMarkdown></div>
       </div>}
     </section>
   );
