@@ -13,8 +13,17 @@ import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { mergeHomepageI18n } from "@/lib/settings-merge";
+import { HeroLayoutAdviser } from "@/components/admin/HeroLayoutAdviser";
 
 export const Route = createFileRoute("/_authenticated/admin/homepage")({
+  head: () => ({ meta: [
+    { title: "Homepage banner studio | Arkan CMS" },
+    { name: "description", content: "Manage homepage banners and request tailored AI layout recommendations in Arkan CMS." },
+    { property: "og:title", content: "Homepage banner studio | Arkan CMS" },
+    { property: "og:description", content: "Homepage banner management and AI-powered layout advice." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: HomepagePage,
 });
 
@@ -188,6 +197,8 @@ function HomepagePage() {
             ))}
           </Tabs>
         </Section>
+
+        <HeroLayoutAdviser />
 
         <Section title="About Us section (قسم من نحن على الصفحة الرئيسية)">
           <p className="text-xs text-muted-foreground">
