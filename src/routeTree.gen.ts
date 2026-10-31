@@ -22,6 +22,7 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as SetupRouteImport } from './routes/setup'
 import { Route as AlbumsIndexRouteImport } from './routes/albums.index'
 import { Route as AlbumsSlugRouteImport } from './routes/albums.$slug'
+import { Route as ApiHeroAdviceRouteImport } from './routes/api/hero-advice'
 import { Route as ArticlesIndexRouteImport } from './routes/articles.index'
 import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 import { Route as FocusAreasIndexRouteImport } from './routes/focus-areas.index'
@@ -124,6 +125,11 @@ const AlbumsIndexRoute = AlbumsIndexRouteImport.update({
 const AlbumsSlugRoute = AlbumsSlugRouteImport.update({
   id: '/albums/$slug',
   path: '/albums/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHeroAdviceRoute = ApiHeroAdviceRouteImport.update({
+  id: '/api/hero-advice',
+  path: '/api/hero-advice',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArticlesIndexRoute = ArticlesIndexRouteImport.update({
@@ -349,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/api/hero-advice': typeof ApiHeroAdviceRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -402,6 +409,7 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/api/hero-advice': typeof ApiHeroAdviceRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -456,6 +464,7 @@ export interface FileRoutesById {
   '/resources': typeof ResourcesRoute
   '/setup': typeof SetupRoute
   '/albums/$slug': typeof AlbumsSlugRoute
+  '/api/hero-advice': typeof ApiHeroAdviceRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/focus-areas/$slug': typeof FocusAreasSlugRoute
   '/forms/$slug': typeof FormsSlugRoute
@@ -511,6 +520,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/api/hero-advice'
     | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -564,6 +574,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/api/hero-advice'
     | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -617,6 +628,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/setup'
     | '/albums/$slug'
+    | '/api/hero-advice'
     | '/articles/$slug'
     | '/focus-areas/$slug'
     | '/forms/$slug'
@@ -672,6 +684,7 @@ export interface RootRouteChildren {
   ResourcesRoute: typeof ResourcesRoute
   SetupRoute: typeof SetupRoute
   AlbumsSlugRoute: typeof AlbumsSlugRoute
+  ApiHeroAdviceRoute: typeof ApiHeroAdviceRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   FocusAreasSlugRoute: typeof FocusAreasSlugRoute
   FormsSlugRoute: typeof FormsSlugRoute
@@ -780,6 +793,13 @@ declare module '@tanstack/react-router' {
       path: '/albums/$slug'
       fullPath: '/albums/$slug'
       preLoaderRoute: typeof AlbumsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hero-advice': {
+      id: '/api/hero-advice'
+      path: '/api/hero-advice'
+      fullPath: '/api/hero-advice'
+      preLoaderRoute: typeof ApiHeroAdviceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/articles/': {
@@ -1144,6 +1164,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesRoute: ResourcesRoute,
   SetupRoute: SetupRoute,
   AlbumsSlugRoute: AlbumsSlugRoute,
+  ApiHeroAdviceRoute: ApiHeroAdviceRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
   FocusAreasSlugRoute: FocusAreasSlugRoute,
   FormsSlugRoute: FormsSlugRoute,
