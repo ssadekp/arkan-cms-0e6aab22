@@ -69,8 +69,8 @@ export async function handleHeroAdvice(request: Request) {
     // Wait only for upstream headers / first event, never for the final answer.
     first = await iterator.next();
     while (!first.done && first.value.type === "start") first = await iterator.next();
-    await correlation.waitForRunId();
     if (!first.done && first.value.type === "error") return fail(upstreamMessage, upstreamStatus);
+    await correlation.waitForRunId();
     if (upstreamStatus !== 500) return fail(upstreamMessage, upstreamStatus);
   } catch {
     return fail(request.signal.aborted ? "Request stopped." : upstreamMessage, request.signal.aborted ? 499 : upstreamStatus);
