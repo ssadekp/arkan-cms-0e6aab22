@@ -586,6 +586,24 @@ export type Database = {
           },
         ]
       }
+      hero_ai_access_state: {
+        Row: {
+          blocked_at: string
+          id: string
+          message: string
+        }
+        Insert: {
+          blocked_at?: string
+          id: string
+          message: string
+        }
+        Update: {
+          blocked_at?: string
+          id?: string
+          message?: string
+        }
+        Relationships: []
+      }
       homepage_stats: {
         Row: {
           active: boolean
