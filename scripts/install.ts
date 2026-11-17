@@ -7,19 +7,15 @@
  *      SUPABASE_PUBLISHABLE_KEY).
  *   2. Ensure storage buckets exist (site-media, charity-docs, user-avatars).
  *   3. Seed site_settings row (id=1) with sensible defaults.
- *   4. Create an initial admin user from ADMIN_EMAIL / ADMIN_PASSWORD and
- *      grant `admin` + `super_admin` roles.
+ *   4. Administrator accounts are provisioned separately with scripts/seed-admin.ts.
  *
  * Usage (from a freshly cloned repo, after `bun install`):
  *   SUPABASE_URL=... \
  *   SUPABASE_SERVICE_ROLE_KEY=... \
  *   SUPABASE_PUBLISHABLE_KEY=... \
- *   ADMIN_EMAIL=you@example.com \
- *   ADMIN_PASSWORD='choose-a-strong-password' \
  *   bun run scripts/install.ts
  *
- * Idempotent: safe to re-run. Existing buckets, settings row, and admin
- * user are left in place.
+ * Idempotent: safe to re-run. Existing buckets and settings row are left in place.
  */
 import { createClient } from "@supabase/supabase-js";
 
@@ -37,8 +33,6 @@ function required(name: string): string {
 const SUPABASE_URL = required("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = required("SUPABASE_SERVICE_ROLE_KEY");
 required("SUPABASE_PUBLISHABLE_KEY"); // used by the app at runtime
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
@@ -74,36 +68,6 @@ const steps: Step[] = [
         .upsert({ id: 1 }, { onConflict: "id", ignoreDuplicates: true });
       if (error) throw error;
       return "ok";
-    },
-  },
-  {
-    name: "Create admin user",
-    run: async () => {
-      if (!ADMIN_EMAIL || !ADMIN_PASSWORD) {
-        return "skipped (set ADMIN_EMAIL and ADMIN_PASSWORD to create one)";
-      }
-      // Look for existing user by email
-      const { data: list, error: listErr } = await admin.auth.admin.listUsers();
-      if (listErr) throw listErr;
-      let userId = list.users.find((u) => u.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase())?.id;
-
-      if (!userId) {
-        const { data, error } = await admin.auth.admin.createUser({
-          email: ADMIN_EMAIL,
-          password: ADMIN_PASSWORD,
-          email_confirm: true,
-        });
-        if (error) throw error;
-        userId = data.user!.id;
-      }
-
-      for (const role of ["admin", "super_admin"] as const) {
-        const { error } = await admin
-          .from("user_roles")
-          .upsert({ user_id: userId, role }, { onConflict: "user_id,role", ignoreDuplicates: true });
-        if (error) throw error;
-      }
-      return `${ADMIN_EMAIL} ready (roles: admin, super_admin)`;
     },
   },
 ];
