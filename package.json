@@ -12,6 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "install:bootstrap": "bun run scripts/install.ts",
+    "seed:admin": "bun run scripts/seed-admin.ts",
     "doctor": "bun run scripts/doctor.ts"
   },
   "dependencies": {

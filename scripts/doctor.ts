@@ -79,12 +79,12 @@ if (url && key) {
   const { data: admins, error: rErr } = await admin
     .from("user_roles")
     .select("user_id")
-    .eq("role", "admin")
+    .eq("role", "super_admin")
     .limit(1);
   if (rErr) bad("admin user", rErr.message);
   else if (!admins || admins.length === 0)
-    bad("admin user", "no admin found — run scripts/install.ts");
-  else ok("admin user");
+    bad("super administrator", "none found — run bun run seed:admin");
+  else ok("super administrator");
 }
 
 console.log("\nHealth check\n────────────");
