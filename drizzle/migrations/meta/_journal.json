@@ -29,6 +29,13 @@
       "when": 1794918089335,
       "tag": "0003_tighten_public_content_and_donation_policies",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795074036227,
+      "tag": "0004_disable_automatic_first_account_promotion",
+      "breakpoints": true
     }
   ]
 }

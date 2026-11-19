@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS on_auth_user_promote_first ON auth.users;

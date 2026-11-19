@@ -66,9 +66,10 @@ SUPABASE_URL=https://<project-ref>.supabase.co
 SUPABASE_PUBLISHABLE_KEY=<anon key>
 SUPABASE_SERVICE_ROLE_KEY=<service_role key>   # keep secret — never commit
 
-# Optional: bootstrap the first admin (only used by scripts/install.ts)
+# Only for the private, one-time administrator bootstrap (`bun run seed:admin`).
+# Choose a strong unique password locally; never commit it or use a shared default.
 ADMIN_EMAIL=you@example.com
-ADMIN_PASSWORD=choose-a-strong-password
+ADMIN_PASSWORD=
 
 # Node/Docker web tier
 PORT=3000
@@ -81,42 +82,48 @@ PORT=3000
 
 ## 5. Bootstrap the instance
 
-You have two options.
+First create the initial super administrator through the private CLI seeder. Do
+not expose the service-role key or run the seeder from a public web request.
+Keep `.env` private, use a unique password of at least 12 characters, and clear
+`ADMIN_PASSWORD` after the new account is created.
 
-### Option A — the browser setup wizard (recommended)
+```bash
+read -rp "Administrator email: " ADMIN_EMAIL
+read -rsp "New administrator password: " ADMIN_PASSWORD
+printf '\n'
+export ADMIN_EMAIL ADMIN_PASSWORD
+bun run seed:admin
+unset ADMIN_EMAIL ADMIN_PASSWORD
+```
 
-Start the app (`bun run dev`, `docker compose up -d`, or your Node build) and open
-**`/setup`**. The wizard walks you through, with no terminal:
+The seeder creates the account and assigns `admin` and `super_admin` only when
+there is no administrator yet. If the selected email already belongs to an
+account, it assigns the roles to that account without changing its password.
+It refuses to create or promote a second super administrator. Running it again
+for the same super administrator makes no changes. For an existing deployment
+with an administrator but no super administrator, set `ADMIN_EMAIL` to that
+existing administrator's email and run the seeder once.
 
-1. Create the administrator account (it is granted `admin` + `super_admin` and signed in immediately).
-2. Site identity — bilingual site name and tagline, contact email/phone, default language.
-3. Branding — logo, favicon, and brand color.
-4. Finish, and jump straight into `/admin`.
+Afterwards, use `/auth` to sign in. The setup wizard no longer creates users or
+grants roles; it only configures site identity and branding after sign-in.
+The super administrator can later update account details or reset passwords in
+**Admin → Users**; administrators can also use the forgot-password email flow.
 
-`/setup` can only create the *first* administrator: once any admin exists the
-account step refuses to run, and the page just points you at `/auth`.
+### Prepare the site storage and settings
 
-> Storage buckets are created by `bun run install:bootstrap` (Option B) or by
-> your Supabase migrations. If logo/favicon upload fails in the wizard, run
-> `bun run install:bootstrap` once to create the buckets, then retry.
-
-### Option B — the CLI script
-
-Run once, from the project root, with the `.env` loaded:
+Run once, from the project root, with the server environment loaded:
 
 ```bash
 bun run install:bootstrap
 ```
 
 
-This will:
+This prepares the site; it does not create an administrator:
 
 1. Verify required env vars.
 2. Create the storage buckets (`site-media`, `charity-docs`, `user-avatars`) if missing.
 3. Seed the default `site_settings` row.
-4. Create the initial admin user from `ADMIN_EMAIL` / `ADMIN_PASSWORD` and grant `admin` + `super_admin` roles.
-
-The script is idempotent — safe to re-run.
+The script is idempotent — safe to re-run. It does not create users or assign roles.
 
 Then confirm everything is wired up:
 
@@ -136,7 +143,7 @@ You should see `✓ All checks passed.`
 bun run dev
 ```
 
-Open http://localhost:3000, sign in at `/auth` with the admin credentials, and land on `/admin`.
+Open http://localhost:3000 and sign in at `/auth` with the credentials selected for the one-time bootstrap.
 
 ### Production (Node)
 
@@ -175,7 +182,7 @@ Once you can sign in, walk through these once to make the deployment yours:
 - **Admin → Homepage** — hero image/title/tagline, section toggles.
 - **Admin → Main Menu** — top nav.
 - **Admin → Focus Areas / Projects / News / Partners / Documents** — real content (sample bilingual data is seeded by default).
-- **Admin → Users** — invite editors, revoke the seeded demo admin if you don't need it.
+- **Admin → Users** — add staff accounts, update profiles, and manage roles.
 
 ---
 
@@ -201,7 +208,7 @@ No data is destroyed by re-running `install:bootstrap`.
 | Password reset email never arrives | Configure SMTP in **Supabase → Project Settings → Auth → SMTP** |
 | Reset link opens but says "Validating…" forever | Add your domain to **Supabase → Auth → Redirect URLs** |
 | `Unauthorized: No authorization header provided` from admin pages | Sign out and back in; the client bearer token expired |
-| Sign-in works but `/admin` shows a blank sidebar | The signed-in user has no `admin` role — run `install:bootstrap` again with that email, or grant the role via SQL |
+| Sign-in works but `/admin` shows a blank sidebar | The signed-in account has no control-panel role. Use the private seeder only for a fresh installation or an existing administrator being designated as the first super administrator. |
 | `Expected 3 parts in JWT; got 1` in server logs | You put a `sb_secret_*` key where a `sb_publishable_*` key belongs (or vice versa) — recheck `.env` |
 
 ---
@@ -210,7 +217,8 @@ No data is destroyed by re-running `install:bootstrap`.
 
 ```
 scripts/
-  install.ts      # one-shot bootstrap (buckets, settings, admin user)
+  install.ts      # site bootstrap (buckets and default settings; no user creation)
+  seed-admin.ts   # private, one-time super-administrator bootstrap
   doctor.ts       # read-only health check
 supabase/
   migrations/     # database schema — apply in order

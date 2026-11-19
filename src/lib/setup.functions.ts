@@ -27,10 +27,10 @@ async function assertAdmin(userId: string) {
   if (!data || data.length === 0) throw new Error("Forbidden");
 }
 
-/** Public: exposes only whether the instance still needs first-run setup. */
+/** Public: exposes only non-sensitive first-run readiness flags. */
 export const getSetupStatus = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await sbAdmin();
-  const needsSetup = !(await anyAdminExists());
+  const hasAdmin = await anyAdminExists();
   const { data: settings } = await sb
     .from("site_settings")
     .select("logo_url, favicon_url, primary_color")
@@ -41,44 +41,13 @@ export const getSetupStatus = createServerFn({ method: "GET" }).handler(async ()
     .select("lang, site_name")
     .eq("setting_id", 1);
   return {
-    needsSetup,
+    hasAdmin,
+    needsSetup: !(i18n ?? []).some((r) => (r.site_name ?? "").trim().length > 0),
     hasLogo: Boolean(settings?.logo_url),
     hasFavicon: Boolean(settings?.favicon_url),
     hasSiteName: (i18n ?? []).some((r) => (r.site_name ?? "").trim().length > 0),
   };
 });
-
-/**
- * Public ONLY while the instance has no admin at all. Once the first admin
- * exists this always throws, so it cannot be used to mint extra admins.
- */
-export const createFirstAdmin = createServerFn({ method: "POST" })
-  .inputValidator((d) =>
-    z
-      .object({
-        email: z.string().email().max(200),
-        password: z.string().min(8).max(200),
-        fullName: z.string().max(120).optional().default(""),
-      })
-      .parse(d),
-  )
-  .handler(async ({ data }) => {
-    if (await anyAdminExists()) throw new Error("Setup has already been completed.");
-    const sb = await sbAdmin();
-    const { data: created, error } = await sb.auth.admin.createUser({
-      email: data.email,
-      password: data.password,
-      email_confirm: true,
-      user_metadata: data.fullName ? { full_name: data.fullName } : undefined,
-    });
-    if (error) throw new Error(error.message);
-    const userId = created.user!.id;
-    for (const role of ["admin", "super_admin"] as const) {
-      await sb.from("user_roles").upsert({ user_id: userId, role }, { onConflict: "user_id,role" });
-    }
-    await sb.from("site_settings").upsert({ id: 1 }, { onConflict: "id", ignoreDuplicates: true });
-    return { ok: true };
-  });
 
 const LANGS = ["ar", "en"] as const;
 

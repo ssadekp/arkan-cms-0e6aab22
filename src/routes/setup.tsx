@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { supabase } from "@/integrations/supabase/client";
-import { createFirstAdmin, getSetupStatus, saveSetupBranding, saveSetupIdentity } from "@/lib/setup.functions";
+import { getSetupStatus, saveSetupBranding, saveSetupIdentity } from "@/lib/setup.functions";
 
 export const Route = createFileRoute("/setup")({
   head: () => ({
@@ -20,12 +20,12 @@ export const Route = createFileRoute("/setup")({
       {
         name: "description",
         content:
-          "Guided first-run setup: create the administrator account, name the site, and apply your logo and brand color.",
+          "Configure the bilingual site identity and visual branding after signing in as an administrator.",
       },
-      { property: "og:title", content: "First-run setup — install your CMS" },
+      { property: "og:title", content: "Site setup — Charity CMS" },
       {
         property: "og:description",
-        content: "Create the administrator account and brand this installation in a few steps.",
+        content: "Configure site identity and branding after administrator sign-in.",
       },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/setup" },
@@ -37,16 +37,15 @@ export const Route = createFileRoute("/setup")({
   component: SetupWizard,
 });
 
-const STEPS = ["Administrator", "Site identity", "Branding", "Done"];
+const STEPS = ["Site identity", "Branding", "Done"];
 
 function SetupWizard() {
   const navigate = useNavigate();
   const statusFn = useServerFn(getSetupStatus);
-  const createAdmin = useServerFn(createFirstAdmin);
   const saveIdentity = useServerFn(saveSetupIdentity);
   const saveBranding = useServerFn(saveSetupBranding);
 
-  const { data: status, isLoading, refetch } = useQuery({
+  const { data: status, isLoading } = useQuery({
     queryKey: ["setup-status"],
     queryFn: () => statusFn(),
     staleTime: 0,
@@ -55,11 +54,6 @@ function SetupWizard() {
   const [signedIn, setSignedIn] = useState<boolean | null>(null);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
-
-  // admin step
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [fullName, setFullName] = useState("");
 
   // identity step
   const [nameEn, setNameEn] = useState("");
@@ -79,10 +73,6 @@ function SetupWizard() {
     supabase.auth.getUser().then(({ data }) => setSignedIn(Boolean(data.user)));
   }, []);
 
-  useEffect(() => {
-    if (status && !status.needsSetup && signedIn) setStep((s) => (s === 0 ? 1 : s));
-  }, [status, signedIn]);
-
   if (isLoading || signedIn === null) {
     return (
       <Centered>
@@ -91,7 +81,27 @@ function SetupWizard() {
     );
   }
 
-  if (status && !status.needsSetup && !signedIn) {
+  if (status && !status.hasAdmin) {
+    return (
+      <Centered>
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Administrator setup required</CardTitle>
+            <CardDescription>
+              For security, the first administrator is created through the private installation seeder, not on this public page. Once it is created, sign in to continue setup.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <Link to="/auth">Go to sign in</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </Centered>
+    );
+  }
+
+  if (status?.hasAdmin && !signedIn) {
     return (
       <Centered>
         <Card className="w-full max-w-md">
@@ -114,28 +124,6 @@ function SetupWizard() {
     );
   }
 
-  async function submitAdmin() {
-    if (!email.trim() || password.length < 8) {
-      toast.error("Enter an email and a password of at least 8 characters.");
-      return;
-    }
-    setBusy(true);
-    try {
-      await createAdmin({ data: { email: email.trim(), password, fullName: fullName.trim() } });
-      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) throw new Error(error.message);
-      setSignedIn(true);
-      setContactEmail((v) => v || email.trim());
-      await refetch();
-      setStep(1);
-      toast.success("Administrator created");
-    } catch (e: any) {
-      toast.error(e?.message ?? "Could not create the administrator");
-    } finally {
-      setBusy(false);
-    }
-  }
-
   async function submitIdentity() {
     if (!nameEn.trim() && !nameAr.trim()) {
       toast.error("Enter the site name in at least one language.");
@@ -154,7 +142,7 @@ function SetupWizard() {
           ],
         },
       });
-      setStep(2);
+      setStep(1);
     } catch (e: any) {
       toast.error(e?.message ?? "Could not save the site identity");
     } finally {
@@ -172,7 +160,7 @@ function SetupWizard() {
       await saveBranding({
         data: { primary_hex: primary, logo_url: logoUrl || null, favicon_url: faviconUrl || null },
       });
-      setStep(3);
+      setStep(2);
     } catch (e: any) {
       toast.error(e?.message ?? "Could not save branding");
     } finally {
@@ -188,9 +176,7 @@ function SetupWizard() {
             <Rocket className="h-5 w-5" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight">Set up your CMS</h1>
-          <p className="text-sm text-muted-foreground">
-            Four short steps — no terminal required.
-          </p>
+          <p className="text-sm text-muted-foreground">Complete your site identity and branding.</p>
         </header>
 
         <ol className="flex items-center justify-center gap-2 text-xs">
@@ -214,42 +200,6 @@ function SetupWizard() {
         </ol>
 
         {step === 0 && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Create the administrator</CardTitle>
-              <CardDescription>
-                This account gets full access to the control panel. You can add more users later.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Field label="Full name (optional)">
-                <Input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Jane Doe" />
-              </Field>
-              <Field label="Email">
-                <Input
-                  type="email"
-                  autoComplete="username"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.org"
-                />
-              </Field>
-              <Field label="Password" help="At least 8 characters.">
-                <Input
-                  type="password"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Field>
-              <Button onClick={submitAdmin} disabled={busy} className="w-full">
-                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Continue <ArrowRight className="h-4 w-4" /></>}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {step === 1 && (
           <Card>
             <CardHeader>
               <CardTitle>Site identity</CardTitle>
@@ -291,7 +241,7 @@ function SetupWizard() {
                 <Button onClick={submitIdentity} disabled={busy}>
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Continue <ArrowRight className="h-4 w-4" /></>}
                 </Button>
-                <Button variant="ghost" onClick={() => setStep(2)} disabled={busy}>
+                <Button variant="ghost" onClick={() => setStep(1)} disabled={busy}>
                   Skip
                 </Button>
               </div>
@@ -299,7 +249,7 @@ function SetupWizard() {
           </Card>
         )}
 
-        {step === 2 && (
+        {step === 1 && (
           <Card>
             <CardHeader>
               <CardTitle>Branding</CardTitle>
@@ -337,7 +287,7 @@ function SetupWizard() {
                 <Button onClick={submitBranding} disabled={busy}>
                   {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Finish <ArrowRight className="h-4 w-4" /></>}
                 </Button>
-                <Button variant="ghost" onClick={() => setStep(3)} disabled={busy}>
+                <Button variant="ghost" onClick={() => setStep(2)} disabled={busy}>
                   Skip
                 </Button>
               </div>
@@ -345,7 +295,7 @@ function SetupWizard() {
           </Card>
         )}
 
-        {step === 3 && (
+        {step === 2 && (
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
